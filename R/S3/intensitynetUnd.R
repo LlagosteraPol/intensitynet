@@ -11,6 +11,7 @@
 meanNodeIntensity.intensitynetUnd = function(obj, node_id){
   g <- obj$graph
   
+  # If the intensity is already calculated, return it
   if(!is.null(vertex_attr(g, 'intensity', index=node_id))){
     if(length(is.na(vertex_attr(g, "intensity", index=node_id)))==0){
       return(vertex_attr(g, 'intensity', index=node_id))

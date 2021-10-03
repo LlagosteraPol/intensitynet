@@ -1,12 +1,14 @@
-
-
 meanNodeIntensity.intensitynetDir= function(obj, node_id){
   g <- obj$graph
   
-  if(!is.null(vertex_attr(g, 'intensity', index=node_id))){
-    if(length(is.na(vertex_attr(g, "intensity", index=node_id)))==0){
-      return(vertex_attr(g, 'intensity', index=node_id))
-    } 
+  # If the intensities are already calculated, return them
+  if(!is.null(vertex_attr(g, 'intensity_in', index=node_id)) &
+     !is.null(vertex_attr(g, 'intensity_out', index=node_id))){
+    if(length(is.na(vertex_attr(g, "intensity_in", index=node_id)))==0 &
+       length(is.na(vertex_attr(g, "intensity_out", index=node_id)))==0){
+        return( list(in_int  = vertex_attr(g, 'intensity_in', index=node_id),
+                     out_int = vertex_attr(g, 'intensity_out', index=node_id)))
+    }
   }
   
   if(degree(g, node_id) > 0){
@@ -27,7 +29,7 @@ meanNodeIntensity.intensitynetDir= function(obj, node_id){
     }
     
     for (neighbor_id in out_neighbors_list){
-      in_mat[as.character(node_id), as.character(neighbor_id)] <- edgeIntensity(obj, V(g)[node_id]$name
+      out_mat[as.character(node_id), as.character(neighbor_id)] <- edgeIntensity(obj, V(g)[node_id]$name
                                                                                 , V(g)[neighbor_id]$name)
     }
     
