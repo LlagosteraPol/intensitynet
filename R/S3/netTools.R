@@ -9,16 +9,22 @@ InitGraph <- function(obj){
 #'
 #' @name InitGraph.netTools 
 #'
-#' @param obj netTools object
+#' @param obj netTools object -> list(adjacency_mtx: graph adjacency matrix, distances: distances between every pair of nodes,
+#' graph_type: directed or undirected, node_coords: node coordinates matrix)
 #' 
 #' @return igraph network
 #' 
 InitGraph.netTools <- function(obj){
-  weighted_mtx = obj$adjacency_mtx * obj$distances
-  if(obj$graph_type == 'undirected') g <- graph_from_adjacency_matrix(weighted_mtx, mode = obj$graph_type, weighted=TRUE)
+  adjacency_mtx <- obj$adjacency_mtx
+  distances <- obj$distances
+  graph_type <- obj$graph_type
+  node_coords <- obj$node_coords
+    
+  weighted_mtx = adjacency_mtx * distances
+  if(graph_type == 'undirected') g <- graph_from_adjacency_matrix(weighted_mtx, mode = graph_type, weighted=TRUE)
   else  g <- graph_from_adjacency_matrix(weighted_mtx, mode = 'directed', weighted=TRUE)
   
-  net_coords <- list(graph = g, node_coords = obj$node_coords)
+  net_coords <- list(graph = g, node_coords = node_coords)
   class(net_coords) <- "netTools"
   g <- SetNetCoords(net_coords)
   
@@ -34,16 +40,17 @@ SetNetCoords <- function(obj){
 #'
 #' @name InitGraph.netTools 
 #'
-#' @param obj netTools object
+#' @param obj netTools object -> list(graph: igraph, list(): with the node coordinates 'x' and 'y') 
 #' 
 #' @return igraph network with the given coordinates as the attributes of the nodes
 #' 
 SetNetCoords.netTools = function(obj){
+  g <- obj$graph
   x_coord_node <- obj$node_coords[, 1]
   y_coord_node <- obj$node_coords[, 2]
   
   # TODO: change x and y to long (longitude) and lat (latitude), beware of the coordinate system type (e.g WGS84)
-  g <- obj$g %>% set_vertex_attr(name = "xcoord", value = x_coord_node) %>% 
+  g <- g %>% set_vertex_attr(name = "xcoord", value = x_coord_node) %>% 
     set_vertex_attr(name = "ycoord", value = y_coord_node)
   g
 }
@@ -57,7 +64,7 @@ CalculateDistancesMtx <- function(obj){
 #'
 #' @name CalculateDistancesMtx.netTools 
 #'
-#' @param obj netTools object
+#' @param obj netTools object -> list(): with the node coordinates 'x' and 'y'
 #' 
 #' @return distances matrix
 #' 
@@ -82,7 +89,7 @@ SetEdgeIntensity <- function(obj){
 #'
 #' @name SetEdgeIntensity.netTools 
 #'
-#' @param obj netTools object
+#' @param obj netTools object -> list(graph: igraph, node_id1: node id, node_id2: node id, intensity: edge intensity)
 #' 
 #' @return igraph network with the given intensities as an attributes of the edges
 #' 
@@ -91,10 +98,10 @@ SetEdgeIntensity.netTools <- function(obj){
   g <- obj$graph
   node_id1 <- obj$node_id1
   node_id2 <- obj$node_id2
-  value <- obj$value
+  intensity <- obj$intensity
   
   edge_id <- get.edge.ids(g, c(node_id1, node_id2))
-  g <- g %>% set_edge_attr(name = "intensity", index = edge_id, value = value)
+  g <- g %>% set_edge_attr(name = "intensity", index = edge_id, value = intensity)
   g
 }
 
@@ -107,7 +114,7 @@ SetNodeIntensity <- function(obj){
 #'
 #' @name SetNodeIntensity.netTools 
 #'
-#' @param obj netTools object
+#' @param obj netTools object -> list(graph: igraph, node_id: node id, intensity: node intensity)
 #' 
 #' @return igraph network with the given intensities as an attributes of the nodes
 SetNodeIntensity.netTools = function(obj){
@@ -129,7 +136,7 @@ ShortestDistance <- function(obj){
 #'
 #' @name ShortestDistance.netTools 
 #'
-#' @param obj netTools object
+#' @param obj netTools object -> list(graph: igraph, node_id1: node id, node_id2: node id, distances_mtx: distances matrix))
 #' 
 #' @return distance of the path and the nodes of the path
 #' 
@@ -158,7 +165,7 @@ GeoreferencedPlot <- function(obj){
 #'
 #' @name GeoreferencedPlot.netTools 
 #'
-#' @param obj netTools object
+#' @param obj netTools object -> list(graph: igraph, distances_mtx: distances matrix))
 #' 
 GeoreferencedPlot.netTools = function(obj){
   g <- obj$graph
@@ -208,4 +215,30 @@ PointToLine.netTools <- function(obj){
   d <- abs(det(m))/sqrt(sum(v1*v1))
   
   d
+}
+
+
+Undirected2RandomDirectedAdjMtx <- function(obj){
+  UseMethod("Undirected2RandomDirectedAdjMtx")
+}
+
+#' Creates a directed adjacency matrix from an Undirected one with random directions (in out edges) but with the same connections between
+#' nodes.
+#'
+#' @param obj netTools object -> list(mtx: matrix)
+#' 
+#' @return directed adjacency matrix with random directions
+#' 
+Undirected2RandomDirectedAdjMtx.netTools  <- function(obj){
+  mtx <- obj$mtx
+  prob <- 0.25
+  
+  for(row in 1:nrow(mtx)) {
+    for(col in row:ncol(mtx)) {
+      if(mtx[row, col] != 0){
+        if(runif(1) <= prob) mtx[row, col] <- 0
+      }
+    }
+  }
+  mtx
 }

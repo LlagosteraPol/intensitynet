@@ -36,44 +36,55 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
     in_neighbors  <- setdiff(in_neighbors_tmp, out_neighbors_tmp) 
     out_neighbors  <- setdiff(out_neighbors_tmp, in_neighbors_tmp) 
     
-    und_mat <- matrix(0, ncol = length(und_neighbors)) 
-    colnames(und_mat) <- und_neighbors
-    rownames(und_mat) <- node_id
-    
-    in_mat <- matrix(0, ncol = length(in_neighbors)) 
-    colnames(in_mat) <- in_neighbors
-    rownames(in_mat) <- node_id
-    
-    out_mat <- matrix(0, ncol = length(out_neighbors)) 
-    colnames(out_mat) <- out_neighbors 
-    rownames(out_mat) <- node_id
-    
-    for (neighbor_id in und_neighbors){
-      und_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
-                                                                                 , V(g)[neighbor_id]$name)
+    if(length(und_neighbors) > 0){
+      und_mat <- matrix(0, ncol = length(und_neighbors)) 
+      colnames(und_mat) <- und_neighbors
+      rownames(und_mat) <- node_id
+      
+      for (neighbor_id in und_neighbors){
+        und_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
+                                                                                   , V(g)[neighbor_id]$name)
+      }
+      und_intensity <- Reduce('+', und_mat)/length(und_neighbors)
+    }else{
+      und_intensity <- 0
     }
     
-    for (neighbor_id in in_neighbors){
-      in_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
-                                                                                , V(g)[neighbor_id]$name)
+    if(length(in_neighbors) > 0){
+      in_mat <- matrix(0, ncol = length(in_neighbors)) 
+      colnames(in_mat) <- in_neighbors
+      rownames(in_mat) <- node_id
+      
+      for (neighbor_id in in_neighbors){
+        in_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
+                                                                                  , V(g)[neighbor_id]$name)
+      }
+      in_intensity <- Reduce('+', in_mat)/length(in_neighbors)
+    }else{
+      in_intensity <- 0
     }
-    
-    for (neighbor_id in out_neighbors){
-      out_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
-                                                                                , V(g)[neighbor_id]$name)
+      
+    if(length(out_neighbors) > 0){
+      out_mat <- matrix(0, ncol = length(out_neighbors)) 
+      colnames(out_mat) <- out_neighbors 
+      rownames(out_mat) <- node_id
+      
+      for (neighbor_id in out_neighbors){
+        out_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
+                                                                                   , V(g)[neighbor_id]$name)
+      }
+      out_intensity <- Reduce('+', out_mat)/length(out_neighbors)
+    }else{
+      out_intensity <- 0
     }
+ 
+    all_intensity <- und_intensity + in_intensity + out_intensity / 
+                    (length(und_neighbors) + length(in_neighbors) + length(out_neighbors))
     
-    und_intensity <- Reduce('+', und_mat)
-    in_intensity <- Reduce('+', in_mat)
-    out_intensity <- Reduce('+', out_mat)
-    all_intensity <- und_intensity + in_intensity + out_intensity
-    
-    list(und_int = und_intensity/length(und_neighbors_list), 
-         in_int  = in_intensity/length(in_neighbors_list), 
-         out_int = out_intensity/length(out_neighbors_list),
-         all_int = all_intensity/(length(und_neighbors_list) +
-                                  length(in_neighbors_list)  +
-                                  length(out_neighbors_list)))
+    list(und_int = und_intensity, 
+         in_int  = in_intensity, 
+         out_int = out_intensity,
+         all_int = all_intensity)
   }
 }
 
@@ -90,7 +101,10 @@ CalculateEventIntensities.intensitynetMix = function(obj){
   g <- obj$graph
   intensities <- obj$intensities
   edge_counts <- c()
-  counts <- c()
+  und_counts <- c()
+  in_counts <- c()
+  out_counts <- c()
+  all_counts <- c()
   
   pb = txtProgressBar(min = 0, max = gsize(g), initial = 0) 
   cat("Calculating edge intensities...\n")
@@ -111,7 +125,7 @@ CalculateEventIntensities.intensitynetMix = function(obj){
   
   # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
   tmp_obj <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
-  attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetUnd")
+  attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetMix")
   
   pb = txtProgressBar(min = 0, max = gorder(g), initial = 0) 
   cat("Calculating node intensities...\n")
@@ -153,8 +167,8 @@ CalculateEventIntensities.intensitynetMix = function(obj){
   
   g <- g %>% set_vertex_attr(name = "intensity_und", value = as.matrix(und_counts)) %>% 
              set_vertex_attr(name = "intensity_in", value = as.matrix(in_counts))   %>% 
-             set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts)  %>% 
-             set_vertex_attr(name = "intensity_all", value = as.matrix(all_counts)))
+             set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts))  %>% 
+             set_vertex_attr(name = "intensity_all", value = as.matrix(all_counts))
   
   intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = distances)
   attr(intnet, 'class') <- c("intensitynet", "intensitynetMix")

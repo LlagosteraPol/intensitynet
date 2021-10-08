@@ -220,3 +220,25 @@ sub_auto <- event_correlation(sub_test_g, 'moran', 2)
 
 sub_node_locmoran <- localmoran(x = vertex_attr(sub_test_g)$intensity, listw = sub_w_listw, zero.policy=FALSE, na.action = na.omit)
 sub_edge_locmoran <- localmoran(x = edge_attr(sub_test_g)$intensity, listw = sub_w_listw, zero.policy=FALSE, na.action = na.omit)
+
+
+#-------------------------------------------------Matrices testing-------------------------------------------------
+test_mtx <- matrix(data=c(2,4,6,8, 10,12,14,16, 18,20,22,24, 0,28,30,32), nrow = 4)
+diag_test_mtx <- diag(test_mtx)
+upp_tri_test_mtx <- upper.tri(test_mtx)
+#upp_tri_test_mtx[lower.tri(upp_tri_test_mtx)] <- 0
+
+low_tri_test_mtx <- test_mtx
+low_tri_test_mtx[upper.tri(low_tri_test_mtx)] <- 0
+
+tmp_mtx <- test_mtx #1 * upp_tri_test_mtx
+for(row in 1:nrow(tmp_mtx)) {
+  for(col in row:ncol(tmp_mtx)) {
+    if(tmp_mtx[row, col] != 0){
+      if(runif(1, 0.0, 1.0) <= 0.15) tmp_mtx[row, col] <- 0
+    }
+  }
+}
+random_directed_matrix <- tmp_mtx
+
+

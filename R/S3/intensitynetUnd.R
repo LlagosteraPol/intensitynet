@@ -30,9 +30,8 @@ MeanNodeIntensity.intensitynetUnd = function(obj, node_id){
                                                                                    , V(g)[neighbor_id]$name)
     }
     
-    total_intensity <- Reduce('+', ev_mat)
-    
-    mean_intensity <- total_intensity/igraph::degree(g, node_id)
+    mean_intensity <- Reduce('+', ev_mat) / igraph::degree(g, node_id)
+
     mean_intensity
   }
 }
@@ -100,4 +99,39 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
   intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = distances)
   attr(intnet, 'class') <- c("intensitynet", "intensitynetUnd")
   return(intnet)
+}
+
+#' Gives event correlation of the network
+#' 
+#' @name EventCorrelation.intensitynet
+#'
+#' @param obj intensitynet object
+#' @param dep_type the type of dependence statistic to be computed ("correlation", "covariance",
+#' "moran", "geary").
+#' @param lag_max Maximum geodesic lag at which to compute dependence
+#' 
+#' @return A vector containing the dependence statistics (ascending from order 0). 
+#' 
+EventCorrelation.intensitynetUnd <- function(obj, dep_type, lag_max){
+  g <- obj$graph
+  g_sna <- intergraph::asNetwork(g)
+  nacf(g_sna, vertex_attr(g, "intensity"), type = dep_type, mode = "graph", lag.max = lag_max)
+}
+
+NodeLocalCorrelation.intensitynetUnd <- function(obj, mode='moran'){
+  g <- obj$graph
+  adj_mtx <- as_adj(graph = g, attr = 'intensity')
+  adj_listw <- mat2listw(adj_mtx)
+  nb <- adj_listw$neighbours
+  w_listw <- nb2listw(nb, style="W", zero.policy=TRUE) 
+  
+  if(mode=='g'){
+    locg <- localG(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
+    g <- g %>% set_vertex_attr(name = "getis_g", value = locg)
+  } else{
+    locmoran <- localmoran(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
+    g <- g %>% set_vertex_attr(name = "moran_i", value = locmoran[, 'Ii'])
+  } 
+  intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
+  attr(intnet, 'class') <- c("intensitynet", "intensitynetUnd")
 }

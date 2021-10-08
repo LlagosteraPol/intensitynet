@@ -19,9 +19,23 @@ load("../Data/crimes.RData")
 crim <- crimes[11:111,] # From crimes, take 11 to 111 (both included)
 
 # --------------------------------------- INIT NETINTENSITY CLASS----------------------------------------------
-intnet <- intensitynet(Castellon, nodes, crim)
+intnet_und <- intensitynet(Castellon, nodes, crim)
+
+Castellon_obj <-list(mtx = Castellon)
+class(Castellon_obj) <- "netTools"
+dirCastellon <-  Undirected2RandomDirectedAdjMtx(Castellon_obj)
+intnet_dir <- intensitynet(dirCastellon, nodes, crim, graph_type='directed')
+
+intnet_mix <- intensitynet(dirCastellon, nodes, crim, graph_type='mixed')
 
 # ---------------------------------- NET TOOLS CLASS: FUNCTION TESTING ----------------------------------------
+
+# Choose the type of graph for testing
+#intnet <- intnet_und
+intnet <- intnet_dir
+#intnet <- intnet_mix
+
+class(intnet)
 
 # DISTANCES MATRIX
 dist_mtx_test <- intnet$distances
@@ -34,7 +48,6 @@ short_dist <- ShortestDistance(short_dist_obj)
 # GEORREFERENCED PLOT
 plot(intnet)
 
-# ---------------------------- INTENSITYNET UNDIRECTED CLASS: FUNCTION TESTING --------------------------------
 # NODE INTENSITY
 node_int <- MeanNodeIntensity(intnet, 'V601') 
 
@@ -49,16 +62,42 @@ intnet_all <- CalculateEventIntensities(intnet)
 g <- intnet_all$graph
 edge_attr_names(g)
 vertex_attr_names(g)
-vertex_attr(intnet$graph, 'intensity', V(intnet$graph)['V1']) 
 
-for(node_id in V(g)){
-  if(V(g)[node_id]$intensity>0) cat(node_id,": ",V(g)[node_id]$intensity, "\n")
+if(intnet_all$graph_type == 'undirected'){
+  vertex_attr(g, 'intensity', V(g)['V1']) 
+  
+  for(node_id in V(g)){
+    if(V(g)[node_id]$intensity>0) cat(node_id,": ",V(g)[node_id]$intensity, "\n")
+  }
+} else{
+  vertex_attr(g, 'intensity_in', V(g)['V1']) 
+  vertex_attr(g, 'intensity_out', V(g)['V1']) 
+  
+  for(node_id in V(g)){
+    if(V(g)[node_id]$intensity_in>0) cat(node_id,": ",V(g)[node_id]$intensity_in, "\n")
+  }
+  
+  for(node_id in V(g)){
+    if(V(g)[node_id]$intensity_out>0) cat(node_id,": ",V(g)[node_id]$intensity_out, "\n")
+  }
+  
+  if(intnet_all$graph_type == 'mixed'){
+    vertex_attr(g, 'intensity_und', V(g)['V1']) 
+    vertex_attr(g, 'intensity_all', V(g)['V1']) 
+    
+    for(node_id in V(g)){
+      if(V(g)[node_id]$intensity_und>0) cat(node_id,": ",V(g)[node_id]$intensity_und, "\n")
+    }
+    
+    for(node_id in V(g)){
+      if(V(g)[node_id]$intensity_all>0) cat(node_id,": ",V(g)[node_id]$intensity_all, "\n")
+    }
+  }
 }
 
 for(edge_id in E(g)){
   if(E(g)[edge_id]$intensity>0) print(E(g)[edge_id]$intensity)
 }
-
 
 #-----------------------------INTENSITYNET CLASS: FUNCTION TESTING---------------------------------
 

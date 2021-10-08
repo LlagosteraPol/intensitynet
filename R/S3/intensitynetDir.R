@@ -21,32 +21,39 @@ MeanNodeIntensity.intensitynetDir= function(obj, node_id){
   }
   
   if(igraph::degree(g, node_id) > 0){
-    in_neighbors_list  <- neighbors(g, node_id, mode = 'in')
-    out_neighbors_list <- neighbors(g, node_id, mode = 'out')
+    in_neighbors  <- neighbors(g, node_id, mode = 'in')
+    out_neighbors <- neighbors(g, node_id, mode = 'out')
     
-    in_mat <- matrix(0, ncol = length(in_neighbors_list)) 
-    colnames(in_mat) <- as.vector(in_neighbors_list) 
-    rownames(in_mat) <- node_id
-    
-    out_mat <- matrix(0, ncol = length(out_neighbors_list)) 
-    colnames(out_mat) <- as.vector(out_neighbors_list) 
-    rownames(out_mat) <- node_id
-    
-    for (neighbor_id in in_neighbors_list){
-      in_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
-                                                                                , V(g)[neighbor_id]$name)
+    if(length(in_neighbors) > 0){
+      in_mat <- matrix(0, ncol = length(in_neighbors)) 
+      colnames(in_mat) <- as.vector(in_neighbors) 
+      rownames(in_mat) <- node_id
+      
+      for (neighbor_id in in_neighbors){
+        in_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
+                                                                                  , V(g)[neighbor_id]$name)
+      }
+      in_intensity <- Reduce('+', in_mat)/length(in_neighbors)
+    }else{
+      in_intensity <- 0
     }
     
-    for (neighbor_id in out_neighbors_list){
-      out_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
-                                                                                , V(g)[neighbor_id]$name)
+    if(length(out_neighbors) > 0){
+      out_mat <- matrix(0, ncol = length(out_neighbors)) 
+      colnames(out_mat) <- as.vector(out_neighbors) 
+      rownames(out_mat) <- node_id
+      
+      for (neighbor_id in out_neighbors){
+        out_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
+                                                                                   , V(g)[neighbor_id]$name)
+      }
+      
+      out_intensity <- Reduce('+', out_mat)/length(out_neighbors)
+    }else{
+      out_intensity <- 0
     }
     
-    in_intensity <- Reduce('+', in_mat)
-    out_intensity <- Reduce('+', out_mat)
-    
-    list(in_int = in_intensity/length(in_neighbors_list), 
-         out_int = out_intensitylength(out_neighbors_list))
+    list(in_int = in_intensity, out_int = out_intensity)
   }
 }
 
@@ -63,7 +70,8 @@ CalculateEventIntensities.intensitynetDir = function(obj){
   g <- obj$graph
   intensities <- obj$intensities
   edge_counts <- c()
-  counts <- c()
+  in_counts <- c()
+  out_counts <- c()
   
   pb = txtProgressBar(min = 0, max = gsize(g), initial = 0) 
   cat("Calculating edge intensities...\n")
@@ -84,7 +92,7 @@ CalculateEventIntensities.intensitynetDir = function(obj){
   
   # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
   tmp_obj <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
-  attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetUnd")
+  attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetDir")
   
   pb = txtProgressBar(min = 0, max = gorder(g), initial = 0) 
   cat("Calculating node intensities...\n")

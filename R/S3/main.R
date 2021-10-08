@@ -22,7 +22,8 @@ source("S3/netTools.R")
 #' @param events_mtx Events latitude and longitude matrix
 #' @param graph_type Network type: 'undirected' (default), 'directed' or 'mixed' 
 #' 
-#' @return intensitynet object containing: graph=<igraph>, events = <matrix>, graph_type = string, distances = <matrix>
+#' @return intensitynet object containing: graph=<igraph>, events = <matrix>, graph_type = c('directed', 'undirected', 'mixed'), 
+#' distances = <matrix>
 #' 
 intensitynet <- function(adjacency_mtx, node_coords, events_mtx, graph_type = 'undirected'){
   
@@ -232,41 +233,4 @@ ShortestPathIntensity.intensitynet <- function(obj,  node_id1, node_id2, weighte
   }
   
   return(list(intensity = PathIntensity(path), path = path))
-}
-
-
-#' Gives event correlation of the network
-#' 
-#' @name EventCorrelation.intensitynet
-#'
-#' @param obj intensitynet object
-#' @param dep_type the type of dependence statistic to be computed ("correlation", "covariance",
-#' "moran", "geary").
-#' @param lag_max Maximum geodesic lag at which to compute dependence
-#' 
-#' @return A vector containing the dependence statistics (ascending from order 0). 
-#' 
-EventCorrelation.intensitynet <- function(obj, dep_type, lag_max){
-  g <- obj$graph
-  
-  g_sna <- intergraph::asNetwork(g)
-  
-  if(obj$graph_type == 'undirected'){
-    nacf(g_sna, vertex_attr(g, "intensity"), type = dep_type, mode = "graph", lag.max = lag_max)
-  } else{
-    nacf(g_sna, vertex_attr(g, "intensity"), type = dep_type, mode = "digraph", lag.max = lag_max)
-  }
-}
-
-NodeLocalCorrelation.intensitynet <- function(obj, mode='moran'){
-  g <- obj$graph
-  adj_mtx <- as_adj(graph = g, attr = 'intensity')
-  adj_listw <- mat2listw(adj_mtx)
-  nb <- adj_listw$neighbours
-  w_listw <- nb2listw(nb, style="W", zero.policy=T) 
-  
-  if(obj$graph_type == 'undirected'){
-    if(mode=='g') localG(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
-    else localmoran(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
-  }
 }
