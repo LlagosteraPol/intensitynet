@@ -1,14 +1,14 @@
-#' Calculates the intensity of the given node and input into the node attribute of the graph.
+#' Calculates the mean intensity of the given node (intensity of all the edges of the node / number of edges of the node)
 #' 
 #' @name nodeIntensity.intensitynetUnd
 #' 
+#' @param obj intensitynetUnd object
 #' @param node_id ID of the node
 #' 
-#' @return list with the total intensity of the node ('intensity') and 
-#' the intensity respect each neighbor ('detailed') 
+#' @return mean intensity of the given node
 #' 
 #TODO: Set function as non-visible
-meanNodeIntensity.intensitynetUnd = function(obj, node_id){
+MeanNodeIntensity.intensitynetUnd = function(obj, node_id){
   g <- obj$graph
   
   # If the intensity is already calculated, return it
@@ -18,7 +18,7 @@ meanNodeIntensity.intensitynetUnd = function(obj, node_id){
     } 
   }
   
-  if(degree(g, node_id) > 0){
+  if(igraph::degree(g, node_id) > 0){
     neighbors_list <- neighbors(g, node_id)
     
     ev_mat <- matrix(0, ncol = length(neighbors_list)) 
@@ -26,25 +26,27 @@ meanNodeIntensity.intensitynetUnd = function(obj, node_id){
     rownames(ev_mat) <- node_id
     
     for (neighbor_id in neighbors_list){
-      ev_mat[as.character(node_id), as.character(neighbor_id)] <- edgeIntensity(obj, V(g)[node_id]$name
+      ev_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
                                                                                    , V(g)[neighbor_id]$name)
     }
     
     total_intensity <- Reduce('+', ev_mat)
     
-    mean_intensity <- total_intensity/degree(g, node_id)
+    mean_intensity <- total_intensity/igraph::degree(g, node_id)
     mean_intensity
   }
 }
 
 
-#' Calculates edgewise and mean nodewise intensity function for Undirected networks
+#' Calculates edgewise and mean nodewise intensities for Undirected networks
 #' 
-#' @name calculateEventIntensities.intensitynetUnd
+#' @name CalculateEventIntensities.intensitynetUnd
 #' 
-#' @return 
+#' @param obj intensitynetUnd object
 #' 
-calculateEventIntensities.intensitynetUnd = function(obj){
+#' @return intensitynetUnd object with a graph containing all the intensities as attributes of its nodes and edges
+#' 
+CalculateEventIntensities.intensitynetUnd = function(obj){
   g <- obj$graph
   intensities <- obj$intensities
   edge_counts <- c()
@@ -56,7 +58,7 @@ calculateEventIntensities.intensitynetUnd = function(obj){
     setTxtProgressBar(pb,edge_id)
     if(is.null(edge_attr(g, 'intensity', edge_id))){
       #Adds result of Edgewise intenisty function to 'edge_counts'
-      edge_counts[[edge_id]] <- edgeIntensity(obj, ends(g, edge_id)[1], ends(g, edge_id)[2])
+      edge_counts[[edge_id]] <- EdgeIntensity(obj, ends(g, edge_id)[1], ends(g, edge_id)[2])
     }else if(length(is.na(edge_attr(g, 'intensity', edge_id)))!=0){
       edge_counts[[edge_id]] <- 0
     }else{
@@ -67,7 +69,7 @@ calculateEventIntensities.intensitynetUnd = function(obj){
   
   g <- g %>% set_edge_attr(name = "intensity", value = as.matrix(edge_counts))
   
-  # Encapsulate Edge intensities to pass them to 'meanNodeIntensity' function to prevent its re-calculation
+  # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
   tmp_obj <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
   attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetUnd")
   
@@ -78,9 +80,9 @@ calculateEventIntensities.intensitynetUnd = function(obj){
     setTxtProgressBar(pb,node_id)
     
     if(is.null(vertex_attr(g, 'intensity', node_id))){
-      if(degree(g, node_id) > 0){
+      if(igraph::degree(g, node_id) > 0){
         #Adds result of Nodewise mean intenisty function to 'counts'
-        counts[[node_id]]  <- meanNodeIntensity(tmp_obj, node_id)
+        counts[[node_id]]  <- MeanNodeIntensity(tmp_obj, node_id)
       }else{
         # Counts for isolated nodes or NA values
         counts[[node_id]] <- 0

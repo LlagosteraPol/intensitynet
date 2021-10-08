@@ -1,13 +1,29 @@
-require(spatstat)
-require(igraph)
-require(intervals)
 require(aoos)
+require(contoureR)
+require(igraph)
+require(intergraph)
+require(intervals)
 require(roxygen2)
-library(contoureR)
+require(sna)
+require(spatstat)
+require(spdep)
 
-source("S3/netTools.R")
+source("S3/intensitynetDir.R")
+source("S3/intensitynetMix.R")
 source("S3/intensitynetUnd.R")
+source("S3/netTools.R")
 
+#' Constructor of the class intensitynet
+#'
+#' @name intensitynet
+#'
+#' @param adjacency_mtx Network adjacency matrix
+#' @param node_coords Nodes latitude and longitude matrix
+#' @param events_mtx Events latitude and longitude matrix
+#' @param graph_type Network type: 'undirected' (default), 'directed' or 'mixed' 
+#' 
+#' @return intensitynet object containing: graph=<igraph>, events = <matrix>, graph_type = string, distances = <matrix>
+#' 
 intensitynet <- function(adjacency_mtx, node_coords, events_mtx, graph_type = 'undirected'){
   
   if(class(adjacency_mtx) == "data.frame"){
@@ -20,7 +36,7 @@ intensitynet <- function(adjacency_mtx, node_coords, events_mtx, graph_type = 'u
   
   node_coords_obj <- list(node_coords = node_coords)
   class(node_coords_obj) <- "netTools"
-  dist_mtx <- calculateDistancesMtx(node_coords_obj)
+  dist_mtx <- CalculateDistancesMtx(node_coords_obj)
   
   net_setup <- list(adjacency_mtx = adjacency_mtx, 
                     node_coords = node_coords, 
@@ -28,7 +44,7 @@ intensitynet <- function(adjacency_mtx, node_coords, events_mtx, graph_type = 'u
                     distances = dist_mtx, 
                     graph_type = graph_type)
   class(net_setup) <- "netTools"
-  g <- init_graph(net_setup)
+  g <- InitGraph(net_setup)
   
   
   
@@ -44,46 +60,57 @@ intensitynet <- function(adjacency_mtx, node_coords, events_mtx, graph_type = 'u
   intnet # return
 }
 
-#intnet_all <- calculateEventIntensities(intnet)
+#intnet_all <- CalculateEventIntensities(intnet)
 plot <- function(plot, ...){
   UseMethod("plot")
 }
 
+#' Plot intensitynet object
+#'
+#' @name plot.intensitynet 
+#'
+#' @param obj intensitynet object
+#' 
 plot.intensitynet <- function(obj, ...){
   geoplot_obj <- list(graph=obj$graph, distances_mtx = obj$distances)
   class(geoplot_obj) <- "netTools"
-  georeferencedPlot(geoplot_obj)
+  GeoreferencedPlot(geoplot_obj)
 }
 
 # -------- Network functions ----------
+EventCorrelation <- function(obj, edge_id1, edge_id2){
+  UseMethod("EventCorrelation")
+}
 
+NodeLocalCorrelation <- function(obj, mode){
+  UseMethod("NodeLocalCorrelation")
+}
 
 # -------- Intensity functions ----------
-pathIntensity <- function(obj, path_nodes){
-  UseMethod("pathIntensity")
+PathIntensity <- function(obj, path_nodes){
+  UseMethod("PathIntensity")
 }
 
-shortestPathIntensity <- function(obj,  node_id1, node_id2, weighted = FALSE){
-  UseMethod("shortestPathIntensity")
+ShortestPathIntensity <- function(obj,  node_id1, node_id2, weighted = FALSE){
+  UseMethod("ShortestPathIntensity")
 }
 
-calculateEventIntensities <- function(obj){
-  UseMethod("calculateEventIntensities")
+CalculateEventIntensities <- function(obj){
+  UseMethod("CalculateEventIntensities")
 }
 
-meanNodeIntensity.intensitynetUnd <- function(obj, node_id){
-  UseMethod("meanNodeIntensity.intensitynetUnd")
+MeanNodeIntensity <- function(obj, node_id){
+  UseMethod("MeanNodeIntensity")
 }
 
-edgeIntensity <- function(obj, node_id1, node_id2, z){
-  UseMethod("edgeIntensity")
+EdgeIntensity <- function(obj, node_id1, node_id2, z){
+  UseMethod("EdgeIntensity")
 }
 
-#' If not calculated, calculates the intesnity of the edge with nodes; node_id1, node_id2 and
-#' input into the edge attribute of the graph. If the edge already contains an intensity,
-#' gives it directly.
+#' If not calculated, calculates the intesnity of the edge with nodes; node_id1, node_id2. 
+#' If the edge already contains an intensity, gives it directly.
 #'
-#' @name edgeIntensity.intensitynetUnd
+#' @name EdgeIntensity.intensitynetUnd
 #' 
 #' @param node_id1 First node ID of the edge
 #' @param node_id2 Second node ID of the edge
@@ -91,7 +118,7 @@ edgeIntensity <- function(obj, node_id1, node_id2, z){
 #' @return edge_intensity - Intensity of the edge
 #'
 #TODO: Set function as non-visible
-edgeIntensity.intensitynet= function(obj,  node_id1, node_id2, z=50){
+EdgeIntensity.intensitynet= function(obj,  node_id1, node_id2, z=50){
   
   if(node_id1 == node_id2){
     stop("Both vertices cannot be the same.")
@@ -141,7 +168,7 @@ edgeIntensity.intensitynet= function(obj,  node_id1, node_id2, z=50){
   for(row in 1:nrow(events_mtx)) {
     dist_obj <- list(p1= node1, p2= node2, ep=c(events_mtx[row, 1], events_mtx[row, 2]))
     class(dist_obj) <- 'netTools'
-    d <- perpenidularDistance(dist_obj)
+    d <- PointToLine(dist_obj)
     
     # If the event is at a perpendicular distance less or equal 'z' from the line connecting
     # both given points (the road), then is counted as an event of that road
@@ -154,7 +181,17 @@ edgeIntensity.intensitynet= function(obj,  node_id1, node_id2, z=50){
   edge_intensity
 }
 
-pathIntensity.intensitynet <- function(obj, path_nodes){
+
+#' Calculates the intensity of the given path
+#'
+#' @name PathIntensity.intensitynet
+#'
+#' @param obj intensitynet object
+#' @param path_nodes vector containing the node ID's of the path
+#' 
+#' @return intensity of the path
+#' 
+PathIntensity.intensitynet <- function(obj, path_nodes){
   edge_counts <- list()
   path_intensity <- 0
   
@@ -165,7 +202,7 @@ pathIntensity.intensitynet <- function(obj, path_nodes){
       next
     }
     
-    path_intensity <- path_intensity + Reduce('+', edgeIntensity(obj, prev, node_id))
+    path_intensity <- path_intensity + Reduce('+', EdgeIntensity(obj, prev, node_id))
     
     prev <- node_id
   }
@@ -173,17 +210,63 @@ pathIntensity.intensitynet <- function(obj, path_nodes){
   path_intensity <- path_intensity / (length(path_nodes) - 1)
 }
 
-shortestPathIntensity.intensitynet <- function(obj,  node_id1, node_id2, weighted = FALSE){
+
+#' Calculates the shortest path between two vertices and calculates its intensity
+#'
+#' @name ShortestPathIntensity.intensitynet
+#'
+#' @param obj intensitynet object
+#' @param node_id1 starting node
+#' @param node_id2 ending node
+#' @param weighted TRUE or FALSE (default), tell if the distances must be taken into account 
+#' 
+#' @return intensity of the path the shortest path and the path
+#' 
+ShortestPathIntensity.intensitynet <- function(obj,  node_id1, node_id2, weighted = FALSE){
   g <- obj$graph
   
   if(weighted){
-    path <- shortestDistance(node_id1, node_id2)$path
-  }
-  else{
+    path <- ShortestDistance(node_id1, node_id2)$path
+  }else{
     path <- unlist(get.shortest.paths(g, node_id1, node_id2)$vpath)
   }
   
-  return(list(intensity = pathIntensity(path), path = path))
+  return(list(intensity = PathIntensity(path), path = path))
 }
 
 
+#' Gives event correlation of the network
+#' 
+#' @name EventCorrelation.intensitynet
+#'
+#' @param obj intensitynet object
+#' @param dep_type the type of dependence statistic to be computed ("correlation", "covariance",
+#' "moran", "geary").
+#' @param lag_max Maximum geodesic lag at which to compute dependence
+#' 
+#' @return A vector containing the dependence statistics (ascending from order 0). 
+#' 
+EventCorrelation.intensitynet <- function(obj, dep_type, lag_max){
+  g <- obj$graph
+  
+  g_sna <- intergraph::asNetwork(g)
+  
+  if(obj$graph_type == 'undirected'){
+    nacf(g_sna, vertex_attr(g, "intensity"), type = dep_type, mode = "graph", lag.max = lag_max)
+  } else{
+    nacf(g_sna, vertex_attr(g, "intensity"), type = dep_type, mode = "digraph", lag.max = lag_max)
+  }
+}
+
+NodeLocalCorrelation.intensitynet <- function(obj, mode='moran'){
+  g <- obj$graph
+  adj_mtx <- as_adj(graph = g, attr = 'intensity')
+  adj_listw <- mat2listw(adj_mtx)
+  nb <- adj_listw$neighbours
+  w_listw <- nb2listw(nb, style="W", zero.policy=T) 
+  
+  if(obj$graph_type == 'undirected'){
+    if(mode=='g') localG(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
+    else localmoran(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
+  }
+}

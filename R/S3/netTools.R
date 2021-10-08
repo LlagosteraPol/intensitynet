@@ -1,26 +1,44 @@
 #TODO: Declare all these functions as non-visible at namespace
 
 
-init_graph <- function(obj){
-  UseMethod("init_graph")
+InitGraph <- function(obj){
+  UseMethod("InitGraph")
 }
 
-init_graph.netTools <- function(obj){
+#' Creates an igraph network with the given data
+#'
+#' @name InitGraph.netTools 
+#'
+#' @param obj netTools object
+#' 
+#' @return igraph network
+#' 
+InitGraph.netTools <- function(obj){
   weighted_mtx = obj$adjacency_mtx * obj$distances
-  g <- graph_from_adjacency_matrix(weighted_mtx, mode = obj$graph_type, weighted=TRUE)
+  if(obj$graph_type == 'undirected') g <- graph_from_adjacency_matrix(weighted_mtx, mode = obj$graph_type, weighted=TRUE)
+  else  g <- graph_from_adjacency_matrix(weighted_mtx, mode = 'directed', weighted=TRUE)
   
   net_coords <- list(graph = g, node_coords = obj$node_coords)
   class(net_coords) <- "netTools"
-  g <- setNetCoords(net_coords)
+  g <- SetNetCoords(net_coords)
   
   g # return
 }
 
-setNetCoords <- function(obj){
-  UseMethod("setNetCoords")
+SetNetCoords <- function(obj){
+  UseMethod("SetNetCoords")
 }
 
-setNetCoords.netTools = function(obj){
+
+#' Set igraph network node coordinates as its attributes
+#'
+#' @name InitGraph.netTools 
+#'
+#' @param obj netTools object
+#' 
+#' @return igraph network with the given coordinates as the attributes of the nodes
+#' 
+SetNetCoords.netTools = function(obj){
   x_coord_node <- obj$node_coords[, 1]
   y_coord_node <- obj$node_coords[, 2]
   
@@ -30,11 +48,20 @@ setNetCoords.netTools = function(obj){
   g
 }
 
-calculateDistancesMtx <- function(obj){
-  UseMethod("calculateDistancesMtx")
+CalculateDistancesMtx <- function(obj){
+  UseMethod("CalculateDistancesMtx")
 }
 
-calculateDistancesMtx.netTools <- function(obj){
+
+#' Calculates the distances between all pair of nodes from the given network
+#'
+#' @name CalculateDistancesMtx.netTools 
+#'
+#' @param obj netTools object
+#' 
+#' @return distances matrix
+#' 
+CalculateDistancesMtx.netTools <- function(obj){
   x_coord_node <- obj$node_coords[, 1]
   y_coord_node <- obj$node_coords[, 2] 
   
@@ -46,12 +73,21 @@ calculateDistancesMtx.netTools <- function(obj){
   distances_mtx
 }
 
-setEdgeIntensity <- function(obj){
-  UseMethod("setEdgeIntensity")
+SetEdgeIntensity <- function(obj){
+  UseMethod("SetEdgeIntensity")
 }
 
+
+#' Sets the given intensites as an edge attribute to the given igraph network
+#'
+#' @name SetEdgeIntensity.netTools 
+#'
+#' @param obj netTools object
+#' 
+#' @return igraph network with the given intensities as an attributes of the edges
+#' 
 #TODO: Declare non-visible at namespace
-setEdgeIntensity.netTools <- function(obj){
+SetEdgeIntensity.netTools <- function(obj){
   g <- obj$graph
   node_id1 <- obj$node_id1
   node_id2 <- obj$node_id2
@@ -62,11 +98,19 @@ setEdgeIntensity.netTools <- function(obj){
   g
 }
 
-setNodeIntensity <- function(obj){
-  UseMethod("setNodeIntensity")
+SetNodeIntensity <- function(obj){
+  UseMethod("SetNodeIntensity")
 }
 
-setNodeIntensity.netTools = function(obj){
+
+#' Sets the given intensites as a node attribute to the given igraph network
+#'
+#' @name SetNodeIntensity.netTools 
+#'
+#' @param obj netTools object
+#' 
+#' @return igraph network with the given intensities as an attributes of the nodes
+SetNodeIntensity.netTools = function(obj){
   g <- obj$graph
   node_id <- obj$node_id
   intensity <- obj$intensity
@@ -76,11 +120,20 @@ setNodeIntensity.netTools = function(obj){
 }
 
 
-shortestDistance <- function(obj){
-  UseMethod("shortestDistance")
+ShortestDistance <- function(obj){
+  UseMethod("ShortestDistance")
 }
 
-shortestDistance.netTools = function(obj){
+
+#' Calculates the shortest distance path between two nodes 
+#'
+#' @name ShortestDistance.netTools 
+#'
+#' @param obj netTools object
+#' 
+#' @return distance of the path and the nodes of the path
+#' 
+ShortestDistance.netTools = function(obj){
   g <- obj$graph
   node_id1 <- obj$node_id1
   node_id2 <- obj$node_id2
@@ -93,14 +146,21 @@ shortestDistance.netTools = function(obj){
   else{
     weight_sum <- length(weighted_path)
   }
-  list(path = weighted_path, weight = weight_sum)  
+  list(weight = weight_sum, path = weighted_path)  
 }
 
-georeferencedPlot <- function(obj){
-  UseMethod("georeferencedPlot")
+GeoreferencedPlot <- function(obj){
+  UseMethod("GeoreferencedPlot")
 }
 
-georeferencedPlot.netTools = function(obj){
+
+#' Plot the given network using its node coordinates
+#'
+#' @name GeoreferencedPlot.netTools 
+#'
+#' @param obj netTools object
+#' 
+GeoreferencedPlot.netTools = function(obj){
   g <- obj$graph
   distances_mtx <- obj$distances_mtx
   
@@ -123,28 +183,21 @@ georeferencedPlot.netTools = function(obj){
   }
 }
 
-clockwise <- function(obj){
-  UseMethod("clockwise")
+
+PointToLine <- function(obj){
+  UseMethod("PointToLine")
 }
 
-clockwise.netTools <- function(obj) {
-  df <- obj$df
-  
-  x.coords <- c(df[[1]], df[[1]][1])
-  y.coords <- c(df[[2]], df[[2]][1])
-  
-  double.area <- sum(sapply(2:length(x.coords), function(i) {
-    (x.coords[i] - x.coords[i-1])*(y.coords[i] + y.coords[i-1])
-  }))
-  
-  double.area > 0
-} 
 
-perpenidularDistance <- function(obj){
-  UseMethod("perpenidularDistance")
-}
-
-perpenidularDistance.netTools <- function(obj){
+#' Return the perpendicular distance between an event and the edge between two nodes.
+#'
+#' @name PointToLine.netTools  
+#'
+#' @param obj netTools object -> list(p1:c(coordx, coordy), p2:c(coordx, coordy), e:c(coordx, coordy))
+#' 
+#' @return the perpendicular distance
+#' 
+PointToLine.netTools <- function(obj){
   p1 <- obj$p1
   p2 <- obj$p2
   ep <- obj$ep

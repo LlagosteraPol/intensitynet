@@ -1,4 +1,13 @@
-meanNodeIntensity.intensitynetDir= function(obj, node_id){
+#' Given a node, calculates its mean intensities regarding in and out edges edges associated with the node.
+#' 
+#' @name nodeIntensity.intensitynetDir
+#' 
+#' @param obj intensitynetDir object
+#' @param node_id ID of the node
+#' 
+#' @return mean intensities of the given node for in and out edges
+#' 
+MeanNodeIntensity.intensitynetDir= function(obj, node_id){
   g <- obj$graph
   
   # If the intensities are already calculated, return them
@@ -11,7 +20,7 @@ meanNodeIntensity.intensitynetDir= function(obj, node_id){
     }
   }
   
-  if(degree(g, node_id) > 0){
+  if(igraph::degree(g, node_id) > 0){
     in_neighbors_list  <- neighbors(g, node_id, mode = 'in')
     out_neighbors_list <- neighbors(g, node_id, mode = 'out')
     
@@ -24,12 +33,12 @@ meanNodeIntensity.intensitynetDir= function(obj, node_id){
     rownames(out_mat) <- node_id
     
     for (neighbor_id in in_neighbors_list){
-      in_mat[as.character(node_id), as.character(neighbor_id)] <- edgeIntensity(obj, V(g)[node_id]$name
+      in_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
                                                                                 , V(g)[neighbor_id]$name)
     }
     
     for (neighbor_id in out_neighbors_list){
-      out_mat[as.character(node_id), as.character(neighbor_id)] <- edgeIntensity(obj, V(g)[node_id]$name
+      out_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
                                                                                 , V(g)[neighbor_id]$name)
     }
     
@@ -42,13 +51,15 @@ meanNodeIntensity.intensitynetDir= function(obj, node_id){
 }
 
 
-#' Calculates edgewise and mean nodewise intensity function for Undirected networks
+#' Calculates edgewise and mean nodewise intensities for Directed networks
 #' 
-#' @name calculateEventIntensities.intensitynetDir
+#' @name CalculateEventIntensities.intensitynetDir
 #' 
-#' @return 
+#' @param obj intensitynetDir object
 #' 
-calculateEventIntensities.intensitynetDir = function(obj){
+#' @return intensitynetDir object with a graph containing all the intensities as attributes of its nodes and edges
+#' 
+CalculateEventIntensities.intensitynetDir = function(obj){
   g <- obj$graph
   intensities <- obj$intensities
   edge_counts <- c()
@@ -60,7 +71,7 @@ calculateEventIntensities.intensitynetDir = function(obj){
     setTxtProgressBar(pb,edge_id)
     if(is.null(edge_attr(g, 'intensity', edge_id))){
       #Adds result of Edgewise intenisty function to 'edge_counts'
-      edge_counts[[edge_id]] <- edgeIntensity(obj, ends(g, edge_id)[1], ends(g, edge_id)[2])
+      edge_counts[[edge_id]] <- EdgeIntensity(obj, ends(g, edge_id)[1], ends(g, edge_id)[2])
     }else if(length(is.na(edge_attr(g, 'intensity', edge_id)))!=0){
       edge_counts[[edge_id]] <- 0
     }else{
@@ -71,7 +82,7 @@ calculateEventIntensities.intensitynetDir = function(obj){
   
   g <- g %>% set_edge_attr(name = "intensity", value = as.matrix(edge_counts))
   
-  # Encapsulate Edge intensities to pass them to 'meanNodeIntensity' function to prevent its re-calculation
+  # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
   tmp_obj <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
   attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetUnd")
   
@@ -82,9 +93,9 @@ calculateEventIntensities.intensitynetDir = function(obj){
     setTxtProgressBar(pb,node_id)
     
     if(is.null(vertex_attr(g, 'intensity_in', node_id)) || is.null(vertex_attr(g, 'intensity_out', node_id))){
-      if(degree(g, node_id) > 0){
+      if(igraph::degree(g, node_id) > 0){
         #Adds result of Nodewise mean intenisty function to 'counts'
-        intensities <- meanNodeIntensity(tmp_obj, node_id)
+        intensities <- MeanNodeIntensity(tmp_obj, node_id)
         in_counts[[node_id]]  <- intensities$in_int
         out_counts[[node_id]] <- intensities$out_int
       }else{

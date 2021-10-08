@@ -171,3 +171,52 @@ dist_obj <- list(p1= node1, p2= node2, ep=c(3,3))
 class(dist_obj) <- 'netTools'
 perpenidularDistance(dist_obj)
 
+#-----------------------------SNA library testings------------------------------------
+
+
+intnet <- Intensitynet(Castellon, nodes, crim)
+intnet_all <- CalculateEventIntensities(intnet)
+g <- intnet_all$graph
+
+
+event_correlation <- function(g, dep_type, lag_max){
+  g_sna <- intergraph::asNetwork(g)
+  nacf(g_sna, vertex_attr(g, "intensity"), type = dep_type, mode = "graph", lag.max = lag_max)
+}
+
+# Manual graph set-up
+#test_g <- igraph::graph(c(1,2, 1,3, 2,3, 3,4, 3,5), directed = FALSE)
+test_g <- igraph::graph(c(1,3, 2,3, 3,4, 3,5), directed = FALSE)
+plot(test_g)
+test_g <- test_g %>% set_vertex_attr(name = "intensity", value = cbind(c(30, 25, 27, 20, 22)))
+test_g <- test_g %>% set_edge_attr(name = "intensity", index=E(test_g), value = cbind(c(10, 15, 20, 25)))
+
+
+adj_mtx <- as_adj(graph = test_g, attr = 'intensity')
+m_adj_listw <- mat2listw(adj_mtx, style="M")
+w_adj_listw <- mat2listw(adj_mtx, style="W")
+b_adj_listw <- mat2listw(adj_mtx, style="B")
+
+nb <- m_adj_listw$neighbours
+w_listw <- nb2listw(nb, style="W", zero.policy=T) 
+b_listw <- nb2listw(nb, style="B", zero.policy=TRUE) 
+
+# Moran I
+auto <- event_correlation(test_g, 'moran', 2)
+gen_moran <- moran(x = vertex_attr(test_g)$intensity, listw = w_listw, n=length(nb), S0=Szero(w_listw))
+
+# Local Moran I
+node_locmoran <- localmoran(x = vertex_attr(test_g)$intensity, listw = w_listw, zero.policy=FALSE, na.action = na.omit)
+#edge_locmoran <- localmoran(x = edge_attr(test_g)$intensity, listw = w_listw, zero.policy=FALSE, na.action = na.omit)
+
+# Local Moran I using a sub-graph
+sub_test_g <- induced_subgraph(test_g, 1:3)
+sub_adj_mtx <- as_adj(graph = sub_test_g, attr = 'intensity')
+sub_m_adj_listw <- mat2listw(sub_adj_mtx, style="M")
+sub_nb <- sub_m_adj_listw$neighbours
+sub_w_listw <- nb2listw(sub_nb, style="W", zero.policy=T) 
+
+sub_auto <- event_correlation(sub_test_g, 'moran', 2)
+
+sub_node_locmoran <- localmoran(x = vertex_attr(sub_test_g)$intensity, listw = sub_w_listw, zero.policy=FALSE, na.action = na.omit)
+sub_edge_locmoran <- localmoran(x = edge_attr(sub_test_g)$intensity, listw = sub_w_listw, zero.policy=FALSE, na.action = na.omit)
