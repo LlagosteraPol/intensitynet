@@ -156,7 +156,7 @@ ShortestDistance.netTools = function(obj){
   list(weight = weight_sum, path = weighted_path)  
 }
 
-GeoreferencedPlot <- function(obj){
+GeoreferencedPlot <- function(obj, node_label='none', edge_label='none', ...){
   UseMethod("GeoreferencedPlot")
 }
 
@@ -167,20 +167,75 @@ GeoreferencedPlot <- function(obj){
 #'
 #' @param obj netTools object -> list(graph: igraph, distances_mtx: distances matrix))
 #' 
-GeoreferencedPlot.netTools = function(obj){
+GeoreferencedPlot.netTools = function(obj, vertex_intensity='', edge_intensity='', xy_axes=TRUE, enable_grid=FALSE, ...){
   g <- obj$graph
   distances_mtx <- obj$distances_mtx
+  arguments <- list(...)
   
   if(!is.null(distances_mtx)){
-    norm_coords = layout.norm(matrix(cbind(vertex_attr(g)$xcoord, vertex_attr(g)$ycoord), ncol=2))
+    node_coords <- matrix(cbind(vertex_attr(g)$xcoord, vertex_attr(g)$ycoord), ncol=2)
+    
+    min_x <- min(node_coords[,1])
+    max_x <- max(node_coords[,1])
+    min_y <- min(node_coords[,2])
+    max_y <- max(node_coords[,2])
+    
+    x_dist <- max_x - min_x
+    y_dist <- max_y - min_y
+
     plot(g, 
-         layout = norm_coords, 
-         vertex.label=NA, 
-         vertex.size=2, 
-         window=TRUE, 
-         axes=TRUE, 
-         edge.label = edge_attr(g)$intensity, 
-         edge.label.cex = 0.5)
+           layout=node_coords, 
+           vertex.label = vertex_intensity, 
+           vertex.label.cex = if(exists('vertex.label.cex', where=arguments)) arguments[['vertex.label.cex']] else 0.3,  
+           vertex.size= if(exists('vertex.size', where=arguments)) arguments[['vertex.size']] else 2, 
+           edge.label = edge_intensity, 
+           edge.label.cex = if(exists('edge.label.cex', where=arguments)) arguments[['edge.label.cex']] else 0.3,
+           edge.arrow.size = if(exists('edge.arrow.size', where=arguments)) arguments[['edge.arrow.size']] else 0.1,
+           ...)
+    
+    # Square encapsulating the plot
+    rect(-1.05,-1.05,1.05,1.05)
+    
+    # X and Y coordinates
+    if(xy_axes){
+      mtext(expression(bold("x-coordinate")), at=0, line = -28, cex=0.70)
+      mtext(floor(min_x + (1 * (x_dist/6))), at=-0.67, line = -27, cex=0.70)
+      mtext(floor(min_x + (2 * (x_dist/6))), at=-0.34, line = -27, cex=0.70)
+      mtext(floor(min_x + (3 * (x_dist/6))), at=0, line = -27, cex=0.70)
+      mtext(floor(min_x + (4 * (x_dist/6))), at=0.34, line = -27, cex=0.70)
+      mtext(floor(min_x + (5 * (x_dist/6))), at=0.67, line = -27, cex=0.70)
+      
+      mtext(expression(bold("y-coordinate")), at=0, line=0, cex=0.70, side = 2)
+      mtext(floor(min_y + (1 * (y_dist/6))), at=-0.67, line = -1, cex=0.70, side = 2)
+      mtext(floor(min_y + (2 * (y_dist/6))), at=-0.34, line = -1, cex=0.70, side = 2)
+      mtext(floor(min_y + (3 * (y_dist/6))), at=0, line = -1, cex=0.70, side = 2)
+      mtext(floor(min_y + (4 * (y_dist/6))), at=0.34, line = -1, cex=0.70, side = 2)
+      mtext(floor(min_y + (5 * (y_dist/6))), at=0.67, line = -1, cex=0.70, side = 2)
+    }
+    
+    #grid (if specified)
+    if(enable_grid){
+      grid_col <- rgb(0,0,0,alpha=0.2)
+      # X
+      lines(c(-1.05,1.05), c(-1,-1), col = grid_col)
+      lines(c(-1.05,1.05), c(-1 + (1/3), -1 + (1/3)), col = grid_col)
+      lines(c(-1.05,1.05), c(-1 + (2/3), -1 + (2/3)), col = grid_col)
+      lines(c(-1.05,1.05), c(-1 + (3/3), -1 + (3/3)), col = grid_col)
+      lines(c(-1.05,1.05), c(1 - (1/3), 1 - (1/3)), col = grid_col)
+      lines(c(-1.05,1.05), c(1 - (2/3), 1 - (2/3)), col = grid_col)
+      lines(c(-1.05,1.05), c(1 - (3/3), 1 - (3/3)), col = grid_col)
+      lines(c(-1.05,1.05), c(1,1), col = grid_col)
+      
+      # Y
+      lines(c(-1,-1), c(-1.05,1.05), col = grid_col)
+      lines(c(-1 + (1/3), -1 + (1/3)), c(-1.05,1.05), col = grid_col)
+      lines(c(-1 + (2/3), -1 + (2/3)), c(-1.05,1.05), col = grid_col)
+      lines(c(-1 + (3/3), -1 + (3/3)), c(-1.05,1.05), col = grid_col)
+      lines(c(1 - (1/3), 1 - (1/3)), c(-1.05,1.05), col = grid_col)
+      lines(c(1 - (2/3), 1 - (2/3)), c(-1.05,1.05), col = grid_col)
+      lines(c(1 - (3/3), 1 - (3/3)), c(-1.05,1.05), col = grid_col)
+      lines(c(1,1), c(-1.05,1.05), col = grid_col)
+    }
   }
   else{
     plot(g, 
@@ -190,7 +245,7 @@ GeoreferencedPlot.netTools = function(obj){
   }
 }
 
-
+#plot(obj=intnet_all, enable_grid = TRUE, axes=TRUE)
 PointToLine <- function(obj){
   UseMethod("PointToLine")
 }

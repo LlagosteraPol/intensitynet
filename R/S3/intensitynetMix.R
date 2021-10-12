@@ -174,3 +174,31 @@ CalculateEventIntensities.intensitynetMix = function(obj){
   attr(intnet, 'class') <- c("intensitynet", "intensitynetMix")
   return(intnet)
 }
+
+#' Plot intensitynet object
+#'
+#' @name plot.intensitynetMix
+#'
+#' @param obj intensitynet object
+#' 
+plot.intensitynetMix <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
+  g <- obj$graph
+  
+  v_label <- switch(vertex_intensity, 
+                    none = {''}, 
+                    intensity_und = {round(vertex_attr(g)$intensity_und, 4)},
+                    intensity_in = {round(vertex_attr(g)$intensity_in, 4)},
+                    intensity_out = {round(vertex_attr(g)$intensity_in, 4)},
+                    intensity_all = {round(vertex_attr(g)$intensity_all, 4)},
+                    '')
+  
+  e_label <- switch(edge_intensity, 
+                    none = {''}, 
+                    intensity = {round(edge_attr(g)$intensity, 4)},
+                    '')
+  
+  geoplot_obj <- list(graph=g, distances_mtx = obj$distances)
+  class(geoplot_obj) <- "netTools"
+  
+  GeoreferencedPlot(geoplot_obj, vertex_intensity=v_label, edge_intensity=e_label, xy_axes=xy_axes, enable_grid=enable_grid, ...)
+}

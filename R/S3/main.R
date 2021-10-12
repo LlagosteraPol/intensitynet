@@ -61,23 +61,6 @@ intensitynet <- function(adjacency_mtx, node_coords, events_mtx, graph_type = 'u
   intnet # return
 }
 
-#intnet_all <- CalculateEventIntensities(intnet)
-plot <- function(plot, ...){
-  UseMethod("plot")
-}
-
-#' Plot intensitynet object
-#'
-#' @name plot.intensitynet 
-#'
-#' @param obj intensitynet object
-#' 
-plot.intensitynet <- function(obj, ...){
-  geoplot_obj <- list(graph=obj$graph, distances_mtx = obj$distances)
-  class(geoplot_obj) <- "netTools"
-  GeoreferencedPlot(geoplot_obj)
-}
-
 # -------- Network functions ----------
 EventCorrelation <- function(obj, edge_id1, edge_id2){
   UseMethod("EventCorrelation")
@@ -85,6 +68,10 @@ EventCorrelation <- function(obj, edge_id1, edge_id2){
 
 NodeLocalCorrelation <- function(obj, mode){
   UseMethod("NodeLocalCorrelation")
+}
+
+plot <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
+  UseMethod("plot")
 }
 
 # -------- Intensity functions ----------
@@ -119,7 +106,7 @@ EdgeIntensity <- function(obj, node_id1, node_id2, z){
 #' @return edge_intensity - Intensity of the edge
 #'
 #TODO: Set function as non-visible
-EdgeIntensity.intensitynet= function(obj,  node_id1, node_id2, z=50){
+EdgeIntensity.intensitynet= function(obj,  node_id1, node_id2, z=15){
   
   if(node_id1 == node_id2){
     stop("Both vertices cannot be the same.")

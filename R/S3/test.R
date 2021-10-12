@@ -241,4 +241,50 @@ for(row in 1:nrow(tmp_mtx)) {
 }
 random_directed_matrix <- tmp_mtx
 
+#------------------------------------------------------Ploting------------------------------------------------------
+node_coords <- matrix(cbind(vertex_attr(g)$xcoord, vertex_attr(g)$ycoord), ncol=2)
+
+min_x <- min(node_coords[,1])
+max_x <- max(node_coords[,1])
+min_y <- min(node_coords[,2])
+max_y <- max(node_coords[,2])
+
+
+x_dist <- max_x - min_x
+y_dist <- max_y - min_y
+
+plot(g, layout=node_coords, vertex.label=NA, vertex.size=2, window=TRUE, axes=FALSE, 
+     edge.label = '', edge.label.cex = 0.2)
+
+rect(-1.05,-1.05,-1.05,1.05)
+rect(-1.05,-1.05, 1.05,-1.05)
+rect(-1.05,1.05, 1.05,1.05)
+rect(1.05,-1.05, 1.05,1.05)
+
+mtext(expression(bold("x-coordinate")), at=0, line = -28, cex=0.70)
+mtext(floor(min_x + (1 * (x_dist/6))), at=-0.67, line = -27, cex=0.70)
+mtext(floor(min_x + (2 * (x_dist/6))), at=-0.34, line = -27, cex=0.70)
+mtext(floor(min_x + (3 * (x_dist/6))), at=0, line = -27, cex=0.70)
+mtext(floor(min_x + (4 * (x_dist/6))), at=0.34, line = -27, cex=0.70)
+mtext(floor(min_x + (5 * (x_dist/6))), at=0.67, line = -27, cex=0.70)
+
+mtext(expression(bold("y-coordinate")), at=0, line=-15, cex=0.70, side = 2)
+mtext(floor(min_y + (1 * (y_dist/6))), at=-0.67, line = -16, cex=0.70, side = 2)
+mtext(floor(min_y + (2 * (y_dist/6))), at=-0.34, line = -16, cex=0.70, side = 2)
+mtext(floor(min_y + (3 * (y_dist/6))), at=0, line = -16, cex=0.70, side = 2)
+mtext(floor(min_y + (4 * (y_dist/6))), at=0.34, line = -16, cex=0.70, side = 2)
+mtext(floor(min_y + (5 * (y_dist/6))), at=0.67, line = -16, cex=0.70, side = 2)
+
+
+rect(min(node_coords[,1]),min(node_coords[,2]), max(node_coords[,1]),min(node_coords[,2]),border="black",lwd=1,col="black")
+rect(min(node_coords[,1]),min(node_coords[,2]), min(node_coords[,1]),min(node_coords[,2]),border="black",lwd=1,col="black")
+rect(max(node_coords[,1]),min(node_coords[,2]), max(node_coords[,1]),max(node_coords[,2]),border="black",lwd=1,col="black")
+rect(min(node_coords[,1]),max(node_coords[,2]), max(node_coords[,1]),max(node_coords[,2]),border="black",lwd=1,col="black")
+
+
+
+
+
+
+
 

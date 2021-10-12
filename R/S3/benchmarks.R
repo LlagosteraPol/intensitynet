@@ -64,6 +64,13 @@ edge_attr_names(g)
 vertex_attr_names(g)
 
 if(intnet_all$graph_type == 'undirected'){
+
+  pdf("S3/Plots/area_with_grid.pdf")
+  plot(intnet_all, enable_grid = TRUE, axis=TRUE)
+  dev.off()
+  
+  plot(intnet_all, node_label = 'intensity', edge_label='none', vertex.color='red')
+  
   vertex_attr(g, 'intensity', V(g)['V1']) 
   
   for(node_id in V(g)){
@@ -72,6 +79,11 @@ if(intnet_all$graph_type == 'undirected'){
 } else{
   vertex_attr(g, 'intensity_in', V(g)['V1']) 
   vertex_attr(g, 'intensity_out', V(g)['V1']) 
+  
+  source("S3/main.R")
+  pdf("S3/Plots/area_with_grid_Dir.pdf")
+  plot(intnet_all, enable_grid = TRUE, vertex_intensity = 'intensity_in')
+  dev.off()
   
   for(node_id in V(g)){
     if(V(g)[node_id]$intensity_in>0) cat(node_id,": ",V(g)[node_id]$intensity_in, "\n")

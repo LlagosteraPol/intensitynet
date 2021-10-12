@@ -221,3 +221,27 @@ edgeIntensity.intensitynet= function(obj,  node_id1, node_id2, z=100){
   
   edge_intensity
 }
+
+
+GeoreferencedPlot.netTools = function(obj){
+  g <- obj$graph
+  distances_mtx <- obj$distances_mtx
+  
+  if(!is.null(distances_mtx)){
+    norm_coords = layout.norm(matrix(cbind(vertex_attr(g)$xcoord, vertex_attr(g)$ycoord), ncol=2))
+    plot(g,
+         layout = norm_coords,
+         vertex.label=NA,
+         vertex.size=2,
+         window=TRUE,
+         axes=TRUE,
+         edge.label = edge_attr(g)$intensity,
+         edge.label.cex = 0.5)
+  }
+  else{
+    plot(g, 
+         vertex.label=NA, 
+         vertex.size=2,
+         vertex.size2=2)
+  }
+}
