@@ -334,5 +334,68 @@ tt <- paste(round(vertex_attr(g)$getis_g, 4))
 nodes <- data.frame(id = paste(vertex_attr(g)$name),
                     label = paste(round(vertex_attr(g)$getis_g, 4)))
 
+#------------------------------------------Coloring plot-------------------------------------------------------
+g <- intnet$graph
+adj_mtx <- as_adj(graph = g, attr = 'intensity')
+adj_listw <- mat2listw(adj_mtx)
+nb <- adj_listw$neighbours
+w_listw <- nb2listw(nb, style="W", zero.policy=TRUE) 
+locmoran <- localmoran(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
+summary(locmoran)
 
 
+# Calculate deviations
+node_int_deviation <- vertex_attr(g)$intensity - mean(vertex_attr(g)$intensity)  
+locmoran_deviation <- locmoran[,1] - mean(locmoran[,1])  # get the 'li' component 
+
+# create a new variable identifying the moran plot quadrant for each observation, dismissing the non-significant ones
+quad_sig <- NA
+
+# non-significant observations
+quad_sig[(locmoran[, 5] > 0.5)] <- 0 # "insignificant"  
+# low-low quadrant
+quad_sig[(node_int_deviation <= 0 & locmoran_deviation <= 0)] <- 1 # "low-low"
+# low-high quadrant
+quad_sig[(node_int_deviation <= 0 & locmoran_deviation >= 0)] <- 2 # "low-high"
+# high-low quadrant
+quad_sig[(node_int_deviation >= 0 & locmoran_deviation <= 0)] <- 3 # "high-low"
+# high-high quadrant
+quad_sig[(node_int_deviation >= 0 & locmoran_deviation >= 0)] <- 4 # "high-high"
+
+length(which(quad_sig==0)) # To count values
+
+data_df <- data.frame(intensity = vertex_attr(g)$intensity , xcoord = node_coords$xcoord, ycoord = node_coords$ycoord, lm = quad_sig)
+ggplot(data_df, aes(xcoord,ycoord)) + 
+  geom_point(aes(colour=as.factor(lm)), shape=19, size=1.5) + #show.legend = FALSE
+  geom_tile(aes(fill=as.factor(lm)))+ 
+  scale_color_manual(values=c("gray","skyblue", "yellow", "darkorange", "red4"), 
+                     name="", breaks=c(0,1,2,3,4), labels=c("insignificant","low-low","low-high","high-low","high-high")) +
+  geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
+               data=edges, 
+               size = 0.5, 
+               colour="grey") +
+  scale_y_continuous(name="y-coordinate") + 
+  scale_x_continuous(name="x-coordinate") + theme_bw()  #+ guides(colour = FALSE)
+
+
+
+ggplot() + geom_point(data=node_coords, 
+                      aes(xcoord,ycoord)) +
+  geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
+               data=edges, 
+               size = 0.5, 
+               colour="grey")  + 
+  geom_tile(aes(fill=quad_sig)) + 
+  scale_fill_manual(values=c("#ececec","#c6c6c6", "#939393", "#545454", "#000000"), 
+                    name="", breaks=c(0,1,2,3,4), labels=c("insignificant","low-low","low-high","high-low","high-high")) +
+  scale_y_continuous(name="y-coordinate") + 
+  scale_x_continuous(name="x-coordinate")  # + theme_bw() # Black and white
+  
+ggplot_net(intnet, heatmap='locmoran')
+# ggplot() + geom_point(data=node_coords, 
+#                       aes(xcoord,ycoord, fill=quad_sig)) +
+#             geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
+#                          data=edges, 
+#                          size = 0.5, 
+#                          colour="grey")  + 
+#   coord_equal() +  theme_void() + scale_fill_brewer(palette = "Set1")

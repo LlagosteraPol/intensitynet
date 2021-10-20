@@ -129,7 +129,7 @@ NodeLocalCorrelation.intensitynetUnd <- function(obj, mode='moran'){
     locg <- localG(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
     g <- g %>% set_vertex_attr(name = "getis_g", value = locg)
   } else{
-    locmoran <- localmoran(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
+    locmoran <- localmoran(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE, na.action = na.omit)
     g <- g %>% set_vertex_attr(name = "moran_i", value = locmoran[, 'Ii'])
   } 
   intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
@@ -164,22 +164,41 @@ plot.intensitynetUnd <- function(obj, vertex_intensity='none', edge_intensity='n
 }
 
 
-ggplot_net.intensitynetUnd  <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
+ggplot_net.intensitynetUnd  <- function(obj, heatmap='none', ...){
   g <- obj$graph
   
-  v_label <- switch(vertex_intensity, 
-                    none = {''}, 
-                    intensity = {round(vertex_attr(g)$intensity, 4)},
-                    '')
-  
-  e_label <- switch(edge_intensity, 
-                    none = {''}, 
-                    intensity = {round(edge_attr(g)$intensity, 4)},
-                    '')
-  
-  geoplot_obj <- list(graph=g, distances_mtx = obj$distances)
+  if(heatmap == 'locmoran'){
+    locmoran <- vertex_attr(g)$moran_i
+    # Calculate deviations
+    node_int_deviation <- vertex_attr(g)$intensity - mean(vertex_attr(g)$intensity)  
+    locmoran_deviation <- locmoran - mean(locmoran)
+    
+    # create a new variable identifying the moran plot quadrant for each observation, dismissing the non-significant ones
+    quad_sig <- NA
+    
+    # non-significant observations
+    quad_sig[(locmoran[, 5] > 0.5)] <- 0 # "insignificant"  
+    # low-low quadrant
+    quad_sig[(node_int_deviation <= 0 & locmoran_deviation <= 0)] <- 1 # "low-low"
+    # low-high quadrant
+    quad_sig[(node_int_deviation <= 0 & locmoran_deviation >= 0)] <- 2 # "low-high"
+    # high-low quadrant
+    quad_sig[(node_int_deviation >= 0 & locmoran_deviation <= 0)] <- 3 # "high-low"
+    # high-high quadrant
+    quad_sig[(node_int_deviation >= 0 & locmoran_deviation >= 0)] <- 4 # "high-high"
+    
+    data_df <- data.frame(intensity = vertex_attr(g)$intensity , 
+                          xcoord = node_coords$xcoord, 
+                          ycoord = node_coords$ycoord, 
+                          heatmap = quad_sig)
+  }else{
+    data_df <- data.frame(intensity = vertex_attr(g)$intensity, 
+                          xcoord = node_coords$xcoord, 
+                          ycoord = node_coords$ycoord, 
+                          heatmap = NULL)
+  }
+  geoplot_obj <- list(graph=g, data_df = data_df)
   class(geoplot_obj) <- "netTools"
   
-  GeoreferencedGgplot2(geoplot_obj, vertex_intensity=v_label, edge_intensity=e_label, xy_axes=xy_axes, enable_grid=enable_grid, ...)
-  
+  GeoreferencedGgplot2(geoplot_obj, ...)
 }

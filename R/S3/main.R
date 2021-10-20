@@ -77,7 +77,7 @@ plot <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TR
   UseMethod("plot")
 }
 
-ggplot_net <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
+ggplot_net <- function(obj, heatmap='none', ...){
   UseMethod("ggplot_net")
 }
 
