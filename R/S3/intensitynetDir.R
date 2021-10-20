@@ -142,7 +142,7 @@ plot.intensitynetDir <- function(obj, vertex_intensity='none', edge_intensity='n
   v_label <- switch(vertex_intensity, 
                     none = {''}, 
                     intensity_in = {round(vertex_attr(g)$intensity_in, 4)},
-                    intensity_out = {round(vertex_attr(g)$intensity_in, 4)},
+                    intensity_out = {round(vertex_attr(g)$intensity_out, 4)},
                     '')
   
   e_label <- switch(edge_intensity, 

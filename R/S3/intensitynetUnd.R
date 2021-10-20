@@ -134,6 +134,7 @@ NodeLocalCorrelation.intensitynetUnd <- function(obj, mode='moran'){
   } 
   intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
   attr(intnet, 'class') <- c("intensitynet", "intensitynetUnd")
+  intnet
 }
 
 
@@ -160,4 +161,25 @@ plot.intensitynetUnd <- function(obj, vertex_intensity='none', edge_intensity='n
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedPlot(geoplot_obj, vertex_intensity=v_label, edge_intensity=e_label, xy_axes=xy_axes, enable_grid=enable_grid, ...)
+}
+
+
+ggplot_net.intensitynetUnd  <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
+  g <- obj$graph
+  
+  v_label <- switch(vertex_intensity, 
+                    none = {''}, 
+                    intensity = {round(vertex_attr(g)$intensity, 4)},
+                    '')
+  
+  e_label <- switch(edge_intensity, 
+                    none = {''}, 
+                    intensity = {round(edge_attr(g)$intensity, 4)},
+                    '')
+  
+  geoplot_obj <- list(graph=g, distances_mtx = obj$distances)
+  class(geoplot_obj) <- "netTools"
+  
+  GeoreferencedGgplot2(geoplot_obj, vertex_intensity=v_label, edge_intensity=e_label, xy_axes=xy_axes, enable_grid=enable_grid, ...)
+  
 }

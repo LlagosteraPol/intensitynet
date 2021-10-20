@@ -3,15 +3,18 @@ require(contoureR)
 require(igraph)
 require(intergraph)
 require(intervals)
+require(ggplot2)
+require(ggraph)
 require(roxygen2)
 require(sna)
 require(spatstat)
 require(spdep)
+require(visNetwork)
 
-source("S3/intensitynetDir.R")
-source("S3/intensitynetMix.R")
-source("S3/intensitynetUnd.R")
-source("S3/netTools.R")
+source("./intensitynetDir.R", local = TRUE)
+source("./intensitynetMix.R", local = TRUE)
+source("./intensitynetUnd.R", local = TRUE)
+source("./netTools.R", local = TRUE)
 
 #' Constructor of the class intensitynet
 #'
@@ -72,6 +75,10 @@ NodeLocalCorrelation <- function(obj, mode){
 
 plot <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
   UseMethod("plot")
+}
+
+ggplot_net <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
+  UseMethod("ggplot_net")
 }
 
 # -------- Intensity functions ----------

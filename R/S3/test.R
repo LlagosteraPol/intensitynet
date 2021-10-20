@@ -3,18 +3,18 @@
 
 
 rm(list = ls())
-
-source("S3/main.R")
+setwd("R/S3/")
+source("./main.R")
 
 
 # Adjacency matrix (undirected): Segmenting locations of the traffic network treated as the vertex set of the network.
-load("../Data/Castellon.RData")
+load("../../Data/Castellon.RData")
 
 # Node coordinates: Georeferenced coordinates from 'castellon' nodes
-load("../Data/nodes.RData")
+load("../../Data/nodes.RData")
 
 # Event (crime coordinates)
-load("../Data/crimes.RData")
+load("../../Data/crimes.RData")
 
 
 #subset of events
@@ -282,9 +282,57 @@ rect(max(node_coords[,1]),min(node_coords[,2]), max(node_coords[,1]),max(node_co
 rect(min(node_coords[,1]),max(node_coords[,2]), max(node_coords[,1]),max(node_coords[,2]),border="black",lwd=1,col="black")
 
 
+#--------------------------------------------------ggplot2-----------------------------------------------------
+
+x <- c(1,3,4,6,9)
+y <- x^2
+coords = paste(x,y,sep=",")
+
+df = data.frame(x,y)
+
+ggplot(df,aes(x,y))+geom_point(col="blue")+
+  geom_label(aes(x+.5,y+0.5,label=coords))
 
 
+#-------------------------------------------------visNetwork----------------------------------------------
 
+intnet <- intensitynet(Castellon, nodes, crim)
+intnet <- CalculateEventIntensities(intnet)
+intnet <- NodeLocalCorrelation(intnet, 'moran')
+intnet <- NodeLocalCorrelation(intnet, 'g')
+
+g <- intnet$graph
+
+nodes <- data.frame(id = paste(vertex_attr(g)$name),
+                    xcoord = vertex_attr(g)$xcoord,
+                    ycoord = vertex_attr(g)$ycoord,
+                    intensity = vertex_attr(g)$intensity)
+
+edges <- data.frame(from = get.edgelist(g)[,1],
+                    to = get.edgelist(g)[,2],
+                    distance = edge_attr(g)$weight,
+                    intensity = edge_attr(g)$intensity)
+
+nodes <- data.frame(id = paste(vertex_attr(g)$name),
+                    x = vertex_attr(g)$xcoord,
+                    y = vertex_attr(g)$ycoord,
+                    label = paste(round(vertex_attr(g)$intensity, 4)))
+
+edges <- data.frame(from = get.edgelist(g)[,1],
+                    to = get.edgelist(g)[,2],
+                    label = paste(round(edge_attr(g)$intensity, 4)))
+
+
+visNetwork(nodes, edges)  %>%
+  visIgraphLayout() %>%
+  visEvents(selectNode = "function(properties) {
+      alert('Node Properties: ' + this.body.data.nodes.get(properties.nodes[0]).id);}") %>% 
+  visOptions(nodesIdSelection = TRUE,  highlightNearest = TRUE)
+
+
+tt <- paste(round(vertex_attr(g)$getis_g, 4))
+nodes <- data.frame(id = paste(vertex_attr(g)$name),
+                    label = paste(round(vertex_attr(g)$getis_g, 4)))
 
 
 

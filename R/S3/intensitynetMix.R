@@ -188,7 +188,7 @@ plot.intensitynetMix <- function(obj, vertex_intensity='none', edge_intensity='n
                     none = {''}, 
                     intensity_und = {round(vertex_attr(g)$intensity_und, 4)},
                     intensity_in = {round(vertex_attr(g)$intensity_in, 4)},
-                    intensity_out = {round(vertex_attr(g)$intensity_in, 4)},
+                    intensity_out = {round(vertex_attr(g)$intensity_out, 4)},
                     intensity_all = {round(vertex_attr(g)$intensity_all, 4)},
                     '')
   

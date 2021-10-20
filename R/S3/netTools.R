@@ -245,6 +245,43 @@ GeoreferencedPlot.netTools = function(obj, vertex_intensity='', edge_intensity='
   }
 }
 
+
+GeoreferencedGgplot2 <- function(obj, node_label='none', edge_label='none', ...){
+  UseMethod("GeoreferencedGgplot2")
+}
+
+GeoreferencedGgplot2.netTools = function(obj, vertex_intensity='', edge_intensity='', 
+                                         xy_axes=TRUE, enable_grid=FALSE, ...){
+
+  g <- obj$graph
+  distances_mtx <- obj$distances_mtx
+  arguments <- list(...)
+  
+  if(!is.null(distances_mtx)){
+    node_coords <- data.frame(xcoord = vertex_attr(g)$xcoord, ycoord = vertex_attr(g)$ycoord)
+    rownames(node_coords) <- sprintf("V%s",seq(1:nrow(node_coords)))
+    #get edges, which are pairs of node IDs
+    edgelist <- get.edgelist(g)
+    #convert to a four column edge data frame with source and destination coordinates
+    edges <- data.frame(node_coords[edgelist[,1],], node_coords[edgelist[,2],])
+    colnames(edges) <- c("xcoord1","ycoord1","xcoord2","ycoord2")
+    
+    ggplot() + geom_point(data=node_coords, 
+                          aes(xcoord,ycoord)) +
+               geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
+                            data=edges, 
+                            size = 0.5, 
+                            colour="grey") 
+    # + 
+    #            geom_label(aes(label = edge_intensity, 
+    #                           x = (edges$xcoord1+edges$xcoord2)/2,
+    #                           y = (edges$ycoord1+edges$ycoord2)/2,
+    #                           size=0.5))
+               
+  }
+}
+#ggplot_net(intnet_all, enable_grid = TRUE, axis=TRUE)
+
 #plot(obj=intnet_all, enable_grid = TRUE, axes=TRUE)
 PointToLine <- function(obj){
   UseMethod("PointToLine")

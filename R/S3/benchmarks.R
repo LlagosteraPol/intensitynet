@@ -1,19 +1,19 @@
 rm(list = ls())
 
 #Set working directory
-setwd("R")
+setwd("R/S3/")
 
-source("S3/main.R")
+source("./main.R")
 
 # ---------------------------------------------DATA LOADING----------------------------------------------------
 # Adjacency matrix (undirected): Segmenting locations of the traffic network treated as the vertex set of the network.
-load("../Data/Castellon.RData")
+load("../../Data/Castellon.RData")
 
 # Node coordinates: Georeferenced coordinates from 'castellon' nodes
-load("../Data/nodes.RData")
+load("../../Data/nodes.RData")
 
 # Event (crime coordinates)
-load("../Data/crimes.RData")
+load("../../Data/crimes.RData")
 
 #subset of events
 crim <- crimes[11:111,] # From crimes, take 11 to 111 (both included)
@@ -116,9 +116,21 @@ for(edge_id in E(g)){
 
 correlations <- EventCorrelation(intnet_all, 'correlation', 2)
 
-locmoran <- NodeLocalCorrelation(intnet_all, 'moran')
-locg <- NodeLocalCorrelation(intnet_all, 'g')
+intnet_all <- NodeLocalCorrelation(intnet_all, 'moran')
+intnet_all <- NodeLocalCorrelation(intnet_all, 'g')
 
+#--------------------------------------------PLOTS------------------------------------------------
+pdf("S3/Plots/area_with_grid_Dir.pdf")
+plot(intnet_all, enable_grid = TRUE, vertex_intensity = 'intensity_in')
+dev.off()
+
+pdf("Plots/area_with_grid.pdf")
+plot(intnet_all, enable_grid = FALSE, axis=TRUE)
+dev.off()
+
+plot(intnet_all, node_label = 'intensity', edge_label='none', vertex.color='red')
+
+ggplot_net(intnet_all)
 
 
 
