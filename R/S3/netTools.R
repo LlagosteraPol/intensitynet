@@ -16,17 +16,20 @@ InitGraph <- function(obj){
 #' 
 InitGraph.netTools <- function(obj){
   adjacency_mtx <- obj$adjacency_mtx
-  distances <- obj$distances
+  distances_mtx <- obj$distances_mtx
   graph_type <- obj$graph_type
   node_coords <- obj$node_coords
     
-  weighted_mtx = adjacency_mtx * distances
+  weighted_mtx = adjacency_mtx * distances_mtx
   if(graph_type == 'undirected') g <- graph_from_adjacency_matrix(weighted_mtx, mode = graph_type, weighted=TRUE)
   else  g <- graph_from_adjacency_matrix(weighted_mtx, mode = 'directed', weighted=TRUE)
   
   net_coords <- list(graph = g, node_coords = node_coords)
   class(net_coords) <- "netTools"
   g <- SetNetCoords(net_coords)
+  
+  # Delete isolated vertices
+  igraph::delete.vertices(g, igraph::degree(g)==0)
   
   g # return
 }
@@ -255,6 +258,7 @@ GeoreferencedGgplot2.netTools = function(obj, ...){
   
   g <- obj$graph
   data_df <- obj$data_df
+  mode <- obj$mode
  
   node_coords <- data.frame(xcoord = vertex_attr(g)$xcoord, ycoord = vertex_attr(g)$ycoord)
   rownames(node_coords) <- sprintf("V%s",seq(1:nrow(node_coords)))
@@ -264,9 +268,9 @@ GeoreferencedGgplot2.netTools = function(obj, ...){
   edges <- data.frame(node_coords[edgelist[,1],], node_coords[edgelist[,2],])
   colnames(edges) <- c("xcoord1","ycoord1","xcoord2","ycoord2")
   
-  if(is.null(data_df$intensity) || is.null(data_df$heatmap)){
-    ggplot(data_df, aes(xcoord,ycoord)) + 
-      geom_point(shape=19, size=1.5) + #show.legend = FALSE
+  if(is.null(data_df$intensity) || is.na(data_df$heatmap)){
+    ggplot(data_df, aes(xcoord,ycoord), ...) + 
+      geom_point(shape=19, size=1.5) +
       geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
                    data=edges, 
                    size = 0.5, 
@@ -275,34 +279,41 @@ GeoreferencedGgplot2.netTools = function(obj, ...){
       scale_x_continuous(name="x-coordinate") + theme_bw()
 
   }else{
-    ggplot(data_df, aes(xcoord,ycoord)) + 
-      geom_point(aes(colour=as.factor(lm)), shape=19, size=1.5) + #show.legend = FALSE
-      geom_tile(aes(fill=as.factor(lm)))+ 
-      scale_color_manual(values=c("gray","skyblue", "yellow", "darkorange", "red4"), 
-                         name="", breaks=c(0,1,2,3,4), labels=c("insignificant","low-low","low-high","high-low","high-high")) +
-      geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
-                   data=edges, 
-                   size = 0.5, 
-                   colour="grey") +
-      scale_y_continuous(name="y-coordinate") + 
-      scale_x_continuous(name="x-coordinate") + theme_bw()
-    
-    # + 
-    #            geom_label(aes(label = edge_intensity, 
-    #                           x = (edges$xcoord1+edges$xcoord2)/2,
-    #                           y = (edges$ycoord1+edges$ycoord2)/2,
-    #                           size=0.5))
+    if(mode=='moran_i') {
+      ggplot(data_df, aes(xcoord,ycoord), ...) + 
+        geom_point(aes(colour=as.factor(heatmap)), shape=19, size=1.5) +
+        geom_tile(aes(fill=as.factor(heatmap)), show.legend = FALSE) + 
+        scale_color_manual(values=c("gray","skyblue", "yellow", "darkorange", "red4"), 
+                           name="", breaks=c(0,1,2,3,4), labels=c("insignificant","low-low","low-high","high-low","high-high")) +
+        geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
+                     data=edges, 
+                     size = 0.5, 
+                     colour="grey") +
+        scale_y_continuous(name="y-coordinate") + 
+        scale_x_continuous(name="x-coordinate") + theme_bw()
+    }else if(mode=='geary_g'){
+      ggplot(data_df, aes(xcoord,ycoord), ...) +  
+        geom_point(alpha = 0) + 
+        geom_tile()+ 
+        geom_text(aes(label=heatmap),hjust=0, vjust=0, size=3, check_overlap = T) +
+        scale_colour_grey(guide='none') + 
+        geom_segment(aes(x = xcoord1, y = ycoord1, xend = xcoord2, yend = ycoord2), 
+                     data = edges, 
+                     size = 0.5, 
+                     colour = "grey") +
+        scale_y_continuous(name="y-coordinate") + 
+        scale_x_continuous(name="x-coordinate") + theme_bw() 
+    }
   }
 }
-#ggplot_net(intnet_all, enable_grid = TRUE, axis=TRUE)
 
-#plot(obj=intnet_all, enable_grid = TRUE, axes=TRUE)
+
 PointToLine <- function(obj){
   UseMethod("PointToLine")
 }
 
 
-#' Return the perpendicular distance between an event and the edge between two nodes.
+#' Return the perpendicular distance between an event and the line formed by two nodes.
 #'
 #' @name PointToLine.netTools  
 #'
@@ -328,8 +339,8 @@ Undirected2RandomDirectedAdjMtx <- function(obj){
   UseMethod("Undirected2RandomDirectedAdjMtx")
 }
 
-#' Creates a directed adjacency matrix from an Undirected one with random directions (in out edges) but with the same connections between
-#' nodes.
+#' Creates a directed adjacency matrix from an Undirected one with random directions (in out edges) 
+#' but with the same connections between nodes.
 #'
 #' @param obj netTools object -> list(mtx: matrix)
 #' 

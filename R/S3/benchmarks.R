@@ -17,7 +17,7 @@ load("../../Data/crimes.RData")
 
 #subset of events
 crim <- crimes[11:111,] # From crimes, take 11 to 111 (both included)
-
+#crim <- crimes
 # --------------------------------------- INIT NETINTENSITY CLASS----------------------------------------------
 intnet_und <- intensitynet(Castellon, nodes, crim)
 
@@ -65,7 +65,7 @@ vertex_attr_names(g)
 
 if(intnet_all$graph_type == 'undirected'){
 
-  pdf("S3/Plots/area_with_grid.pdf")
+  pdf("S3/Plots/area_with_grid_plot.pdf")
   plot(intnet_all, enable_grid = TRUE, axis=TRUE)
   dev.off()
   
@@ -76,13 +76,36 @@ if(intnet_all$graph_type == 'undirected'){
   for(node_id in V(g)){
     if(V(g)[node_id]$intensity>0) cat(node_id,": ",V(g)[node_id]$intensity, "\n")
   }
+  
+  correlations <- NodeGeneralCorrelation(intnet_all, dep_type = 'correlation', lag_max = 2, 
+                                         intensity = vertex_attr(g)$intensity)
+  
+  data_moran <- NodeLocalCorrelation(intnet_all, dep_type = 'moran_i', intensity = vertex_attr(g)$intensity)
+  moran_i <- data_moran$correlation
+  intnet_all <- data_moran$intnet_all
+  
+  data_geary <- NodeLocalCorrelation(intnet_all, dep_type = 'geary_g', intensity = vertex_attr(g)$intensity)
+  geary <- data_geary$correlation
+  intnet_all <- data_geary$intnet_all
+  
 } else{
   vertex_attr(g, 'intensity_in', V(g)['V1']) 
   vertex_attr(g, 'intensity_out', V(g)['V1']) 
   
-  source("S3/main.R")
-  pdf("S3/Plots/area_with_grid_Dir.pdf")
-  plot(intnet_all, enable_grid = TRUE, vertex_intensity = 'intensity_in')
+  pdf("Plots/area_with_grid_Dir_plot.pdf")
+  plot(intnet_all, enable_grid = TRUE, vertex_intensity = 'intensity_out')
+  dev.off()
+  
+  pdf("Plots/area_with_grid_Dir_gplot.pdf")
+  gplot(intnet_all)
+  dev.off()
+  
+  pdf("Plots/area_with_grid_Dir_moran_gplot.pdf")
+  gplot(intnet_all, intensity = vertex_attr(intnet_all$graph)$intensity_in, heatmap = 'moran_i')
+  dev.off()
+  
+  pdf("Plots/area_with_grid_Dir_g_gplot.pdf")
+  gplot(intnet_all, intensity = vertex_attr(intnet_all$graph)$intensity_in, heatmap = 'geary_g')
   dev.off()
   
   for(node_id in V(g)){
@@ -105,6 +128,17 @@ if(intnet_all$graph_type == 'undirected'){
       if(V(g)[node_id]$intensity_all>0) cat(node_id,": ",V(g)[node_id]$intensity_all, "\n")
     }
   }
+  
+  correlations <- NodeGeneralCorrelation(intnet_all, dep_type = 'correlation', lag_max = 2, 
+                                         intensity = vertex_attr(g)$intensity_in)
+  
+  data_moran <- NodeLocalCorrelation(intnet_all, dep_type = 'moran_i', intensity = vertex_attr(g)$intensity_in)
+  moran_i <- data_moran$correlation
+  intnet_all <- data_moran$intnet
+  
+  data_geary <- NodeLocalCorrelation(intnet_all, dep_type = 'geary_g', intensity = vertex_attr(g)$intensity_in)
+  geary <- data_geary$correlation
+  intnet_all <- data_geary$intnet
 }
 
 for(edge_id in E(g)){
@@ -114,10 +148,7 @@ for(edge_id in E(g)){
 #-----------------------------INTENSITYNET CLASS: FUNCTION TESTING---------------------------------
 
 
-correlations <- EventCorrelation(intnet_all, 'correlation', 2)
 
-intnet_all <- NodeLocalCorrelation(intnet_all, 'moran')
-intnet_all <- NodeLocalCorrelation(intnet_all, 'g')
 
 #--------------------------------------------PLOTS------------------------------------------------
 pdf("S3/Plots/area_with_grid_Dir.pdf")
@@ -128,9 +159,13 @@ pdf("Plots/area_with_grid.pdf")
 plot(intnet_all, enable_grid = FALSE, axis=TRUE)
 dev.off()
 
+
+
 plot(intnet_all, node_label = 'intensity', edge_label='none', vertex.color='red')
 
-ggplot_net(intnet_all)
+gplot(intnet_all)
+gplot(intnet_all, heatmap = 'locmoran')
+gplot(intnet_all, heatmap = 'locg')
 
 
 

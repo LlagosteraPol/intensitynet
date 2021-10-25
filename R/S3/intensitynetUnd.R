@@ -66,11 +66,15 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
   }
   close(pb)
   
-  g <- g %>% set_edge_attr(name = "intensity", value = as.matrix(edge_counts))
+  # g <- g %>% set_edge_attr(name = "intensity", value = as.matrix(edge_counts))
+  # 
+  # # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
+  # tmp_obj <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances_mtx = obj$distances_mtx)
+  # attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetUnd")
   
   # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
-  tmp_obj <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
-  attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetUnd")
+  tmp_obj <- SetNetworkAttribute(obj = obj, where = 'edge', name = 'intensity', value = as.matrix(edge_counts))
+  g <- tmp_obj$graph
   
   pb = txtProgressBar(min = 0, max = gorder(g), initial = 0) 
   cat("Calculating node intensities...\n")
@@ -80,7 +84,7 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
     
     if(is.null(vertex_attr(g, 'intensity', node_id))){
       if(igraph::degree(g, node_id) > 0){
-        #Adds result of Nodewise mean intenisty function to 'counts'
+        #Adds result of Nodewise mean intensity function to 'counts'
         counts[[node_id]]  <- MeanNodeIntensity(tmp_obj, node_id)
       }else{
         # Counts for isolated nodes or NA values
@@ -96,45 +100,9 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
     
   g <- g %>% set_vertex_attr(name = "intensity", value = as.matrix(counts))
 
-  intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = distances)
+  intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances_mtx = obj$distances_mtx)
   attr(intnet, 'class') <- c("intensitynet", "intensitynetUnd")
   return(intnet)
-}
-
-#' Gives event correlation of the network
-#' 
-#' @name EventCorrelation.intensitynet
-#'
-#' @param obj intensitynet object
-#' @param dep_type the type of dependence statistic to be computed ("correlation", "covariance",
-#' "moran", "geary").
-#' @param lag_max Maximum geodesic lag at which to compute dependence
-#' 
-#' @return A vector containing the dependence statistics (ascending from order 0). 
-#' 
-EventCorrelation.intensitynetUnd <- function(obj, dep_type, lag_max){
-  g <- obj$graph
-  g_sna <- intergraph::asNetwork(g)
-  nacf(g_sna, vertex_attr(g, "intensity"), type = dep_type, mode = "graph", lag.max = lag_max)
-}
-
-NodeLocalCorrelation.intensitynetUnd <- function(obj, mode='moran'){
-  g <- obj$graph
-  adj_mtx <- as_adj(graph = g, attr = 'intensity')
-  adj_listw <- mat2listw(adj_mtx)
-  nb <- adj_listw$neighbours
-  w_listw <- nb2listw(nb, style="W", zero.policy=TRUE) 
-  
-  if(mode=='g'){
-    locg <- localG(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
-    g <- g %>% set_vertex_attr(name = "getis_g", value = locg)
-  } else{
-    locmoran <- localmoran(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE, na.action = na.omit)
-    g <- g %>% set_vertex_attr(name = "moran_i", value = locmoran[, 'Ii'])
-  } 
-  intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
-  attr(intnet, 'class') <- c("intensitynet", "intensitynetUnd")
-  intnet
 }
 
 
@@ -157,48 +125,8 @@ plot.intensitynetUnd <- function(obj, vertex_intensity='none', edge_intensity='n
                     intensity = {round(edge_attr(g)$intensity, 4)},
                     '')
   
-  geoplot_obj <- list(graph=g, distances_mtx = obj$distances)
+  geoplot_obj <- list(graph=g, distances_mtx = obj$distances_mtx)
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedPlot(geoplot_obj, vertex_intensity=v_label, edge_intensity=e_label, xy_axes=xy_axes, enable_grid=enable_grid, ...)
-}
-
-
-ggplot_net.intensitynetUnd  <- function(obj, heatmap='none', ...){
-  g <- obj$graph
-  
-  if(heatmap == 'locmoran'){
-    locmoran <- vertex_attr(g)$moran_i
-    # Calculate deviations
-    node_int_deviation <- vertex_attr(g)$intensity - mean(vertex_attr(g)$intensity)  
-    locmoran_deviation <- locmoran - mean(locmoran)
-    
-    # create a new variable identifying the moran plot quadrant for each observation, dismissing the non-significant ones
-    quad_sig <- NA
-    
-    # non-significant observations
-    quad_sig[(locmoran[, 5] > 0.5)] <- 0 # "insignificant"  
-    # low-low quadrant
-    quad_sig[(node_int_deviation <= 0 & locmoran_deviation <= 0)] <- 1 # "low-low"
-    # low-high quadrant
-    quad_sig[(node_int_deviation <= 0 & locmoran_deviation >= 0)] <- 2 # "low-high"
-    # high-low quadrant
-    quad_sig[(node_int_deviation >= 0 & locmoran_deviation <= 0)] <- 3 # "high-low"
-    # high-high quadrant
-    quad_sig[(node_int_deviation >= 0 & locmoran_deviation >= 0)] <- 4 # "high-high"
-    
-    data_df <- data.frame(intensity = vertex_attr(g)$intensity , 
-                          xcoord = node_coords$xcoord, 
-                          ycoord = node_coords$ycoord, 
-                          heatmap = quad_sig)
-  }else{
-    data_df <- data.frame(intensity = vertex_attr(g)$intensity, 
-                          xcoord = node_coords$xcoord, 
-                          ycoord = node_coords$ycoord, 
-                          heatmap = NULL)
-  }
-  geoplot_obj <- list(graph=g, data_df = data_df)
-  class(geoplot_obj) <- "netTools"
-  
-  GeoreferencedGgplot2(geoplot_obj, ...)
 }

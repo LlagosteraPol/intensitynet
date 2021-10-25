@@ -88,11 +88,9 @@ CalculateEventIntensities.intensitynetDir = function(obj){
   }
   close(pb)
   
-  g <- g %>% set_edge_attr(name = "intensity", value = as.matrix(edge_counts))
-  
   # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
-  tmp_obj <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = obj$distances)
-  attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetDir")
+  tmp_obj <- SetNetworkAttribute(obj = obj, where = 'edge', name = 'intensity', value = as.matrix(edge_counts))
+  g <- tmp_obj$graph
   
   pb = txtProgressBar(min = 0, max = gorder(g), initial = 0) 
   cat("Calculating node intensities...\n")
@@ -102,7 +100,7 @@ CalculateEventIntensities.intensitynetDir = function(obj){
     
     if(is.null(vertex_attr(g, 'intensity_in', node_id)) || is.null(vertex_attr(g, 'intensity_out', node_id))){
       if(igraph::degree(g, node_id) > 0){
-        #Adds result of Nodewise mean intenisty function to 'counts'
+        #Adds result of Nodewise mean intensity function to 'counts'
         intensities <- MeanNodeIntensity(tmp_obj, node_id)
         in_counts[[node_id]]  <- intensities$in_int
         out_counts[[node_id]] <- intensities$out_int
@@ -125,10 +123,11 @@ CalculateEventIntensities.intensitynetDir = function(obj){
   g <- g %>% set_vertex_attr(name = "intensity_in", value = as.matrix(in_counts)) %>% 
              set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts))
   
-  intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances = distances)
+  intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances_mtx = obj$distances_mtx)
   attr(intnet, 'class') <- c("intensitynet", "intensitynetDir")
   return(intnet)
 }
+
 
 #' Plot intensitynet object
 #'
@@ -150,7 +149,7 @@ plot.intensitynetDir <- function(obj, vertex_intensity='none', edge_intensity='n
                     intensity = {round(edge_attr(g)$intensity, 4)},
                     '')
   
-  geoplot_obj <- list(graph=g, distances_mtx = obj$distances)
+  geoplot_obj <- list(graph=g, distances_mtx = obj$distances_mtx)
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedPlot(geoplot_obj, 

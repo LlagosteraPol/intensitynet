@@ -22,7 +22,7 @@ crim <- crimes[11:111,] # From crimes, take 11 to 111 (both included)
 
 
 init_graph <- function(obj){
-  weighted_mtx = obj$adjacency_mtx * obj$distances
+  weighted_mtx = obj$adjacency_mtx * obj$distances_mtx
   g <- graph_from_adjacency_matrix(weighted_mtx, mode = obj$graph_type, weighted=TRUE)
   
   net_coords <- list(graph = g, node_coords = obj$node_coords)
@@ -69,12 +69,12 @@ dist_mtx <- calculateDistancesMtx(node_coords_obj)
 net_setup <- list(adjacency_mtx = as.matrix(Castellon), 
                   node_coords = nn, 
                   events = as.matrix(crimes), 
-                  distances = dist_mtx, 
+                  distances_mtx = dist_mtx, 
                   graph_type = 'undirected')
 
 g <- init_graph(net_setup)
 intnet <- intensitynet(Castellon, nodes, crim)
-shortest <- shortestDistance(intnet$graph, 'V1', 'V20', intnet$distances)
+shortest <- shortestDistance(intnet$graph, 'V1', 'V20', intnet$distances_mtx)
 
 # ---------------Setting vertice attributes-----------------------
 vertex_attr(g, 'intensity', index='V1') 
@@ -335,14 +335,40 @@ nodes <- data.frame(id = paste(vertex_attr(g)$name),
                     label = paste(round(vertex_attr(g)$getis_g, 4)))
 
 #------------------------------------------Coloring plot-------------------------------------------------------
+# if (!requireNamespace("BiocManager", quietly = TRUE))
+#   install.packages("BiocManager")
+# 
+# BiocManager::install("graph")
+
+intnet <- intensitynet(Castellon, nodes, crim)
+intnet <- CalculateEventIntensities(intnet)
+intnet <- NodeLocalCorrelation(intnet, 'moran')
+intnet <- NodeLocalCorrelation(intnet, 'g')
+
 g <- intnet$graph
-adj_mtx <- as_adj(graph = g, attr = 'intensity')
+
+
+library("graph")
+g1  <- igraph.to.graphNEL(intnet$graph) 
+adj_mtx1 <- as(g1, "sparseMatrix") 
+nb1 <- mat2listw(adj_mtx1)$neighbours
+w_listw1 <- nb2listw(nb1, style="W", zero.policy=T) 
+
+g <- intnet$graph
+adj_mtx <- as_adj(graph = g)
 adj_listw <- mat2listw(adj_mtx)
 nb <- adj_listw$neighbours
 w_listw <- nb2listw(nb, style="W", zero.policy=TRUE) 
 locmoran <- localmoran(x = vertex_attr(g)$intensity, listw = w_listw, zero.policy=TRUE)
 summary(locmoran)
 
+node_coords <- data.frame(xcoord = vertex_attr(g)$xcoord, ycoord = vertex_attr(g)$ycoord)
+rownames(node_coords) <- sprintf("V%s",seq(1:nrow(node_coords)))
+#get edges, which are pairs of node IDs
+edgelist <- get.edgelist(g)
+#convert to a four column edge data frame with source and destination coordinates
+edges <- data.frame(node_coords[edgelist[,1],], node_coords[edgelist[,2],])
+colnames(edges) <- c("xcoord1","ycoord1","xcoord2","ycoord2")
 
 # Calculate deviations
 node_int_deviation <- vertex_attr(g)$intensity - mean(vertex_attr(g)$intensity)  
@@ -350,52 +376,79 @@ locmoran_deviation <- locmoran[,1] - mean(locmoran[,1])  # get the 'li' componen
 
 # create a new variable identifying the moran plot quadrant for each observation, dismissing the non-significant ones
 quad_sig <- NA
+significance <- 0.5
 
 # non-significant observations
-quad_sig[(locmoran[, 5] > 0.5)] <- 0 # "insignificant"  
+quad_sig[(locmoran[, 5] > significance)] <- 0 # "insignificant"  
 # low-low quadrant
-quad_sig[(node_int_deviation <= 0 & locmoran_deviation <= 0)] <- 1 # "low-low"
+quad_sig[(node_int_deviation < 0 & locmoran_deviation < 0) & (locmoran[, 5] <= significance)] <- 1 # "low-low"
 # low-high quadrant
-quad_sig[(node_int_deviation <= 0 & locmoran_deviation >= 0)] <- 2 # "low-high"
+quad_sig[(node_int_deviation < 0 & locmoran_deviation > 0) & (locmoran[, 5] <= significance)] <- 2 # "low-high"
 # high-low quadrant
-quad_sig[(node_int_deviation >= 0 & locmoran_deviation <= 0)] <- 3 # "high-low"
+quad_sig[(node_int_deviation > 0 & locmoran_deviation < 0) & (locmoran[, 5] <= significance)] <- 3 # "high-low"
 # high-high quadrant
-quad_sig[(node_int_deviation >= 0 & locmoran_deviation >= 0)] <- 4 # "high-high"
+quad_sig[(node_int_deviation > 0 & locmoran_deviation > 0) & (locmoran[, 5] <= significance)] <- 4 # "high-high"
+
 
 length(which(quad_sig==0)) # To count values
 
-data_df <- data.frame(intensity = vertex_attr(g)$intensity , xcoord = node_coords$xcoord, ycoord = node_coords$ycoord, lm = quad_sig)
+data_df <- data.frame(intensity = vertex_attr(g)$intensity , 
+                      xcoord = node_coords$xcoord, 
+                      ycoord = node_coords$ycoord, 
+                      heatmap = NA)
+
+data_df_i <- data.frame(intensity = vertex_attr(g)$intensity , 
+                        xcoord = node_coords$xcoord, 
+                        ycoord = node_coords$ycoord, 
+                        heatmap = quad_sig)
+
+b_listw <- nb2listw(nb, style="B", zero.policy=TRUE) 
+# local net G
+locg_all <- localG(x = vertex_attr(g)$intensity, listw = b_listw)
+locg <- unlist(as.list(round(locg_all, 1)))
+
+data_df_g <- data.frame(intensity = vertex_attr(g)$intensity, 
+                      xcoord = node_coords$xcoord, 
+                      ycoord = node_coords$ycoord, 
+                      heatmap = locg)
+
+
 ggplot(data_df, aes(xcoord,ycoord)) + 
-  geom_point(aes(colour=as.factor(lm)), shape=19, size=1.5) + #show.legend = FALSE
-  geom_tile(aes(fill=as.factor(lm)))+ 
-  scale_color_manual(values=c("gray","skyblue", "yellow", "darkorange", "red4"), 
-                     name="", breaks=c(0,1,2,3,4), labels=c("insignificant","low-low","low-high","high-low","high-high")) +
+  geom_point(shape=19, size=1.5) + #show.legend = FALSE
   geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
                data=edges, 
                size = 0.5, 
                colour="grey") +
   scale_y_continuous(name="y-coordinate") + 
+  scale_x_continuous(name="x-coordinate") + theme_bw()
+
+
+ggplot(data_df_i, aes(xcoord,ycoord)) + 
+  geom_point(aes(colour=as.factor(heatmap)), shape=19, size=1.5) + 
+  geom_tile(aes(fill=as.factor(heatmap)), show.legend = FALSE)+ 
+  scale_color_manual(values=c("gray","skyblue", "yellow", "darkorange", "red4"), 
+                     name="", breaks=c(0,1,2,3,4), labels=c("insignificant","low-low","low-high","high-low","high-high")) +
+  geom_segment(aes(x = xcoord1, y = ycoord1, xend = xcoord2, yend = ycoord2), 
+               data = edges, 
+               size = 0.5, 
+               colour = "grey") +
+  scale_y_continuous(name="y-coordinate") + 
   scale_x_continuous(name="x-coordinate") + theme_bw()  #+ guides(colour = FALSE)
 
 
-
-ggplot() + geom_point(data=node_coords, 
-                      aes(xcoord,ycoord)) +
-  geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
-               data=edges, 
+ggplot(data_df_g, aes(xcoord,ycoord)) +  
+  geom_point(alpha = 0) + 
+  geom_tile()+ 
+  geom_text(aes(label=heatmap),hjust=0, vjust=0, size=3, check_overlap = T) +
+  scale_colour_grey(guide='none') + 
+  geom_segment(aes(x = xcoord1, y = ycoord1, xend = xcoord2, yend = ycoord2), 
+               data = edges, 
                size = 0.5, 
-               colour="grey")  + 
-  geom_tile(aes(fill=quad_sig)) + 
-  scale_fill_manual(values=c("#ececec","#c6c6c6", "#939393", "#545454", "#000000"), 
-                    name="", breaks=c(0,1,2,3,4), labels=c("insignificant","low-low","low-high","high-low","high-high")) +
+               colour = "grey") +
   scale_y_continuous(name="y-coordinate") + 
-  scale_x_continuous(name="x-coordinate")  # + theme_bw() # Black and white
+  scale_x_continuous(name="x-coordinate") + theme_bw() 
+  
+  
+
   
 ggplot_net(intnet, heatmap='locmoran')
-# ggplot() + geom_point(data=node_coords, 
-#                       aes(xcoord,ycoord, fill=quad_sig)) +
-#             geom_segment(aes(x=xcoord1, y=ycoord1, xend = xcoord2, yend = ycoord2), 
-#                          data=edges, 
-#                          size = 0.5, 
-#                          colour="grey")  + 
-#   coord_equal() +  theme_void() + scale_fill_brewer(palette = "Set1")
