@@ -173,6 +173,7 @@ CalculateEventIntensities.intensitynetMix = function(obj){
   return(intnet)
 }
 
+
 #' Plot intensitynet object
 #'
 #' @name plot.intensitynetMix

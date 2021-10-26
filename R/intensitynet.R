@@ -9,12 +9,11 @@ require(roxygen2)
 require(sna)
 require(spatstat)
 require(spdep)
-require(visNetwork)
 
-source("./intensitynetDir.R", local = TRUE)
-source("./intensitynetMix.R", local = TRUE)
-source("./intensitynetUnd.R", local = TRUE)
-source("./netTools.R", local = TRUE)
+source("R/intensitynetDir.R", local = TRUE)
+source("R/intensitynetMix.R", local = TRUE)
+source("R/intensitynetUnd.R", local = TRUE)
+source("R/netTools.R", local = TRUE)
 
 #' Constructor of the class intensitynet
 #'
@@ -64,14 +63,17 @@ intensitynet <- function(adjacency_mtx, node_coords, events_mtx, graph_type = 'u
   intnet # return
 }
 
+
 # -------- Network functions ----------
 NodeGeneralCorrelation <- function(obj, dep_type, lag_max, intensity){
   UseMethod("NodeGeneralCorrelation")
 }
 
+
 NodeLocalCorrelation <- function(obj, dep_type = 'moran_i', intensity){
   UseMethod("NodeLocalCorrelation")
 }
+
 
 plot <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
   UseMethod("plot")
@@ -81,30 +83,37 @@ gplot <- function(obj, heatmap='none', ...){
   UseMethod("gplot")
 }
 
+
 # -------- Intensity functions ----------
 PathIntensity <- function(obj, path_nodes){
   UseMethod("PathIntensity")
 }
 
+
 ShortestPathIntensity <- function(obj,  node_id1, node_id2, weighted = FALSE){
   UseMethod("ShortestPathIntensity")
 }
+
 
 CalculateEventIntensities <- function(obj){
   UseMethod("CalculateEventIntensities")
 }
 
+
 MeanNodeIntensity <- function(obj, node_id){
   UseMethod("MeanNodeIntensity")
 }
+
 
 EdgeIntensity <- function(obj, node_id1, node_id2, z){
   UseMethod("EdgeIntensity")
 }
 
+
 SetNetworkAttribute <- function(obj, where, name, value){
   UseMethod("SetNetworkAttribute")
 }
+
 
 #' If not calculated, calculates the intesnity of the edge with nodes; node_id1, node_id2. 
 #' If the edge already contains an intensity, gives it directly.
@@ -363,6 +372,7 @@ gplot.intensitynet  <- function(obj, intensity = NULL, heatmap='none', ...){
   
   GeoreferencedGgplot2(geoplot_obj, ...)
 }
+
 
 #' Set attributes to the network edges or nodes
 #'

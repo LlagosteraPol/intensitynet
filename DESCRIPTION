@@ -1,0 +1,13 @@
+Package: intensitynet
+Title: Analysis of Spatial Point Patterns Occurring in Networks
+Version: 1.0
+Authors@R: person("Pol", "Llagostera", email = "llagosterapol.work@gmail.com", role = c("aut", "cre"))
+Description: Tools to analyze point patterns in space occurring over a network by providing several 
+  graph-related intensity measures for undirected, directed, and mixed networks.
+Depends: R (>= 3.6.3)
+Encoding: UTF-8
+RoxygenNote: 7.1.2
+LazyData: true
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

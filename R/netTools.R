@@ -1,6 +1,5 @@
 #TODO: Declare all these functions as non-visible at namespace
 
-
 InitGraph <- function(obj){
   UseMethod("InitGraph")
 }
@@ -34,6 +33,7 @@ InitGraph.netTools <- function(obj){
   g # return
 }
 
+
 SetNetCoords <- function(obj){
   UseMethod("SetNetCoords")
 }
@@ -57,6 +57,7 @@ SetNetCoords.netTools = function(obj){
     set_vertex_attr(name = "ycoord", value = y_coord_node)
   g
 }
+
 
 CalculateDistancesMtx <- function(obj){
   UseMethod("CalculateDistancesMtx")
@@ -83,6 +84,7 @@ CalculateDistancesMtx.netTools <- function(obj){
   distances_mtx
 }
 
+
 SetEdgeIntensity <- function(obj){
   UseMethod("SetEdgeIntensity")
 }
@@ -107,6 +109,7 @@ SetEdgeIntensity.netTools <- function(obj){
   g <- g %>% set_edge_attr(name = "intensity", index = edge_id, value = intensity)
   g
 }
+
 
 SetNodeIntensity <- function(obj){
   UseMethod("SetNodeIntensity")
@@ -158,6 +161,7 @@ ShortestDistance.netTools = function(obj){
   }
   list(weight = weight_sum, path = weighted_path)  
 }
+
 
 GeoreferencedPlot <- function(obj, node_label='none', edge_label='none', ...){
   UseMethod("GeoreferencedPlot")
@@ -252,6 +256,7 @@ GeoreferencedPlot.netTools = function(obj, vertex_intensity='', edge_intensity='
 GeoreferencedGgplot2 <- function(obj, ...){
   UseMethod("GeoreferencedGgplot2")
 }
+
 
 GeoreferencedGgplot2.netTools = function(obj, ...){
   arguments <- list(...)
