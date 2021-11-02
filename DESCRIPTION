@@ -5,6 +5,7 @@ Authors@R: person("Pol", "Llagostera", email = "llagosterapol.work@gmail.com", r
 Description: Tools to analyze point patterns in space occurring over a network by providing several 
   graph-related intensity measures for undirected, directed, and mixed networks.
 Depends: R (>= 3.6.3)
+License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.2
 LazyData: true

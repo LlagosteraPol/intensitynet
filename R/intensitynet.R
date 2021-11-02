@@ -57,23 +57,20 @@ intensitynet <- function(adjacency_mtx, node_coords, events_mtx, graph_type = 'u
   # Select the proper class
   switch(graph_type, 
          'undirected' = {attr(intnet, 'class') <- c(class(intnet), "intensitynetUnd")},
-           'directed' = {attr(intnet, 'class') <- c(class(intnet), "intensitynetDir")},
-              'mixed' = {attr(intnet, 'class') <- c(class(intnet), "intensitynetMix")})
+         'directed' = {attr(intnet, 'class') <- c(class(intnet), "intensitynetDir")},
+         'mixed' = {attr(intnet, 'class') <- c(class(intnet), "intensitynetMix")})
   
   intnet # return
 }
-
 
 # -------- Network functions ----------
 NodeGeneralCorrelation <- function(obj, dep_type, lag_max, intensity){
   UseMethod("NodeGeneralCorrelation")
 }
 
-
 NodeLocalCorrelation <- function(obj, dep_type = 'moran_i', intensity){
   UseMethod("NodeLocalCorrelation")
 }
-
 
 plot <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
   UseMethod("plot")
@@ -83,37 +80,35 @@ gplot <- function(obj, heatmap='none', ...){
   UseMethod("gplot")
 }
 
+plot_neighborhood <- function(obj, node_id, ...){
+  UseMethod("plot_neighborhood")
+}
+
 
 # -------- Intensity functions ----------
 PathIntensity <- function(obj, path_nodes){
   UseMethod("PathIntensity")
 }
 
-
 ShortestPathIntensity <- function(obj,  node_id1, node_id2, weighted = FALSE){
   UseMethod("ShortestPathIntensity")
 }
-
 
 CalculateEventIntensities <- function(obj){
   UseMethod("CalculateEventIntensities")
 }
 
-
 MeanNodeIntensity <- function(obj, node_id){
   UseMethod("MeanNodeIntensity")
 }
-
 
 EdgeIntensity <- function(obj, node_id1, node_id2, z){
   UseMethod("EdgeIntensity")
 }
 
-
 SetNetworkAttribute <- function(obj, where, name, value){
   UseMethod("SetNetworkAttribute")
 }
-
 
 #' If not calculated, calculates the intesnity of the edge with nodes; node_id1, node_id2. 
 #' If the edge already contains an intensity, gives it directly.
@@ -127,7 +122,6 @@ SetNetworkAttribute <- function(obj, where, name, value){
 #'
 #TODO: Set function as non-visible
 EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2, z=5){
-  
   if(node_id1 == node_id2){
     stop("The two vertices cannot be the same.")
   }
@@ -147,13 +141,13 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2, z=5){
   
   # If the intensity of this edge was previously calculated, then return it
   if(edge_id != 0 & !is.null(edge_attr(g, "intensity", index=edge_id))){
-    if(length(is.na(vertex_attr(g, "intensity", edge_id)))==0){
+    if(!is.na(edge_attr(g, "intensity", edge_id))[1]){
       return(edge_attr(g, 'intensity', index=edge_id))
     }
   }
   
   # Distance between the node and its neighbor
-  res <- tryCatch(
+  edge_dist <- tryCatch(
     {
       abs(distances_mtx[node_id1, node_id2]) # Distance between the node and its neighbor 
     },
@@ -177,21 +171,19 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2, z=5){
     ep <- c(events_mtx[row, 1], events_mtx[row, 2])
     dist_obj <- list(p1 = node1, p2 = node2, ep = ep)
     class(dist_obj) <- 'netTools'
-    d <- PointToLine(dist_obj)
+    d <- PointToSegment(dist_obj)
     
-    # If the event is at a distance less or equal 'z' from the edge connecting
-    # both given points (the road), then is counted as an event of that road
-    if(min(node1[1], node2[1]) - z <= ep[1] & ep[1] <= max(node1[1], node2[1]) + z & 
-       min(node1[2], node2[2]) - z <= ep[2] & ep[2] <= max(node1[2], node2[2]) + z & 
-       d <= z){
+    # If the event is at a distance less or equal 'z' from the edge (segment) 
+    # connecting both given points (the road), then is counted as an event of that road
+    if(d <= z){
       indicator <- indicator + 1
-    } 
+    }
   }
-  edge_intensity <- indicator/res
+  edge_intensity <- indicator/edge_dist
   
   edge_intensity
 }
-
+#CalculateEventIntensities(intnet_und)
 
 #' Calculates the intensity of the given path
 #'
@@ -371,6 +363,49 @@ gplot.intensitynet  <- function(obj, intensity = NULL, heatmap='none', ...){
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedGgplot2(geoplot_obj, ...)
+}
+
+
+plot_neighborhood.intensitynet<- function(obj, node_id, ...){
+  g <- obj$graph
+  events <- obj$events
+  w_margin <- 50
+  
+  nei <- neighbors(g, node_id)
+  
+  v_coords <- cbind(vertex_attr(g, 'xcoord', nei), vertex_attr(g, 'ycoord', nei))
+  v_coords <- rbind(v_coords, c(vertex_attr(g, 'xcoord', node_id), vertex_attr(g, 'ycoord', node_id)))
+  colnames(v_coords) <- c('xcoord', 'ycoord')
+  rownames(v_coords) <- c(names(nei), node_id)
+  
+  window_coords <- list(min_x = min(v_coords[, 'xcoord']), min_y = min(v_coords[, 'ycoord']),
+                        max_x = max(v_coords[, 'xcoord']), max_y = max(v_coords[, 'ycoord']))
+  
+  event_coords <- NULL
+  for(row in 1:nrow(events)){
+    if(events[row,'X'] >= window_coords$min_x - w_margin & 
+       events[row,'X'] <= window_coords$max_x + w_margin & 
+       events[row,'Y'] >= window_coords$min_y - w_margin & 
+       events[row,'Y'] <= window_coords$max_y + w_margin){
+      event_coords <- rbind(event_coords, events[row,])
+    }
+  }
+  colnames(event_coords) <- c('xcoord', 'ycoord')
+  
+  # Plot vertices
+  plot(v_coords, xlim = c(window_coords$min_x - w_margin , window_coords$max_x + w_margin), 
+       ylim = c(window_coords$min_y - w_margin , window_coords$max_y + w_margin), ...)
+  text(x = v_coords[, 'xcoord'], y = v_coords[, 'ycoord'], c(names(nei), node_id), cex=1, col='blue')
+  
+  # Draw edges
+  for(row in 1:nrow(v_coords)-1){
+    lines(x = c(v_coords[nrow(v_coords),]['xcoord'], v_coords[row,]['xcoord']),
+          y = c(v_coords[nrow(v_coords),]['ycoord'], v_coords[row,]['ycoord']),
+          type = "l", lty = 1)
+  }
+  
+  # Plot events
+  points(x = event_coords[,'xcoord'], y = event_coords[,'ycoord'], col = 'red')
 }
 
 

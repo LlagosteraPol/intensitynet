@@ -1,5 +1,6 @@
 #TODO: Declare all these functions as non-visible at namespace
 
+
 InitGraph <- function(obj){
   UseMethod("InitGraph")
 }
@@ -18,7 +19,7 @@ InitGraph.netTools <- function(obj){
   distances_mtx <- obj$distances_mtx
   graph_type <- obj$graph_type
   node_coords <- obj$node_coords
-    
+  
   weighted_mtx = adjacency_mtx * distances_mtx
   if(graph_type == 'undirected') g <- graph_from_adjacency_matrix(weighted_mtx, mode = graph_type, weighted=TRUE)
   else  g <- graph_from_adjacency_matrix(weighted_mtx, mode = 'directed', weighted=TRUE)
@@ -32,7 +33,6 @@ InitGraph.netTools <- function(obj){
   
   g # return
 }
-
 
 SetNetCoords <- function(obj){
   UseMethod("SetNetCoords")
@@ -57,7 +57,6 @@ SetNetCoords.netTools = function(obj){
     set_vertex_attr(name = "ycoord", value = y_coord_node)
   g
 }
-
 
 CalculateDistancesMtx <- function(obj){
   UseMethod("CalculateDistancesMtx")
@@ -84,7 +83,6 @@ CalculateDistancesMtx.netTools <- function(obj){
   distances_mtx
 }
 
-
 SetEdgeIntensity <- function(obj){
   UseMethod("SetEdgeIntensity")
 }
@@ -109,7 +107,6 @@ SetEdgeIntensity.netTools <- function(obj){
   g <- g %>% set_edge_attr(name = "intensity", index = edge_id, value = intensity)
   g
 }
-
 
 SetNodeIntensity <- function(obj){
   UseMethod("SetNodeIntensity")
@@ -162,7 +159,6 @@ ShortestDistance.netTools = function(obj){
   list(weight = weight_sum, path = weighted_path)  
 }
 
-
 GeoreferencedPlot <- function(obj, node_label='none', edge_label='none', ...){
   UseMethod("GeoreferencedPlot")
 }
@@ -189,16 +185,16 @@ GeoreferencedPlot.netTools = function(obj, vertex_intensity='', edge_intensity='
     
     x_dist <- max_x - min_x
     y_dist <- max_y - min_y
-
+    
     plot(g, 
-           layout=node_coords, 
-           vertex.label = vertex_intensity, 
-           vertex.label.cex = if(exists('vertex.label.cex', where=arguments)) arguments[['vertex.label.cex']] else 0.3,  
-           vertex.size= if(exists('vertex.size', where=arguments)) arguments[['vertex.size']] else 2, 
-           edge.label = edge_intensity, 
-           edge.label.cex = if(exists('edge.label.cex', where=arguments)) arguments[['edge.label.cex']] else 0.3,
-           edge.arrow.size = if(exists('edge.arrow.size', where=arguments)) arguments[['edge.arrow.size']] else 0.1,
-           ...)
+         layout=node_coords, 
+         vertex.label = vertex_intensity, 
+         vertex.label.cex = if(exists('vertex.label.cex', where=arguments)) arguments[['vertex.label.cex']] else 0.3,  
+         vertex.size= if(exists('vertex.size', where=arguments)) arguments[['vertex.size']] else 2, 
+         edge.label = edge_intensity, 
+         edge.label.cex = if(exists('edge.label.cex', where=arguments)) arguments[['edge.label.cex']] else 0.3,
+         edge.arrow.size = if(exists('edge.arrow.size', where=arguments)) arguments[['edge.arrow.size']] else 0.1,
+         ...)
     
     # Square encapsulating the plot
     rect(-1.05,-1.05,1.05,1.05)
@@ -257,14 +253,13 @@ GeoreferencedGgplot2 <- function(obj, ...){
   UseMethod("GeoreferencedGgplot2")
 }
 
-
 GeoreferencedGgplot2.netTools = function(obj, ...){
   arguments <- list(...)
   
   g <- obj$graph
   data_df <- obj$data_df
   mode <- obj$mode
- 
+  
   node_coords <- data.frame(xcoord = vertex_attr(g)$xcoord, ycoord = vertex_attr(g)$ycoord)
   rownames(node_coords) <- sprintf("V%s",seq(1:nrow(node_coords)))
   #get edges, which are pairs of node IDs
@@ -282,7 +277,7 @@ GeoreferencedGgplot2.netTools = function(obj, ...){
                    colour="grey") +
       scale_y_continuous(name="y-coordinate") + 
       scale_x_continuous(name="x-coordinate") + theme_bw()
-
+    
   }else{
     if(mode=='moran_i') {
       ggplot(data_df, aes(xcoord,ycoord), ...) + 
@@ -318,13 +313,13 @@ PointToLine <- function(obj){
 }
 
 
-#' Return the perpendicular distance between an event and the line formed by two nodes.
+#' Return the distance between an event and the line (not segment) formed by two nodes.
 #'
 #' @name PointToLine.netTools  
 #'
 #' @param obj netTools object -> list(p1:c(coordx, coordy), p2:c(coordx, coordy), e:c(coordx, coordy))
 #' 
-#' @return the perpendicular distance
+#' @return the distance to the line
 #' 
 PointToLine.netTools <- function(obj){
   p1 <- obj$p1
@@ -337,6 +332,54 @@ PointToLine.netTools <- function(obj){
   d <- abs(det(m))/sqrt(sum(v1*v1))
   
   d
+}
+
+
+PointToSegment <- function(obj){
+  UseMethod("PointToSegment")
+}
+
+
+#' Return the shortest distance between an event and the segment formed by two nodes.
+#'
+#' @name PointToSegment.netTools  
+#'
+#' @param obj netTools object -> list(p1:c(coordx, coordy), p2:c(coordx, coordy), e:c(coordx, coordy))
+#' 
+#' @return distance to the segment
+#' 
+PointToSegment <- function(obj) {
+  p1 <- obj$p1
+  p2 <- obj$p2
+  ep <- obj$ep
+  A <- ep[1] - p1[1]
+  B <- ep[2] - p1[2]
+  C <- p2[1] - p1[1]
+  D <- p2[2] - p1[2]
+  
+  dot <- A * C + B * D
+  len_sq <- C * C + D * D
+  param <- -1
+  if (len_sq != 0){
+    param <- dot / len_sq # in case of 0 length line
+  } 
+  
+  if (param < 0) {
+    xx <- p1[1]
+    yy <- p1[2]
+  }
+  else if (param > 1) {
+    xx <- p2[1]
+    yy <- p2[2]
+  }
+  else {
+    xx <- p1[1] + param * C
+    yy <- p1[2] + param * D
+  }
+  
+  dx <- ep[1] - xx
+  dy <- ep[2] - yy
+  return(sqrt(dx * dx + dy * dy))
 }
 
 

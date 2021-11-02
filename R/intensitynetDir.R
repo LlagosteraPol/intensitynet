@@ -13,10 +13,10 @@ MeanNodeIntensity.intensitynetDir= function(obj, node_id){
   # If the intensities are already calculated, return them
   if(!is.null(vertex_attr(g, 'intensity_in', index=node_id)) &
      !is.null(vertex_attr(g, 'intensity_out', index=node_id))){
-    if(length(is.na(vertex_attr(g, "intensity_in", index=node_id)))==0 &
-       length(is.na(vertex_attr(g, "intensity_out", index=node_id)))==0){
-        return( list(in_int  = vertex_attr(g, 'intensity_in', index=node_id),
-                     out_int = vertex_attr(g, 'intensity_out', index=node_id)))
+    if(!is.na(vertex_attr(g, "intensity_in", index=node_id))[1] &
+       !is.na(vertex_attr(g, "intensity_out", index=node_id))[1]){
+      return( list(in_int  = vertex_attr(g, 'intensity_in', index=node_id),
+                   out_int = vertex_attr(g, 'intensity_out', index=node_id)))
     }
   }
   
@@ -80,7 +80,7 @@ CalculateEventIntensities.intensitynetDir = function(obj){
     if(is.null(edge_attr(g, 'intensity', edge_id))){
       #Adds result of Edgewise intenisty function to 'edge_counts'
       edge_counts[[edge_id]] <- EdgeIntensity(obj, ends(g, edge_id)[1], ends(g, edge_id)[2])
-    }else if(length(is.na(edge_attr(g, 'intensity', edge_id)))!=0){
+    }else if(is.na(edge_attr(g, 'intensity', edge_id))[1]){
       edge_counts[[edge_id]] <- 0
     }else{
       edge_counts[[edge_id]] <- edge_attr(g, 'intensity', edge_id)
@@ -109,10 +109,10 @@ CalculateEventIntensities.intensitynetDir = function(obj){
         in_counts[[node_id]]  <- 0
         out_counts[[node_id]] <- 0
       }
-    }else if(length(is.na(vertex_attr(g, 'intensity_in', node_id)))!=0 ||
-             length(is.na(vertex_attr(g, 'intensity_out', node_id)))!=0){
-      if(length(is.na(vertex_attr(g, 'intensity_in', node_id)))!=0) in_counts[[node_id]]   <- 0
-      if(length(is.na(vertex_attr(g, 'intensity_out', node_id)))!=0) out_counts[[node_id]] <- 0
+    }else if(is.na(vertex_attr(g, 'intensity_in', node_id))[1] ||
+             is.na(vertex_attr(g, 'intensity_out', node_id))[1]){
+      if(is.na(vertex_attr(g, 'intensity_in', node_id))[1]) in_counts[[node_id]]   <- 0
+      if(is.na(vertex_attr(g, 'intensity_out', node_id))[1]) out_counts[[node_id]] <- 0
     }else{
       in_counts[[node_id]]  <- vertex_attr(g, 'intensity_in', node_id)
       out_counts[[node_id]] <- vertex_attr(g, 'intensity_out', node_id)
@@ -121,7 +121,7 @@ CalculateEventIntensities.intensitynetDir = function(obj){
   close(pb)
   
   g <- g %>% set_vertex_attr(name = "intensity_in", value = as.matrix(in_counts)) %>% 
-             set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts))
+    set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts))
   
   intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances_mtx = obj$distances_mtx)
   attr(intnet, 'class') <- c("intensitynet", "intensitynetDir")
