@@ -37,19 +37,22 @@ intensitynet <- function(adjacency_mtx, node_coords, events_mtx, graph_type = 'u
     node_coords <- as.matrix(node_coords)
   }
   
+  if(class(events_mtx) == "data.frame"){
+    events_mtx <- as.matrix(events_mtx)
+  }
+  colnames(node_coords) <- c("xcoord","ycoord")
+  colnames(events_mtx) <- c("xcoord","ycoord")
+  
   node_coords_obj <- list(node_coords = node_coords)
   class(node_coords_obj) <- "netTools"
   dist_mtx <- CalculateDistancesMtx(node_coords_obj)
   
   net_setup <- list(adjacency_mtx = adjacency_mtx, 
                     node_coords = node_coords, 
-                    events = events_mtx, 
                     distances_mtx = dist_mtx, 
                     graph_type = graph_type)
   class(net_setup) <- "netTools"
   g <- InitGraph(net_setup)
-  
-  
   
   intnet <- list(graph = g, events = events_mtx, graph_type = graph_type, distances_mtx = dist_mtx)
   attr(intnet, 'class') <- "intensitynet"
@@ -128,7 +131,7 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2, z=5){
   
   if(z <= 0){
     print("Warning: 'z' cannot be equal or less than 0, using default.")
-    z <- 15
+    z <- 5
   }
   
   g <- obj$graph
@@ -307,6 +310,10 @@ gplot.intensitynet  <- function(obj, intensity = NULL, heatmap='none', ...){
   adj_listw <- mat2listw(adj_mtx)
   nb <- adj_listw$neighbours
   
+  if(heatmap != 'none' && heatmap != 'moran_i' && heatmap != 'geary_g'){
+    warning('Parameter "heatmap"should be "moran_i", "geary_g" or "none". Using default ("none").')
+  }
+  
   if(is.null(intensity)){
     intensity <- if(!is.null(vertex_attr(g)$intensity)) vertex_attr(g)$intensity else vertex_attr(g)$intensity_in
   }
@@ -383,10 +390,10 @@ plot_neighborhood.intensitynet<- function(obj, node_id, ...){
   
   event_coords <- NULL
   for(row in 1:nrow(events)){
-    if(events[row,'X'] >= window_coords$min_x - w_margin & 
-       events[row,'X'] <= window_coords$max_x + w_margin & 
-       events[row,'Y'] >= window_coords$min_y - w_margin & 
-       events[row,'Y'] <= window_coords$max_y + w_margin){
+    if(events[row, 1] >= window_coords$min_x - w_margin & 
+       events[row, 1] <= window_coords$max_x + w_margin & 
+       events[row, 2] >= window_coords$min_y - w_margin & 
+       events[row, 2] <= window_coords$max_y + w_margin){
       event_coords <- rbind(event_coords, events[row,])
     }
   }

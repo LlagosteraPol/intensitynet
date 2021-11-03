@@ -51,7 +51,6 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
   edge_counts <- c()
   counts <- c()
   
-  
   pb = txtProgressBar(min = 0, max = gsize(g), initial = 0) 
   cat("Calculating edge intensities...\n")
   for(edge_id in E(g)){
@@ -67,12 +66,6 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
   }
   close(pb)
   
-  # g <- g %>% set_edge_attr(name = "intensity", value = as.matrix(edge_counts))
-  # 
-  # # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
-  # tmp_obj <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances_mtx = obj$distances_mtx)
-  # attr(tmp_obj, 'class') <- c("intensitynet", "intensitynetUnd")
-  
   # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
   tmp_obj <- SetNetworkAttribute(obj = obj, where = 'edge', name = 'intensity', value = as.matrix(edge_counts))
   g <- tmp_obj$graph
@@ -81,10 +74,6 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
   cat("Calculating node intensities...\n")
   # check if the intensities was previously calculated, if not, calculate them
   for(node_id in V(g)){
-    
-    # if(node_id == 318){
-    #   print("Temp breakpoint")
-    # }
     
     setTxtProgressBar(pb,node_id)
     
@@ -110,7 +99,7 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
   attr(intnet, 'class') <- c("intensitynet", "intensitynetUnd")
   return(intnet)
 }
-#CalculateEventIntensities(intnet_und) # TODO: Remove after debug
+
 
 #' Plot intensitynet object
 #'
