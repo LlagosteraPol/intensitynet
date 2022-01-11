@@ -1,6 +1,5 @@
 #' Given a node, calculates its mean intensites depending of the edges associated with the node, those intensities are: 
 #' in, out (for directed edges), undirected and total intensity.
-#'
 #' 
 #' @name nodeIntensity.intensitynetMix
 #' 
@@ -13,24 +12,26 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
   g <- obj$graph
   
   # If the intensities are already calculated, return them
-  if(!is.null(vertex_attr(g, 'intensity_und', index=node_id)) &
-     !is.null(vertex_attr(g, 'intensity_in', index=node_id)) &
-     !is.null(vertex_attr(g, 'intensity_out', index=node_id)) &
-     !is.null(vertex_attr(g, 'intensity_all', index=node_id))){
-    if(!is.na(vertex_attr(g, "intensity_und", index=node_id))[1] &
-       !is.na(vertex_attr(g, "intensity_in", index=node_id))[1] &
-       !is.na(vertex_attr(g, "intensity_out", index=node_id))[1] &
-       !is.na(vertex_attr(g, "intensity_all", index=node_id))[1]){
-      return( list(und_int  = vertex_attr(g, 'intensity_und', index=node_id),
-                   in_int   = vertex_attr(g, 'intensity_in', index=node_id),
-                   out_int  = vertex_attr(g, 'intensity_out', index=node_id),
-                   all_int  = vertex_attr(g, 'intensity_all', index=node_id)))
+  if(!is.null(igraph::vertex_attr(g, 'intensity_und', index = node_id)) &
+     !is.null(igraph::vertex_attr(g, 'intensity_in', index = node_id))  &
+     !is.null(igraph::vertex_attr(g, 'intensity_out', index = node_id)) &
+     !is.null(igraph::vertex_attr(g, 'intensity_all', index = node_id))) {
+    
+    if(!is.na(igraph::vertex_attr(g, "intensity_und", index = node_id))[1] &
+       !is.na(igraph::vertex_attr(g, "intensity_in", index = node_id))[1]  &
+       !is.na(igraph::vertex_attr(g, "intensity_out", index = node_id))[1] &
+       !is.na(igraph::vertex_attr(g, "intensity_all", index = node_id))[1]) {
+      
+      return( list( und_int  = igraph::vertex_attr(g, 'intensity_und', index=node_id),
+                    in_int   = igraph::vertex_attr(g, 'intensity_in', index=node_id),
+                    out_int  = igraph::vertex_attr(g, 'intensity_out', index=node_id),
+                    all_int  = igraph::vertex_attr(g, 'intensity_all', index=node_id) ) )
     }
   }
   
   if(igraph::degree(g, node_id) > 0){
-    in_neighbors_tmp  <- as.vector(neighbors(g, node_id, mode = 'in'))
-    out_neighbors_tmp <- as.vector(neighbors(g, node_id, mode = 'out'))
+    in_neighbors_tmp  <- as.vector( igraph::neighbors(g, node_id, mode = 'in') )
+    out_neighbors_tmp <- as.vector( igraph::neighbors(g, node_id, mode = 'out') )
     
     und_neighbors <- intersect(in_neighbors_tmp, out_neighbors_tmp)
     in_neighbors  <- setdiff(in_neighbors_tmp, out_neighbors_tmp) 
@@ -42,10 +43,11 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
       rownames(und_mat) <- node_id
       
       for (neighbor_id in und_neighbors){
-        und_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
-                                                                                   , V(g)[neighbor_id]$name)
+        und_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, 
+                                                                                   igraph::V(g)[node_id]$name, 
+                                                                                   igraph::V(g)[neighbor_id]$name)
       }
-      und_intensity <- Reduce('+', und_mat)/length(und_neighbors)
+      und_intensity <- Reduce('+', und_mat) / length(und_neighbors)
     }else{
       und_intensity <- 0
     }
@@ -56,10 +58,11 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
       rownames(in_mat) <- node_id
       
       for (neighbor_id in in_neighbors){
-        in_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
-                                                                                  , V(g)[neighbor_id]$name)
+        in_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, 
+                                                                                  igraph::V(g)[node_id]$name, 
+                                                                                  igraph::V(g)[neighbor_id]$name)
       }
-      in_intensity <- Reduce('+', in_mat)/length(in_neighbors)
+      in_intensity <- Reduce('+', in_mat) / length(in_neighbors)
     }else{
       in_intensity <- 0
     }
@@ -70,15 +73,16 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
       rownames(out_mat) <- node_id
       
       for (neighbor_id in out_neighbors){
-        out_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, V(g)[node_id]$name
-                                                                                   , V(g)[neighbor_id]$name)
+        out_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, 
+                                                                                   igraph::V(g)[node_id]$name, 
+                                                                                   igraph::V(g)[neighbor_id]$name)
       }
-      out_intensity <- Reduce('+', out_mat)/length(out_neighbors)
+      out_intensity <- Reduce('+', out_mat) / length(out_neighbors)
     }else{
       out_intensity <- 0
     }
     
-    all_intensity <- und_intensity + in_intensity + out_intensity / 
+    all_intensity <- (und_intensity + in_intensity + out_intensity) / 
       (length(und_neighbors) + length(in_neighbors) + length(out_neighbors))
     
     list(und_int = und_intensity, 
@@ -96,42 +100,31 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
 #' @param obj intensitynetMix object
 #' 
 #' @return intensitynetMix object with a graph containing all the intensities as attributes of its nodes and edges
-#' 
+#' @export
 CalculateEventIntensities.intensitynetMix = function(obj){
   g <- obj$graph
   intensities <- obj$intensities
-  edge_counts <- c()
   und_counts <- c()
   in_counts <- c()
   out_counts <- c()
   all_counts <- c()
   
-  pb = txtProgressBar(min = 0, max = gsize(g), initial = 0) 
-  cat("Calculating edge intensities...\n")
-  for(edge_id in E(g)){
-    setTxtProgressBar(pb,edge_id)
-    if(is.null(edge_attr(g, 'intensity', edge_id))){
-      #Adds result of Edgewise intenisty function to 'edge_counts'
-      edge_counts[[edge_id]] <- EdgeIntensity(obj, ends(g, edge_id)[1], ends(g, edge_id)[2])
-    }else if(is.na(edge_attr(g, 'intensity', edge_id))[1]){
-      edge_counts[[edge_id]] <- 0
-    }else{
-      edge_counts[[edge_id]] <- edge_attr(g, 'intensity', edge_id)
-    }
+  if(length(obj$events) == 0){
+    warning("No events, cannot calculate any intensity.")
+    return(obj)
   }
-  close(pb)
   
-  # Encapsulate Edge intensities to pass them to 'MeanNodeIntensity' function to prevent its re-calculation
-  tmp_obj <- SetNetworkAttribute(obj = obj, where = 'edge', name = 'intensity', value = as.matrix(edge_counts))
+  tmp_obj <- AllEdgeIntensities.intensitynet(obj)
   g <- tmp_obj$graph
   
-  pb = txtProgressBar(min = 0, max = gorder(g), initial = 0) 
+  pb = utils::txtProgressBar(min = 0, max = igraph::gorder(g), initial = 0) 
   cat("Calculating node intensities...\n")
+  
   # check if the intensities was previously calculated, if not, calculate them
-  for(node_id in V(g)){
-    setTxtProgressBar(pb,node_id)
+  for(node_id in igraph::V(g)){
+    utils::setTxtProgressBar(pb,node_id)
     
-    if(is.null(vertex_attr(g, 'intensity_in', node_id)) || is.null(vertex_attr(g, 'intensity_out', node_id))){
+    if(is.null(igraph::vertex_attr(g, 'intensity_in', node_id)) || is.null(igraph::vertex_attr(g, 'intensity_out', node_id))){
       if(igraph::degree(g, node_id) > 0){
         #Adds result of Nodewise mean intensity function to 'counts'
         intensities <- MeanNodeIntensity(tmp_obj, node_id)
@@ -146,57 +139,69 @@ CalculateEventIntensities.intensitynetMix = function(obj){
         out_counts[[node_id]]  <- 0
         all_counts[[node_id]]  <- 0
       }
-    }else if(is.na(vertex_attr(g, 'intensity_und', node_id))[1] ||
-             is.na(vertex_attr(g, 'intensity_in', node_id))[1]  ||
-             is.na(vertex_attr(g, 'intensity_out', node_id))[1] ||
-             is.na(vertex_attr(g, 'intensity_all', node_id))[1]){
-      if(is.na(vertex_attr(g, 'intensity_und', node_id))[1]) in_counts[[node_id]]   <- 0
-      if(is.na(vertex_attr(g, 'intensity_in', node_id))[1]) out_counts[[node_id]] <- 0
-      if(is.na(vertex_attr(g, 'intensity_out', node_id))[1]) out_counts[[node_id]] <- 0
-      if(is.na(vertex_attr(g, 'intensity_all', node_id))[1]) out_counts[[node_id]] <- 0
+    }else if(is.na(igraph::vertex_attr(g, 'intensity_und', node_id))[1] ||
+             is.na(igraph::vertex_attr(g, 'intensity_in', node_id))[1]  ||
+             is.na(igraph::vertex_attr(g, 'intensity_out', node_id))[1] ||
+             is.na(igraph::vertex_attr(g, 'intensity_all', node_id))[1]){
+      
+      if(is.na(igraph::vertex_attr(g, 'intensity_und', node_id))[1]) in_counts[[node_id]] <- 0
+      if(is.na(igraph::vertex_attr(g, 'intensity_in', node_id))[1]) out_counts[[node_id]] <- 0
+      if(is.na(igraph::vertex_attr(g, 'intensity_out', node_id))[1]) out_counts[[node_id]] <- 0
+      if(is.na(igraph::vertex_attr(g, 'intensity_all', node_id))[1]) out_counts[[node_id]] <- 0
+      
     }else{
-      und_counts[[node_id]] <- vertex_attr(g, 'intensity_und', node_id)
-      in_counts[[node_id]]  <- vertex_attr(g, 'intensity_in', node_id)
-      out_counts[[node_id]] <- vertex_attr(g, 'intensity_out', node_id)
-      in_counts[[node_id]]  <- vertex_attr(g, 'intensity_all', node_id)
+      und_counts[[node_id]] <- igraph::vertex_attr(g, 'intensity_und', node_id)
+      in_counts[[node_id]]  <- igraph::vertex_attr(g, 'intensity_in', node_id)
+      out_counts[[node_id]] <- igraph::vertex_attr(g, 'intensity_out', node_id)
+      in_counts[[node_id]]  <- igraph::vertex_attr(g, 'intensity_all', node_id)
     }
   }
   close(pb)
   
-  g <- g %>% set_vertex_attr(name = "intensity_und", value = as.matrix(und_counts)) %>% 
-    set_vertex_attr(name = "intensity_in", value = as.matrix(in_counts))   %>% 
-    set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts))  %>% 
-    set_vertex_attr(name = "intensity_all", value = as.matrix(all_counts))
+  # g <- g %>% igraph::set_igraph::vertex_attr(name = "intensity_und", value = as.matrix(und_counts)) %>% 
+  #            igraph::set_vertex_attr(name = "intensity_in", value = as.matrix(in_counts))   %>% 
+  #            igraph::set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts)) %>% 
+  #            igraph::set_vertex_attr(name = "intensity_all", value = as.matrix(all_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_und", value = as.matrix(und_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_in", value = as.matrix(in_counts)) 
+  g <- igraph::set_vertex_attr(g, name = "intensity_out", value = as.matrix(out_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_all", value = as.matrix(all_counts))
   
   intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances_mtx = obj$distances_mtx)
   attr(intnet, 'class') <- c("intensitynet", "intensitynetMix")
   return(intnet)
 }
 
+
 #' Plot intensitynet object
 #'
 #' @name plot.intensitynetMix
 #'
 #' @param obj intensitynet object
-#' 
+#' @export
 plot.intensitynetMix <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
   g <- obj$graph
   
   v_label <- switch(vertex_intensity, 
                     none = {''}, 
-                    intensity_und = {round(vertex_attr(g)$intensity_und, 4)},
-                    intensity_in = {round(vertex_attr(g)$intensity_in, 4)},
-                    intensity_out = {round(vertex_attr(g)$intensity_out, 4)},
-                    intensity_all = {round(vertex_attr(g)$intensity_all, 4)},
+                    intensity_und = {round(igraph::vertex_attr(g)$intensity_und, 4)},
+                    intensity_in = {round(igraph::vertex_attr(g)$intensity_in, 4)},
+                    intensity_out = {round(igraph::vertex_attr(g)$intensity_out, 4)},
+                    intensity_all = {round(igraph::vertex_attr(g)$intensity_all, 4)},
                     '')
   
   e_label <- switch(edge_intensity, 
                     none = {''}, 
-                    intensity = {round(edge_attr(g)$intensity, 4)},
+                    intensity = {round(igraph::edge_attr_attr(g)$intensity, 4)},
                     '')
   
   geoplot_obj <- list(graph=g, distances_mtx = obj$distances_mtx)
   class(geoplot_obj) <- "netTools"
   
-  GeoreferencedPlot(geoplot_obj, vertex_intensity=v_label, edge_intensity=e_label, xy_axes=xy_axes, enable_grid=enable_grid, ...)
+  GeoreferencedPlot(geoplot_obj, 
+                    vertex_intensity = v_label, 
+                    edge_intensity = e_label, 
+                    xy_axes = xy_axes, 
+                    enable_grid = enable_grid, 
+                    ...)
 }
