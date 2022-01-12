@@ -5,7 +5,7 @@
 \title{Plot intensitynet object}
 \usage{
 \method{plot}{intensitynetDir}(
-  obj,
+  x,
   vertex_labels = "none",
   edge_labels = "none",
   xy_axes = TRUE,
@@ -14,7 +14,7 @@
 )
 }
 \arguments{
-\item{obj}{intensitynet object}
+\item{x}{intensitynet object}
 
 \item{vertex_labels}{list -> labels for the vertices}
 
