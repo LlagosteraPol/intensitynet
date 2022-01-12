@@ -15,6 +15,7 @@ Imports:
     Matrix (>= 1.2.18),
     methods (>= 3.6.3),
     sna (>= 2.6),
+    spatstat (>= 2.3.0),
     spatstat.geom (>= 2.3.1),
     spdep (>= 1.2.1),
     viridis (>= 0.5.1)

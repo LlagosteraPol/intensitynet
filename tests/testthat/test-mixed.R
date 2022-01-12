@@ -1,54 +1,77 @@
-load("../Castellon.RData")
-load("../nodes.RData")
-load("../crimes.RData")
+load("../Mix_Intnet_Chicago_Data.RData")
 
-load("../mixed_intensitynet.RData")
+
 
 test_that("Calculate edge and nodemeans intensities from a mixed network", {
-  crim <- crimes[11:111,] # From crimes, take 11 to 111 (both included)
-  intnet <- intensitynet(dir_castellon, nodes, crim, graph_type='mixed') # Generate directed intensitynet object
-  intnet_all <- CalculateEventIntensities(intnet)
+  library(spatstat)
+  data(chicago)
   
-  expect_s3_class(intnet_all, c("intensitynet", "intensitynetMix"), exact = TRUE)
+  chicago_df <- as.data.frame(chicago[["data"]])
+  edges <- cbind(chicago[["domain"]][["from"]], chicago[["domain"]][["to"]])
+  chicago_net <- igraph::graph_from_edgelist(edges)
+  chicago_adj_mtx <- as.matrix(igraph::as_adjacency_matrix(chicago_net))
+  chicago_node_coords <- data.frame(xcoord = chicago[["domain"]][["vertices"]][["x"]], 
+                                    ycoord = chicago[["domain"]][["vertices"]][["y"]])
+  chicago_assault <- chicago_df[chicago_df$marks == 'assault',]
+  assault_coordinates <- data.frame(xcoord = chicago_assault[,1],
+                                    ycoord = chicago_assault[,2])
+  
+  # Generate undirected intensitynet object
+  intnet_chicago <- intensitynet(chicago_adj_mtx, 
+                                 node_coords = chicago_node_coords, 
+                                 event_coords = assault_coordinates,
+                                 graph_type='mixed')
+  
+  
+  intnet_chicago <- CalculateEventIntensities(intnet_chicago)
+  
+  
+  expect_s3_class(intnet_chicago, c("intensitynet", "intensitynetMix"), exact = TRUE)
 })
 
+
 test_that("Network general covariance", {
-  gen_cov <- NodeGeneralCorrelation(intnet_mix, 
+  intnet <- mix_intnet_chicago
+  gen_cov <- NodeGeneralCorrelation(intnet, 
                                     dep_type = 'covariance', 
                                     lag_max = 2, 
-                                    intensity = vertex_attr(intnet_mix$graph)$intensity_in)
+                                    intensity = igraph::vertex_attr(intnet$graph)$intensity_in)
   
   expect_gte(length(gen_cov), 1)
 })
 
+
 test_that('Node local moran i', {
-  intnet <- intnet_mix
-  g <- intnet$graph
+  intnet <- mix_intnet_chicago
   
-  data_moran <- NodeLocalCorrelation(intnet, dep_type = 'moran_i', intensity = vertex_attr(g)$intensity_in)
+  data_moran <- NodeLocalCorrelation(intnet, 
+                                     dep_type = 'moran_i', 
+                                     intensity = igraph::vertex_attr(intnet$graph)$intensity_in)
   moran_i <- data_moran$correlation
   intnet <- data_moran$intnet
   
   expect_gte(length(moran_i), 1)
 })
 
+
 test_that('Node local geary g', {
-  intnet <- intnet_mix
-  g <- intnet$graph
+  intnet <- mix_intnet_chicago
   
-  data_geary <- NodeLocalCorrelation(intnet, dep_type = 'geary_g', intensity = vertex_attr(g)$intensity_in)
+  data_geary <- NodeLocalCorrelation(intnet, 
+                                     dep_type = 'geary', 
+                                     intensity = igraph::vertex_attr(intnet$graph)$intensity_in)
   geary <- data_geary$correlation
   intnet <- data_geary$intnet
   
   expect_gte(length(data_geary), 1)
 })
 
+
 test_that('Path Intensity', {
-  short_dist_obj <- list(graph=intnet_mix$graph, node_id1 = 'V601', node_id2 = 'V701', distances_mtx = intnet_mix$distances)
-  class(short_dist_obj) <- "netTools"
-  short_dist <- ShortestDistance(short_dist_obj)
+  intnet <- mix_intnet_chicago
   
-  int_path <- PathIntensity(intnet_mix, short_dist$path)
+  short_dist <- ShortestNodeDistance(intnet, node_id1 = 'V1', node_id2 = 'V150')
+  int_path <- PathIntensity(intnet, short_dist$path)
   
   expect_gte(int_path, 0)
 })
