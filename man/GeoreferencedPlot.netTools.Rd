@@ -6,8 +6,8 @@
 \usage{
 \method{GeoreferencedPlot}{netTools}(
   obj,
-  vertex_intensity = "",
-  edge_intensity = "",
+  vertex_labels = "",
+  edge_labels = "",
   xy_axes = TRUE,
   enable_grid = FALSE,
   ...
@@ -15,6 +15,16 @@
 }
 \arguments{
 \item{obj}{netTools object -> list(graph: igraph, distances_mtx: distances matrix))}
+
+\item{vertex_labels}{list -> labels for the vertices}
+
+\item{edge_labels}{list -> labels for the edges}
+
+\item{xy_axes}{show the x and y axes}
+
+\item{enable_grid}{draw a background grid}
+
+\item{...}{extra arguments for the plot}
 }
 \description{
 Plot the given network using its node coordinates

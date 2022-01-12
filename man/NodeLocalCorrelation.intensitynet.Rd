@@ -2,21 +2,23 @@
 % Please edit documentation in R/intensitynet.R
 \name{NodeLocalCorrelation.intensitynet}
 \alias{NodeLocalCorrelation.intensitynet}
-\title{Gives node local moran-i or geary-g correlations}
+\title{Gives node local moran-i or geary-c correlations}
 \usage{
 \method{NodeLocalCorrelation}{intensitynet}(obj, dep_type = "moran_i", intensity)
 }
 \arguments{
 \item{obj}{intensitynet object}
 
-\item{dep_type}{the type of dependence statistic to be computed ('moran_i' or 'geary_g'),
-default = 'moran_i.}
+\item{dep_type}{'moran_i', 'getis' or 'geary'. Type of local correlation to be computed (Moran-i, Getis-Gstar, Geary-c*),
+default = 'moran_i. * Details in paper: A Local Indicator of Multivariate SpatialAssociation: 
+Extending Geary’s c, from Luc Anselin}
 
 \item{intensity}{vector containing the intensity values that the heatmaps}
 }
 \value{
-An intnet object wich contains a igraph network with the selected correlation added
+An intnet object wich contains a igraph network with the selected correlation 
+added into the vertices attributes
 }
 \description{
-Gives node local moran-i or geary-g correlations
+Gives node local moran-i or geary-c correlations
 }

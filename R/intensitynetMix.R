@@ -178,11 +178,16 @@ CalculateEventIntensities.intensitynetMix = function(obj){
 #' @name plot.intensitynetMix
 #'
 #' @param obj intensitynet object
+#' @param vertex_labels list -> labels for the vertices
+#' @param edge_labels list -> labels for the edges
+#' @param xy_axes show the x and y axes
+#' @param enable_grid draw a background grid
+#' @param ... extra arguments for the plot
 #' @export
-plot.intensitynetMix <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
+plot.intensitynetMix <- function(obj, vertex_labels='none', edge_labels='none', xy_axes=TRUE, enable_grid=FALSE, ...){
   g <- obj$graph
   
-  v_label <- switch(vertex_intensity, 
+  v_label <- switch(vertex_labels, 
                     none = {''}, 
                     intensity_und = {round(igraph::vertex_attr(g)$intensity_und, 4)},
                     intensity_in = {round(igraph::vertex_attr(g)$intensity_in, 4)},
@@ -190,17 +195,17 @@ plot.intensitynetMix <- function(obj, vertex_intensity='none', edge_intensity='n
                     intensity_all = {round(igraph::vertex_attr(g)$intensity_all, 4)},
                     '')
   
-  e_label <- switch(edge_intensity, 
+  e_label <- switch(edge_labels, 
                     none = {''}, 
-                    intensity = {round(igraph::edge_attr_attr(g)$intensity, 4)},
+                    intensity = {round(igraph::edge_attr(g)$intensity, 4)},
                     '')
   
   geoplot_obj <- list(graph=g, distances_mtx = obj$distances_mtx)
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedPlot(geoplot_obj, 
-                    vertex_intensity = v_label, 
-                    edge_intensity = e_label, 
+                    vertex_labels = v_label, 
+                    edge_labels = e_label, 
                     xy_axes = xy_axes, 
                     enable_grid = enable_grid, 
                     ...)

@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{intensitynetMix}(
   obj,
-  vertex_intensity = "none",
-  edge_intensity = "none",
+  vertex_labels = "none",
+  edge_labels = "none",
   xy_axes = TRUE,
   enable_grid = FALSE,
   ...
@@ -15,6 +15,16 @@
 }
 \arguments{
 \item{obj}{intensitynet object}
+
+\item{vertex_labels}{list -> labels for the vertices}
+
+\item{edge_labels}{list -> labels for the edges}
+
+\item{xy_axes}{show the x and y axes}
+
+\item{enable_grid}{draw a background grid}
+
+\item{...}{extra arguments for the plot}
 }
 \description{
 Plot intensitynet object

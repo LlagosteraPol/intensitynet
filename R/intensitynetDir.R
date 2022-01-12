@@ -86,11 +86,11 @@ CalculateEventIntensities.intensitynetDir = function(obj){
   tmp_obj <- AllEdgeIntensities.intensitynet(obj)
   g <- tmp_obj$graph
   
-  pb = txtProgressBar(min = 0, max = igraph::gorder(g), initial = 0) 
+  pb = utils::txtProgressBar(min = 0, max = igraph::gorder(g), initial = 0) 
   cat("Calculating node intensities...\n")
   # check if the intensities was previously calculated, if not, calculate them
   for(node_id in igraph::V(g)){
-    setTxtProgressBar(pb,node_id)
+    utils::setTxtProgressBar(pb,node_id)
     
     if(is.null(igraph::vertex_attr(g, 'intensity_in', node_id)) || is.null(igraph::vertex_attr(g, 'intensity_out', node_id))){
       if(igraph::degree(g, node_id) > 0){
@@ -118,7 +118,7 @@ CalculateEventIntensities.intensitynetDir = function(obj){
   
   # g <- g %>% igraph::set_vertex_attr(name = "intensity_in", value = as.matrix(in_counts)) %>% 
   #            igraph::set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts))
-  g <- igraph::set_vertex_attr(g, name = "intensity_all", value = as.matrix(all_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_all", value = as.matrix(in_counts))
   g <- igraph::set_vertex_attr(g, name = "intensity_out", value = as.matrix(out_counts))
   
   intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances_mtx = obj$distances_mtx)
@@ -132,18 +132,23 @@ CalculateEventIntensities.intensitynetDir = function(obj){
 #' @name plot.intensitynetDir
 #'
 #' @param obj intensitynet object
+#' @param vertex_labels list -> labels for the vertices
+#' @param edge_labels list -> labels for the edges
+#' @param xy_axes show the x and y axes
+#' @param enable_grid draw a background grid
+#' @param ... extra arguments for the plot
 #' @export
-plot.intensitynetDir <- function(obj, vertex_intensity='none', edge_intensity='none', 
+plot.intensitynetDir <- function(obj, vertex_labels='none', edge_labels='none', 
                                  xy_axes=TRUE, enable_grid=FALSE, ...){
   g <- obj$graph
   
-  v_label <- switch(vertex_intensity, 
+  v_label <- switch(vertex_labels, 
                     none = {''}, 
                     intensity_in = {round(igraph::vertex_attr(g)$intensity_in, 4)},
                     intensity_out = {round(igraph::vertex_attr(g)$intensity_out, 4)},
                     '')
   
-  e_label <- switch(edge_intensity, 
+  e_label <- switch(edge_labels, 
                     none = {''}, 
                     intensity = {round(igraph::edge_attr(g)$intensity, 4)},
                     '')
@@ -152,8 +157,8 @@ plot.intensitynetDir <- function(obj, vertex_intensity='none', edge_intensity='n
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedPlot(geoplot_obj, 
-                    vertex_intensity = v_label, 
-                    edge_intensity = e_label, 
+                    vertex_labels = v_label, 
+                    edge_labels = e_label, 
                     xy_axes = xy_axes, 
                     enable_grid = enable_grid, 
                     ...)

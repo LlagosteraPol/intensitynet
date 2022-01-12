@@ -2,16 +2,16 @@
 # require(igraph)
 # require(intergraph)
 # require(ggplot2)
-require(roxygen2)
+#require(roxygen2)
 # require(sna)
 # require(spatstat)
 # require(spdep)
 # require(viridis)
 
-source("./intensitynetDir.R", local = TRUE)
-source("./intensitynetMix.R", local = TRUE)
-source("./intensitynetUnd.R", local = TRUE)
-source("./netTools.R", local = TRUE)
+# source("R/intensitynetDir.R", local = TRUE)
+# source("R/intensitynetMix.R", local = TRUE)
+# source("R/intensitynetUnd.R", local = TRUE)
+# source("R/netTools.R", local = TRUE)
 
 
 #' Constructor of the class intensitynet
@@ -78,9 +78,9 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran_i', intensity){
 }
 
 
-plot <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
-  UseMethod("plot")
-}
+# plot <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
+#   UseMethod("plot")
+# }
 
 
 PlotHeatmap <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, ...){
@@ -147,8 +147,9 @@ LaplacianGearyRepresentation <- function(obj,  intensity_type = 'none'){
 #' If not calculated, calculates the intesnity of the edge with nodes; node_id1, node_id2. 
 #' If the edge already contains an intensity, gives it directly.
 #'
-#' @name EdgeIntensity.intensitynetUnd
+#' @name EdgeIntensity.intensitynet
 #' 
+#' @param obj intensitynet object
 #' @param node_id1 First node ID of the edge
 #' @param node_id2 Second node ID of the edge
 #' @param z Maximum distance between the event and the edge to consider the event part of the edge.
@@ -224,6 +225,7 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2, z = 5){
 #' 
 #' @name AllEdgeIntensities.intensitynet
 #' 
+#' @param obj intensitynet object
 #' @param z Maximum distance between the event and the edge to consider the event part of the edge.
 #' 
 #' @return intensitynet object where the graph contains all the edge intensities as an attribute
@@ -414,7 +416,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran_i', intensi
   
   if(dep_type == 'geary'){
     nb_b <- spdep::listw2mat(w_listw)
-    b <- as(nb_b, "CsparseMatrix")
+    b <- methods::as(nb_b, "CsparseMatrix")
     all(b == Matrix::t(b))
     
     # scale, with default settings, will calculate the mean and standard deviation of the entire vector,
@@ -459,8 +461,6 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran_i', intensi
 #' @name PlotHeatmap.intensitynet
 #'
 #' @param obj intensitynet object
-#' @param intensity vector containing the intensity values which the heatmaps
-#' will use. Default value = NULL.
 #' @param heattype moran_i': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
 #' correlation. The correlations will use the indicated intensity type.
 #' The function also allow to only plot the intensity heatmap 'v_intensity' for vertices or 'e_intensity' for edges.
@@ -512,7 +512,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
     locmoran <- spdep::localmoran_perm(x = intensity, 
                                        listw = w_listw, 
                                        zero.policy = TRUE, 
-                                       na.action = na.omit, 
+                                       na.action = stats::na.omit, 
                                        nsim = 999) # 999 permutations
     
     # Calculate deviations
@@ -543,7 +543,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
   }else if(heattype == 'geary'){  # Local Geary-c
     nb_b <- spdep::listw2mat(w_listw)
     
-    b <- as(nb_b, "CsparseMatrix")
+    b <- methods::as(nb_b, "CsparseMatrix")
     all(b == Matrix::t(b))
     
     # scale, with default settings, will calculate the mean and standard deviation of the entire vector,
@@ -584,14 +584,14 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
   }else if(heattype == 'getis'){ # Local Getis-G*
     # TODO: Implement Getis G.
     
-    locgg <- spdep::localG(x = intensity, listw = b_listw)
-    
-    # create a new variable identifying the moran plot quadrant for each observation, dismissing the non-significant ones
-    sig_dstr <- NA
-    
-    data_df <- data.frame(xcoord = node_coords$xcoord, 
-                          ycoord = node_coords$ycoord, 
-                          value = sig_dstr)
+    # locgg <- spdep::localG(x = intensity, listw = b_listw)
+    # 
+    # # create a new variable identifying the moran plot quadrant for each observation, dismissing the non-significant ones
+    # sig_dstr <- NA
+    # 
+    # data_df <- data.frame(xcoord = node_coords$xcoord, 
+    #                       ycoord = node_coords$ycoord, 
+    #                       value = sig_dstr)
     
     
     
@@ -652,25 +652,25 @@ PlotNeighborhood.intensitynet <- function(obj, node_id, ...){
        events[row, 1] <= window_coords$max_x + w_margin & 
        events[row, 2] >= window_coords$min_y - w_margin & 
        events[row, 2] <= window_coords$max_y + w_margin){
-      e_coords <- rbind(event_coords, events[row,])
+      e_coords <- rbind(e_coords, events[row,])
     }
   }
   if(!is.null(e_coords)) colnames(e_coords) <- c('xcoord', 'ycoord')
   
   # Plot vertices
-  plot(v_coords, xlim = c(window_coords$min_x - w_margin , window_coords$max_x + w_margin), 
-       ylim = c(window_coords$min_y - w_margin , window_coords$max_y + w_margin), ...)
-  text(x = v_coords[, 'xcoord'], y = v_coords[, 'ycoord'], c(names(nei), node_id), cex = 1, col = 'blue')
+  graphics::plot(v_coords, xlim = c(window_coords$min_x - w_margin , window_coords$max_x + w_margin), 
+                 ylim = c(window_coords$min_y - w_margin , window_coords$max_y + w_margin), ...)
+  graphics::text(x = v_coords[, 'xcoord'], y = v_coords[, 'ycoord'], c(names(nei), node_id), cex = 1, col = 'blue')
   
   # Draw edges
   for(row in 1:nrow(v_coords)-1){
-    lines(x = c(v_coords[nrow(v_coords),]['xcoord'], v_coords[row,]['xcoord']),
-          y = c(v_coords[nrow(v_coords),]['ycoord'], v_coords[row,]['ycoord']),
-          type = "l", lty = 1)
+    graphics::lines(x = c(v_coords[nrow(v_coords),]['xcoord'], v_coords[row,]['xcoord']),
+                    y = c(v_coords[nrow(v_coords),]['ycoord'], v_coords[row,]['ycoord']),
+                    type = "l", lty = 1)
   }
   
   # Plot events
-  points(x = e_coords[,'xcoord'], y = e_coords[,'ycoord'], col = 'red')
+  graphics::points(x = e_coords[,'xcoord'], y = e_coords[,'ycoord'], col = 'red')
 }
 
 
@@ -709,7 +709,7 @@ SetNetworkAttribute.intensitynet <- function(obj, where, name, value){
 #' 
 #' @param obj intensitynet object
 #' @param x_coords vector containing the x coordinate limits of the window
-#' @param x_coords vector containing the y coordinate limits of the window
+#' @param y_coords vector containing the y coordinate limits of the window
 #' 
 #' @return intensitynet object delimited by the window (sub-part of the original)
 #' @export

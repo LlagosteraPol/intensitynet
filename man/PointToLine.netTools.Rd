@@ -2,7 +2,7 @@
 % Please edit documentation in R/netTools.R
 \name{PointToLine.netTools}
 \alias{PointToLine.netTools}
-\title{Return the perpendicular distance between an event and the line formed by two nodes.}
+\title{Return the distance between an event and the line (not segment) formed by two nodes.}
 \usage{
 \method{PointToLine}{netTools}(obj)
 }
@@ -10,8 +10,8 @@
 \item{obj}{netTools object -> list(p1:c(coordx, coordy), p2:c(coordx, coordy), e:c(coordx, coordy))}
 }
 \value{
-the perpendicular distance
+the distance to the line
 }
 \description{
-Return the perpendicular distance between an event and the line formed by two nodes.
+Return the distance between an event and the line (not segment) formed by two nodes.
 }

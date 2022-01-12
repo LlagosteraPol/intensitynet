@@ -95,17 +95,22 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
 #' @name plot.intensitynetUnd
 #'
 #' @param obj intensitynet object
+#' @param vertex_labels list -> labels for the vertices
+#' @param edge_labels list -> labels for the edges
+#' @param xy_axes show the x and y axes
+#' @param enable_grid draw a background grid
+#' @param ... extra arguments for the plot
 #' @export
-plot.intensitynetUnd <- function(obj, vertex_intensity = 'none', edge_intensity = 'none', 
+plot.intensitynetUnd <- function(obj, vertex_labels = 'none', edge_labels = 'none', 
                                  xy_axes = TRUE, enable_grid = FALSE, ...){
   g <- obj$graph
   
-  v_label <- switch(vertex_intensity, 
+  v_label <- switch(vertex_labels, 
                     none = {''}, 
                     intensity = {round(igraph::vertex_attr(g)$intensity, 4)},
                     '')
   
-  e_label <- switch(edge_intensity, 
+  e_label <- switch(edge_labels, 
                     none = {''}, 
                     intensity = {round(igraph::edge_attr(g)$intensity, 4)},
                     '')
@@ -114,8 +119,8 @@ plot.intensitynetUnd <- function(obj, vertex_intensity = 'none', edge_intensity 
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedPlot(geoplot_obj, 
-                    vertex_intensity = v_label, 
-                    edge_intensity = e_label, 
+                    vertex_labels = v_label, 
+                    edge_labels = e_label, 
                     xy_axes = xy_axes, 
                     enable_grid = enable_grid, 
                     ...)

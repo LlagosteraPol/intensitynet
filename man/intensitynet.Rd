@@ -4,14 +4,19 @@
 \alias{intensitynet}
 \title{Constructor of the class intensitynet}
 \usage{
-intensitynet(adjacency_mtx, node_coords, events_mtx, graph_type = "undirected")
+intensitynet(
+  adjacency_mtx,
+  node_coords,
+  event_coords,
+  graph_type = "undirected"
+)
 }
 \arguments{
 \item{adjacency_mtx}{Network adjacency matrix}
 
 \item{node_coords}{Nodes latitude and longitude matrix}
 
-\item{events_mtx}{Events latitude and longitude matrix}
+\item{event_coords}{Events latitude and longitude matrix}
 
 \item{graph_type}{Network type: 'undirected' (default), 'directed' or 'mixed'}
 }

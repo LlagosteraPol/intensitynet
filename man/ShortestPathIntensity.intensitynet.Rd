@@ -16,7 +16,7 @@
 \item{weighted}{TRUE or FALSE (default), tell if the distances must be taken into account}
 }
 \value{
-intensity of the path the shortest path and the path
+intensity of the shortest path and the path vertices
 }
 \description{
 Calculates the shortest path between two vertices and calculates its intensity

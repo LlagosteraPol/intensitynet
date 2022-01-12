@@ -3,7 +3,7 @@
 \name{NodeGeneralCorrelation.intensitynet}
 \alias{NodeGeneralCorrelation.intensitynet}
 \title{Gives general node correlation of the network (choosing from: normal correlation, covariance, 
-moran-i or geary-g)}
+moran-i or geary)}
 \usage{
 \method{NodeGeneralCorrelation}{intensitynet}(obj, dep_type, lag_max, intensity)
 }
@@ -22,5 +22,5 @@ A vector containing the dependence statistics (ascending from order 0).
 }
 \description{
 Gives general node correlation of the network (choosing from: normal correlation, covariance, 
-moran-i or geary-g)
+moran-i or geary)
 }

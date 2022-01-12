@@ -4,6 +4,12 @@ load("../crimes.RData")
 
 load("../directed_intensitynet.RData")
 
+
+test_that("Testing test-that", {
+  expect_gte(2, 1)
+})
+
+
 test_that("Calculate edge and nodemeans intensities from a directed network", {
   crim <- crimes[11:111,] # From crimes, take 11 to 111 (both included)
   intnet <- intensitynet(dir_castellon, nodes, crim, graph_type='directed') # Generate directed intensitynet object
