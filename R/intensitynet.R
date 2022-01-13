@@ -444,7 +444,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' @name PlotHeatmap.intensitynet
 #'
 #' @param obj intensitynet object
-#' @param heattype moran': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
+#' @param heattype 'moran': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
 #' correlation. The correlations will use the indicated intensity type.
 #' The function also allow to only plot the intensity heatmap 'v_intensity' for vertices or 'e_intensity' for edges.
 #' @param intensity_type name of the intenisty used to plot the heatmap. For undirected networks: 'intensity'. 
