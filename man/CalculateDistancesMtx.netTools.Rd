@@ -2,7 +2,7 @@
 % Please edit documentation in R/netTools.R
 \name{CalculateDistancesMtx.netTools}
 \alias{CalculateDistancesMtx.netTools}
-\title{Calculates the distances between all pair of nodes from the given network}
+\title{Calculates the distances between all pairs of nodes from the given network}
 \usage{
 \method{CalculateDistancesMtx}{netTools}(obj)
 }
@@ -13,5 +13,5 @@
 distances matrix
 }
 \description{
-Calculates the distances between all pair of nodes from the given network
+Calculates the distances between all pairs of nodes from the given network
 }

@@ -15,7 +15,7 @@
 \arguments{
 \item{obj}{intensitynet object}
 
-\item{heattype}{moran': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
+\item{heattype}{'moran': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
 correlation. The correlations will use the indicated intensity type.
 The function also allow to only plot the intensity heatmap 'v_intensity' for vertices or 'e_intensity' for edges.}
 

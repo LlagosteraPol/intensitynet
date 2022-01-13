@@ -1,10 +1,10 @@
 Package: intensitynet
 Version: 1.0
 Date: 2021-01-12
-Title: Analysis of Spatial Point Patterns Occurring in Networks
-Authors@R: person("Pol", "Llagostera", email = "llagosterapol.work@gmail.com", role = c("aut", "cre"))
-Author: Pol Llagostera Blasco [aut, cre]
-Maintainer: Pol Llagostera Blasco <llagosterapol.work@gmail.com>
+Title: Intensity-based Analysis of Spatial Point Patterns Occurring on Complex Networks Structures
+Authors@R: c(person("Pol", "Llagostera", email = "pol.llagostera@udl.cat", role = c("aut", "cre")),
+             person("Matthias", "Eckardt", email = "m.eckardt@hu-berlin.de", role = "aut"))
+Maintainer: Pol Llagostera Blasco <pol.llagostera@udl.cat>
 Depends: R (>= 3.6.0)
 Suggests: 
     testthat (>= 3.0.0)
@@ -19,8 +19,7 @@ Imports:
     spatstat.geom (>= 2.3.1),
     spdep (>= 1.2.1),
     viridis (>= 0.5.1)
-Description: Tools to analyze point patterns in space occurring over a network by providing several 
-  graph-related intensity measures for undirected, directed, and mixed networks.
+Description: Tools to analyze point patterns in space occurring over planar network structures derived from graph-related intensity measures for undirected, directed, and mixed networks.
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.2

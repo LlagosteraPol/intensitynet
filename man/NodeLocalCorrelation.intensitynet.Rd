@@ -3,6 +3,9 @@
 \name{NodeLocalCorrelation.intensitynet}
 \alias{NodeLocalCorrelation.intensitynet}
 \title{Gives node local moran-i or geary-c correlations}
+\source{
+*Luc Anselin. A Local Indicator of Multivariate SpatialAssociation: Extending Geary's c, Geographical Analysis 2018; doi: https://doi.org/10.1111/gean.12164
+}
 \usage{
 \method{NodeLocalCorrelation}{intensitynet}(obj, dep_type = "moran", intensity)
 }
@@ -10,13 +13,12 @@
 \item{obj}{intensitynet object}
 
 \item{dep_type}{'moran', 'getis' or 'geary'. Type of local correlation to be computed (Moran-i, Getis-Gstar, Geary-c*),
-default = 'moran. * Details in paper: A Local Indicator of Multivariate SpatialAssociation: 
-Extending Geary’s c, from Luc Anselin}
+default = 'moran'.}
 
 \item{intensity}{vector containing the intensity values that which are used to calculate the correlation.}
 }
 \value{
-An intnet object wich contains a igraph network with the selected correlation 
+An intnet object which contains an igraph network with the selected correlation 
 added into the vertices attributes
 }
 \description{

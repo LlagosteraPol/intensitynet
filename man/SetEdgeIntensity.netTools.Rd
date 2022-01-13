@@ -2,7 +2,7 @@
 % Please edit documentation in R/netTools.R
 \name{SetEdgeIntensity.netTools}
 \alias{SetEdgeIntensity.netTools}
-\title{Sets the given intensites as an edge attribute to the given igraph network}
+\title{Sets the given intensities as an edge attribute to the given igraph network}
 \usage{
 \method{SetEdgeIntensity}{netTools}(obj)
 }
@@ -10,8 +10,8 @@
 \item{obj}{netTools object -> list(graph: igraph, node_id1: node id, node_id2: node id, intensity: edge intensity)}
 }
 \value{
-igraph network with the given intensities as an attributes of the edges
+igraph network with the given intensities as attributes of the edges
 }
 \description{
-Sets the given intensites as an edge attribute to the given igraph network
+Sets the given intensities as an edge attribute to the given igraph network
 }

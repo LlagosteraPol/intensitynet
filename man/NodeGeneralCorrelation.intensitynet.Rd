@@ -2,7 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{NodeGeneralCorrelation.intensitynet}
 \alias{NodeGeneralCorrelation.intensitynet}
-\title{Gives general node correlation of the network (choosing from: normal correlation, covariance, 
+\title{Gives general node correlation of the network (choosing from normal correlation, covariance, 
 moran-i or geary)}
 \usage{
 \method{NodeGeneralCorrelation}{intensitynet}(obj, dep_type, lag_max, intensity)
@@ -21,6 +21,6 @@ dependence statistic to be computed.}
 A vector containing the dependence statistics (ascending from order 0).
 }
 \description{
-Gives general node correlation of the network (choosing from: normal correlation, covariance, 
+Gives general node correlation of the network (choosing from normal correlation, covariance, 
 moran-i or geary)
 }

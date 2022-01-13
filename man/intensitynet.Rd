@@ -2,7 +2,8 @@
 % Please edit documentation in R/intensitynet.R
 \name{intensitynet}
 \alias{intensitynet}
-\title{Constructor of the class intensitynet}
+\title{Constructor of the class intensitynet. In order to create an intensitynet object, it is needed; an adjacency matrix, the
+coordinates of the nodes and the coordinates of the events.}
 \usage{
 intensitynet(
   adjacency_mtx,
@@ -21,9 +22,34 @@ intensitynet(
 \item{graph_type}{Network type: 'undirected' (default), 'directed' or 'mixed'}
 }
 \value{
-intensitynet object containing: graph=<igraph>, events = <matrix>, graph_type = c('directed', 'undirected', 'mixed'), 
+intensitynet object containing: graph = <igraph>, events = <matrix>, graph_type = c('directed', 'undirected', 'mixed'), 
 distances = <matrix>
 }
 \description{
-Constructor of the class intensitynet
+Constructor of the class intensitynet. In order to create an intensitynet object, it is needed; an adjacency matrix, the
+coordinates of the nodes and the coordinates of the events.
+}
+\examples{
+library(spatstat)
+data(chicago)
+chicago_df <- as.data.frame(chicago[["data"]]) # Get as dataframe the data from Chicago
+
+# Get the adjacency matrix. One way is to create an igraph object from the edge coordinates.
+edges <- cbind(chicago[["domain"]][["from"]], chicago[["domain"]][["to"]])
+chicago_net <- igraph::graph_from_edgelist(edges)
+
+# And then use the igraph function 'as_adjacency_matrix'
+chicago_adj_mtx <- as.matrix(igraph::as_adjacency_matrix(chicago_net))
+chicago_node_coords <- data.frame(xcoord = chicago[["domain"]][["vertices"]][["x"]], 
+                                 ycoord = chicago[["domain"]][["vertices"]][["y"]])
+
+# Create a dataframe with the coordinates of the events 'assault'
+chicago_assault <- chicago_df[chicago_df$marks == 'assault',]
+assault_coordinates <- data.frame(xcoord = chicago_assault[,1],
+                                  ycoord = chicago_assault[,2])
+                                  
+# Create the intensitynet object, in this case will be undirected 
+intnet_chicago <- intensitynet(chicago_adj_mtx, 
+                               node_coords = chicago_node_coords, 
+                               event_coords = assault_coordinates)
 }

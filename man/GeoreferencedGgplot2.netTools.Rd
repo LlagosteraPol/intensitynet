@@ -9,7 +9,7 @@
 \arguments{
 \item{obj}{netTools object -> list(graph: igraph, data_df: dataframe(intensity: intensity of the nodes, 
 xcoord: x coordinates of the nodes, ycoord: y coordinates of the nodes, heattype: data wich the heatmap will refer), 
-mode: ('moran_i', 'getis' or 'intensity'))}
+mode: ('moran', 'getis' or 'intensity'))}
 
 \item{...}{extra arguments for the ggplot}
 }

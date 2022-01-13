@@ -53,7 +53,7 @@ test_that('Node local moran i', {
 })
 
 
-test_that('Node local geary g', {
+test_that('Node local geary c', {
   intnet <- dir_intnet_chicago
   
   data_geary <- NodeLocalCorrelation(intnet, 
@@ -66,11 +66,23 @@ test_that('Node local geary g', {
 })
 
 
+test_that('Node local getis g', {
+  intnet <- dir_intnet_chicago
+  g <- intnet$graph
+  
+  data_getis <- NodeLocalCorrelation(intnet, dep_type = 'getis', intensity = igraph::vertex_attr(g)$intensity_in)
+  getis <- data_getis$correlation
+  intnet <- data_getis$intnet
+  
+  expect_gte(length(getis), 1)
+})
+
+
 test_that('Path Intensity', {
   intnet <- dir_intnet_chicago
   
-  short_dist <- ShortestNodeDistance(intnet, node_id1 = 'V1', node_id2 = 'V150')
-  int_path <- PathIntensity(intnet, short_dist$path)
+  short_dist <- ShortestPathIntensity(intnet, node_id1 = 'V1', node_id2 = 'V150')
+  int_path <- short_dist$intensity
   
   expect_gte(int_path, 0)
 })

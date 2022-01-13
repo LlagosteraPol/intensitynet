@@ -17,3 +17,6 @@ intensity of the path
 \description{
 Calculates the intensity of the given path
 }
+\examples{
+
+}

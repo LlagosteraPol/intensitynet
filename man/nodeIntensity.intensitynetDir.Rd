@@ -3,7 +3,7 @@
 \name{nodeIntensity.intensitynetDir}
 \alias{nodeIntensity.intensitynetDir}
 \alias{MeanNodeIntensity.intensitynetDir}
-\title{Given a node, calculates its mean intensities regarding in and out edges edges associated with the node.}
+\title{Given a node, calculates its mean intensities regarding in and out edges associated with the node.}
 \usage{
 \method{MeanNodeIntensity}{intensitynetDir}(obj, node_id)
 }
@@ -16,5 +16,5 @@
 mean intensities of the given node for in and out edges
 }
 \description{
-Given a node, calculates its mean intensities regarding in and out edges edges associated with the node.
+Given a node, calculates its mean intensities regarding in and out edges associated with the node.
 }

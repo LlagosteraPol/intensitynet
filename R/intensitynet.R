@@ -1,6 +1,7 @@
 
 
-#' Constructor of the class intensitynet
+#' Constructor of the class intensitynet. In order to create an intensitynet object, it is needed; an adjacency matrix, the
+#' coordinates of the nodes and the coordinates of the events.
 #'
 #' @name intensitynet
 #'
@@ -8,9 +9,33 @@
 #' @param node_coords Nodes latitude and longitude matrix
 #' @param event_coords Events latitude and longitude matrix
 #' @param graph_type Network type: 'undirected' (default), 'directed' or 'mixed' 
-#' 
-#' @return intensitynet object containing: graph=<igraph>, events = <matrix>, graph_type = c('directed', 'undirected', 'mixed'), 
+#'
+#' @return intensitynet object containing: graph = <igraph>, events = <matrix>, graph_type = c('directed', 'undirected', 'mixed'), 
 #' distances = <matrix>
+#' 
+#' @examples
+#' library(spatstat)
+#' data(chicago)
+#' chicago_df <- as.data.frame(chicago[["data"]]) # Get as dataframe the data from Chicago
+#'
+#' # Get the adjacency matrix. One way is to create an igraph object from the edge coordinates.
+#' edges <- cbind(chicago[["domain"]][["from"]], chicago[["domain"]][["to"]])
+#' chicago_net <- igraph::graph_from_edgelist(edges)
+#'
+#' # And then use the igraph function 'as_adjacency_matrix'
+#' chicago_adj_mtx <- as.matrix(igraph::as_adjacency_matrix(chicago_net))
+#' chicago_node_coords <- data.frame(xcoord = chicago[["domain"]][["vertices"]][["x"]], 
+#'                                  ycoord = chicago[["domain"]][["vertices"]][["y"]])
+#'
+#' # Create a dataframe with the coordinates of the events 'assault'
+#' chicago_assault <- chicago_df[chicago_df$marks == 'assault',]
+#' assault_coordinates <- data.frame(xcoord = chicago_assault[,1],
+#'                                   ycoord = chicago_assault[,2])
+#'                                   
+#' # Create the intensitynet object, in this case will be undirected 
+#' intnet_chicago <- intensitynet(chicago_adj_mtx, 
+#'                                node_coords = chicago_node_coords, 
+#'                                event_coords = assault_coordinates)
 #' @export
 intensitynet <- function(adjacency_mtx, node_coords, event_coords, graph_type = 'undirected'){
   
@@ -308,6 +333,8 @@ AllEdgeIntensities.intensitynet <- function(obj, z = 5){
 #' @param path_nodes vector containing the node ID's of the path
 #' 
 #' @return intensity of the path
+#' @examples
+#' 
 #' @export
 PathIntensity.intensitynet <- function(obj, path_nodes){
   edge_counts <- list()
@@ -351,7 +378,7 @@ ShortestPathIntensity.intensitynet <- function(obj,  node_id1, node_id2, weighte
     path <- unlist(igraph::get.shortest.paths(g, node_id1, node_id2)$vpath)
   }
   
-  return(list(intensity = PathIntensity(path), path = path))
+  return(list(intensity = PathIntensity(obj, path), path = path))
 }
 
 
@@ -378,11 +405,12 @@ NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensit
 #' Gives node local moran-i or geary-c correlations
 #' 
 #' @name NodeLocalCorrelation.intensitynet
+#' 
+#' @source *Luc Anselin. A Local Indicator of Multivariate SpatialAssociation: Extending Geary's c, Geographical Analysis 2018; doi: https://doi.org/10.1111/gean.12164
 #'
 #' @param obj intensitynet object
 #' @param dep_type 'moran', 'getis' or 'geary'. Type of local correlation to be computed (Moran-i, Getis-Gstar, Geary-c*),
-#' default = 'moran. * Details in paper: A Local Indicator of Multivariate SpatialAssociation: 
-#' Extending Geary’s c, from Luc Anselin
+#' default = 'moran'.
 #' @param intensity vector containing the intensity values that which are used to calculate the correlation.
 #' 
 #' @return An intnet object which contains an igraph network with the selected correlation 
