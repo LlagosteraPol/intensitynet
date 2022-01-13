@@ -1,4 +1,4 @@
-#' Given a node, calculates its mean intensities regarding in and out edges edges associated with the node.
+#' Given a node, calculates its mean intensities regarding in and out edges associated with the node.
 #' 
 #' @name nodeIntensity.intensitynetDir
 #' 

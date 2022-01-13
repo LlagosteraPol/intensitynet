@@ -1,4 +1,4 @@
-#' Calculates the mean intensity of the given node (intensity of all the edges of the node / number of edges of the node)
+#' Calculates the mean intensity of the given node (intensity of all the edges of the node/number of edges of the node)
 #' 
 #' @name nodeIntensity.intensitynetUnd
 #' 

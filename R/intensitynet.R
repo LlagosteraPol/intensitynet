@@ -1,18 +1,4 @@
 
-# require(igraph)
-# require(intergraph)
-# require(ggplot2)
-#require(roxygen2)
-# require(sna)
-# require(spatstat)
-# require(spdep)
-# require(viridis)
-
-# source("R/intensitynetDir.R", local = TRUE)
-# source("R/intensitynetMix.R", local = TRUE)
-# source("R/intensitynetUnd.R", local = TRUE)
-# source("R/netTools.R", local = TRUE)
-
 
 #' Constructor of the class intensitynet
 #'
@@ -73,14 +59,9 @@ NodeGeneralCorrelation <- function(obj, dep_type, lag_max, intensity){
 }
 
 
-NodeLocalCorrelation <- function(obj, dep_type = 'moran_i', intensity){
+NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
   UseMethod("NodeLocalCorrelation")
 }
-
-
-# plot <- function(obj, vertex_intensity='none', edge_intensity='none', xy_axes=TRUE, enable_grid=FALSE, ...){
-#   UseMethod("plot")
-# }
 
 
 PlotHeatmap <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, ...){
@@ -145,7 +126,7 @@ LaplacianGearyRepresentation <- function(obj,  intensity_type = 'none'){
 
 
 #' If not calculated, calculates the intesnity of the edge with nodes; node_id1, node_id2. 
-#' If the edge already contains an intensity, gives it directly.
+#' If the edge already contains an intensity, give it directly.
 #'
 #' @name EdgeIntensity.intensitynet
 #' 
@@ -374,14 +355,14 @@ ShortestPathIntensity.intensitynet <- function(obj,  node_id1, node_id2, weighte
 }
 
 
-#' Gives general node correlation of the network (choosing from: normal correlation, covariance, 
+#' Gives general node correlation of the network (choosing from normal correlation, covariance, 
 #' moran-i or geary)
 #' 
 #' @name NodeGeneralCorrelation.intensitynet
 #'
 #' @param obj intensitynet object
-#' @param dep_type the type of dependence statistic to be computed ("correlation", "covariance",
-#' "moran", "geary").
+#' @param dep_type 'correlation', 'covariance', moran', 'geary'. The type of 
+#' dependence statistic to be computed.
 #' @param lag_max Maximum geodesic lag at which to compute dependence
 #' @param intensity vector containing the intensity values that the heatmaps
 #' 
@@ -399,15 +380,15 @@ NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensit
 #' @name NodeLocalCorrelation.intensitynet
 #'
 #' @param obj intensitynet object
-#' @param dep_type 'moran_i', 'getis' or 'geary'. Type of local correlation to be computed (Moran-i, Getis-Gstar, Geary-c*),
-#' default = 'moran_i. * Details in paper: A Local Indicator of Multivariate SpatialAssociation: 
+#' @param dep_type 'moran', 'getis' or 'geary'. Type of local correlation to be computed (Moran-i, Getis-Gstar, Geary-c*),
+#' default = 'moran. * Details in paper: A Local Indicator of Multivariate SpatialAssociation: 
 #' Extending Geary’s c, from Luc Anselin
-#' @param intensity vector containing the intensity values that the heatmaps
+#' @param intensity vector containing the intensity values that which are used to calculate the correlation.
 #' 
-#' @return An intnet object wich contains a igraph network with the selected correlation 
+#' @return An intnet object which contains an igraph network with the selected correlation 
 #' added into the vertices attributes
 #' @export
-NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran_i', intensity){
+NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity){
   g <- obj$graph
   adj_mtx <- igraph::as_adj(graph = g)
   adj_listw <- spdep::mat2listw(adj_mtx)
@@ -442,9 +423,9 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran_i', intensi
     intnet <- SetNetworkAttribute(obj = obj, where = 'vertex', name = "geary", value = locgc)
     return(list(correlation = locgc, intnet = intnet))
     
-  } else if (dep_type == 'moran_i'){
+  } else if (dep_type == 'moran'){
     locmoran <- spdep::localmoran(x = intensity, listw = w_listw, zero.policy=TRUE)
-    intnet <- SetNetworkAttribute(obj = obj, where = 'vertex', name = 'moran_i', value = locmoran[, 'Ii'])
+    intnet <- SetNetworkAttribute(obj = obj, where = 'vertex', name = 'moran', value = locmoran[, 'Ii'])
     return(list(correlation = locmoran, intnet = intnet))
     
   } else if (dep_type == 'getis'){
@@ -452,6 +433,8 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran_i', intensi
     locgg <- spdep::localG(x = intensity, listw = b_listw)
     intnet <- SetNetworkAttribute(obj = obj, where = 'vertex', name = "getis", value = locgg)
     return(list(correlation = locgg, intnet = intnet))
+  }else{
+    stop("Error: wrong 'dep_type' argument. Allowed arguments are; 'moran', 'getis', 'geary'.")
   }
 }
 
@@ -461,7 +444,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran_i', intensi
 #' @name PlotHeatmap.intensitynet
 #'
 #' @param obj intensitynet object
-#' @param heattype moran_i': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
+#' @param heattype moran': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
 #' correlation. The correlations will use the indicated intensity type.
 #' The function also allow to only plot the intensity heatmap 'v_intensity' for vertices or 'e_intensity' for edges.
 #' @param intensity_type name of the intenisty used to plot the heatmap. For undirected networks: 'intensity'. 
@@ -478,9 +461,9 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
   nb <- adj_listw$neighbours
   w_listw <- spdep::nb2listw(nb, style = "W",  zero.policy=TRUE)
   
-  if(heattype != 'none' && heattype != 'moran_i' && heattype != 'geary' && 
+  if(heattype != 'none' && heattype != 'moran' && heattype != 'geary' && 
      heattype != 'v_intensity' && heattype != 'e_intensity' && heattype != 'intensity'){
-    warning('Parameter "heattype" should be "moran_i", "geary", "intensity", 
+    warning('Parameter "heattype" should be "moran", "geary", "intensity", 
             "v_intensity", "e_intensity" or "none". Using default ("none").')
   }
   
@@ -508,7 +491,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
                             ycoord = igraph::vertex_attr(graph = g, name = 'ycoord'))
   rownames(node_coords) <- igraph::vertex_attr(graph = g, name = 'name')
   
-  if(heattype == 'moran_i'){ # Local Moran-i
+  if(heattype == 'moran'){ # Local Moran-i
     locmoran <- spdep::localmoran_perm(x = intensity, 
                                        listw = w_listw, 
                                        zero.policy = TRUE, 
@@ -572,7 +555,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
     sig_dstr <- NA
     
     sig_dstr[locgc < 1] <- 2 # positive spatial autocorrelation
-    sig_dstr[locgc == 1] <- 3 # no spatial autocorrelation
+    sig_dstr[locgc == 1 || is.na(locgc)] <- 3 # no spatial autocorrelation
     sig_dstr[locgc > 1] <- 4 # negative spatial autocorrelation
     
     sig_dstr[setdiff(as.numeric(igraph::V(g)), net_vertices)] <- 1 # Not contemplated vertices 
@@ -582,6 +565,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
                           value = sig_dstr)
     
   }else if(heattype == 'getis'){ # Local Getis-G*
+    print("Needs implementation")
     # TODO: Implement Getis G.
     
     # locgg <- spdep::localG(x = intensity, listw = b_listw)
@@ -706,6 +690,8 @@ SetNetworkAttribute.intensitynet <- function(obj, where, name, value){
 
 
 #' Get the intensitynet object delimited by the given window
+#' 
+#' @name ApplyWindow.intensitynet
 #' 
 #' @param obj intensitynet object
 #' @param x_coords vector containing the x coordinate limits of the window

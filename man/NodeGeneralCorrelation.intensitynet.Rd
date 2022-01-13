@@ -10,8 +10,8 @@ moran-i or geary)}
 \arguments{
 \item{obj}{intensitynet object}
 
-\item{dep_type}{the type of dependence statistic to be computed ("correlation", "covariance",
-"moran", "geary").}
+\item{dep_type}{'correlation', 'covariance', moran', 'geary'. The type of 
+dependence statistic to be computed.}
 
 \item{lag_max}{Maximum geodesic lag at which to compute dependence}
 

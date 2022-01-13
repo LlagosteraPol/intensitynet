@@ -45,7 +45,7 @@ test_that('Node local moran i', {
   intnet <- mix_intnet_chicago
   
   data_moran <- NodeLocalCorrelation(intnet, 
-                                     dep_type = 'moran_i', 
+                                     dep_type = 'moran', 
                                      intensity = igraph::vertex_attr(intnet$graph)$intensity_in)
   moran_i <- data_moran$correlation
   intnet <- data_moran$intnet

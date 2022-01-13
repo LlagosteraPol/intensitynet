@@ -87,7 +87,7 @@ InitGraph.netTools <- function(obj){
 }
 
 
-#' Calculates the distances between all pair of nodes from the given network
+#' Calculates the distances between all pairs of nodes from the given network
 #'
 #' @name CalculateDistancesMtx.netTools 
 #'
@@ -132,13 +132,13 @@ SetNetCoords.netTools <- function(obj){
 }
 
 
-#' Sets the given intensites as an edge attribute to the given igraph network
+#' Sets the given intensities as an edge attribute to the given igraph network
 #'
 #' @name SetEdgeIntensity.netTools 
 #'
 #' @param obj netTools object -> list(graph: igraph, node_id1: node id, node_id2: node id, intensity: edge intensity)
 #' 
-#' @return igraph network with the given intensities as an attributes of the edges
+#' @return igraph network with the given intensities as attributes of the edges
 #' 
 SetEdgeIntensity.netTools <- function(obj){
   g <- obj$graph
@@ -153,13 +153,14 @@ SetEdgeIntensity.netTools <- function(obj){
 }
 
 
-#' Sets the given intensites as a node attribute to the given igraph network
+#' Sets the given intensities as a node attribute to the given igraph network
 #'
 #' @name SetNodeIntensity.netTools 
 #'
 #' @param obj netTools object -> list(graph: igraph, node_id: node id, intensity: node intensity)
 #' 
-#' @return igraph network with the given intensities as an attributes of the nodes
+#' @return igraph network with the given intensities as attributes of the nodes
+#' 
 SetNodeIntensity.netTools <- function(obj){
   g <- obj$graph
   node_id <- obj$node_id
@@ -588,7 +589,7 @@ PointToSegment <- function(obj) {
 }
 
 
-#' Creates a directed adjacency matrix from an Undirected one with random directions (in out edges) 
+#' Creates a directed adjacency matrix from an Undirected one with random directions (in-out edges) 
 #' but with the same connections between nodes.
 #'
 #' @param obj netTools object -> list(mtx: matrix)

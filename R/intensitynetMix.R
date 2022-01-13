@@ -1,4 +1,4 @@
-#' Given a node, calculates its mean intensites depending of the edges associated with the node, those intensities are: 
+#' Given a node, calculates its mean intensites depending on the edges associated with the node, those intensities are: 
 #' in, out (for directed edges), undirected and total intensity.
 #' 
 #' @name nodeIntensity.intensitynetMix

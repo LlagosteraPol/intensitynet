@@ -43,7 +43,7 @@ test_that('Node local moran i', {
   intnet <- und_intnet_chicago
   g <- intnet$graph
   
-  data_moran <- NodeLocalCorrelation(intnet, dep_type = 'moran_i', intensity = igraph::vertex_attr(g)$intensity)
+  data_moran <- NodeLocalCorrelation(intnet, dep_type = 'moran', intensity = igraph::vertex_attr(g)$intensity)
   moran_i <- data_moran$correlation
   intnet <- data_moran$intnet
   
