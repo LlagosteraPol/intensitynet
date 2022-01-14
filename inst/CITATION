@@ -1,7 +1,7 @@
 citHeader("To cite IntensityNet in publications use:")
 
 citEntry(entry    = "Manual",
-         title    = "intensitynet: Analysis of Spatial Point Patterns Occurring in Networks",
+         title    = "IntensityNet: Analysis of Spatial Point Patterns Occurring in Networks",
          author   = personList(as.person("Pol Llagostera Blasco"), 
                                as.person("Matthias Eckardt")),
          year     = "2021",
