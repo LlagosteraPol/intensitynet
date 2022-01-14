@@ -2,7 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{CalculateEventIntensities}
 \alias{CalculateEventIntensities}
-\title{Calculates edgewise and mean nodewise intensities for Directed networks}
+\title{Calculates edgewise and mean nodewise intensities for the given intensitynet object}
 \usage{
 CalculateEventIntensities(obj)
 }
@@ -14,5 +14,11 @@ proper intensitynet object (Undirected, Directed or Mixed) with a graph containi
 attributes of its nodes and edges
 }
 \description{
-Calculates edgewise and mean nodewise intensities for Directed networks
+Calculates edgewise and mean nodewise intensities for the given intensitynet object
+}
+\examples{
+
+# intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
+intnet_chicago <- CalculateEventIntensities(intnet_chicago)
+
 }

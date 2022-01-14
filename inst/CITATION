@@ -1,4 +1,4 @@
-citHeader("To cite intensitynet in publications use:")
+citHeader("To cite IntensityNet in publications use:")
 
 citEntry(entry    = "Manual",
          title    = "intensitynet: Analysis of Spatial Point Patterns Occurring in Networks",
