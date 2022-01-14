@@ -24,3 +24,14 @@ added into the vertices attributes
 \description{
 Gives node local moran-i or geary-c correlations
 }
+\examples{
+
+# intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
+g <- intnet_chicago$graph
+data_moran <- NodeLocalCorrelation(intnet_chicago, 
+                                   dep_type = 'moran', 
+                                   intensity = igraph::vertex_attr(g)$intensity)
+moran_i <- data_moran$correlation
+intnet <- data_moran$intnet
+
+}

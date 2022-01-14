@@ -24,3 +24,10 @@ A vector containing the dependence statistics (ascending from order 0).
 Gives general node correlation of the network (choosing from normal correlation, covariance, 
 moran-i or geary)
 }
+\examples{
+
+# intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
+g <- intnet_chicago$graph
+gen_corr <- NodeGeneralCorrelation(intnet_chicago, dep_type = 'correlation', lag_max = 2, 
+                                   intensity = igraph::vertex_attr(g)$intensity)
+}

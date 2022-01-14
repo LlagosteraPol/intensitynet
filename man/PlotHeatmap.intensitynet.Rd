@@ -31,3 +31,9 @@ the intensity (undirected) or intensity_in (directed) values from the network no
 \description{
 Plot the network and if specified, the correlation heatmap. Which could be:
 }
+\examples{
+
+# intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
+PlotHeatmap(intnet_chicago, heattype='moran')
+
+}

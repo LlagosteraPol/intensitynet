@@ -16,3 +16,9 @@
 \description{
 Plot the net and the events in the neighborhood area of the given node
 }
+\examples{
+
+# intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
+PlotNeighborhood(intnet_chicago, node_id = 'V300')
+
+}
