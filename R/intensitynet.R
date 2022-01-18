@@ -14,6 +14,7 @@
 #' distances = <matrix>
 #' 
 #' @examples
+#' \dontrun{
 #' library(spatstat)
 #' data(chicago)
 #' chicago_df <- as.data.frame(chicago[["data"]]) # Get as dataframe the data from Chicago
@@ -36,18 +37,19 @@
 #' intnet_chicago <- intensitynet(chicago_adj_mtx, 
 #'                                node_coords = chicago_node_coords, 
 #'                                event_coords = assault_coordinates)
+#' }
 #' @export
 intensitynet <- function(adjacency_mtx, node_coords, event_coords, graph_type = 'undirected'){
   
-  if (class(adjacency_mtx) == "data.frame") {
+  if (is.data.frame(adjacency_mtx)) {
     adjacency_mtx <- as.matrix(adjacency_mtx)
   }
   
-  if (class(node_coords) == "data.frame") {
+  if (is.data.frame(node_coords)) {
     node_coords <- as.matrix(node_coords)
   }
   
-  if (class(event_coords) == "data.frame") {
+  if (is.data.frame(event_coords)) {
     event_coords <- as.matrix(event_coords)
   }
   colnames(node_coords) <- c("xcoord", "ycoord")

@@ -267,7 +267,7 @@ GeoreferencedPlot.netTools <- function(obj, vertex_labels='', edge_labels='', xy
 #' @name GeoreferencedGgplot2.netTools
 #' 
 #' @param obj netTools object -> list(graph: igraph, data_df: dataframe(intensity: intensity of the nodes, 
-#' xcoord: x coordinates of the nodes, ycoord: y coordinates of the nodes, heattype: data wich the heatmap will refer), 
+#' xcoord: x coordinates of the nodes, ycoord: y coordinates of the nodes, heattype: data which the heatmap will refer), 
 #' mode: ('moran', 'getis' or 'intensity'))
 #' @param ... extra arguments for the ggplot
 #' 
