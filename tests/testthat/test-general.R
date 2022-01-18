@@ -12,7 +12,8 @@ test_that('NodeLocalCorrelation function, bad argument handling', {
 
 
 test_that('ApplyWindow function',{
-  sub_intnet_chicago <- ApplyWindow(und_intnet_chicago, 
+  intnet <- und_intnet_chicago
+  sub_intnet_chicago <- ApplyWindow(intnet, 
                                     x_coords = c(300, 900), 
                                     y_coords = c(500, 1000))
   

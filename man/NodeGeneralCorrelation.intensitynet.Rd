@@ -25,9 +25,10 @@ Gives general node correlation of the network (choosing from normal correlation,
 moran-i or geary)
 }
 \examples{
-
+\dontrun{
 # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 g <- intnet_chicago$graph
 gen_corr <- NodeGeneralCorrelation(intnet_chicago, dep_type = 'correlation', lag_max = 2, 
                                    intensity = igraph::vertex_attr(g)$intensity)
+}
 }

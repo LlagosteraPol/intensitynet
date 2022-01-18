@@ -25,7 +25,7 @@ added into the vertices attributes
 Gives node local moran-i or geary-c correlations
 }
 \examples{
-
+\dontrun{
 # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 g <- intnet_chicago$graph
 data_moran <- NodeLocalCorrelation(intnet_chicago, 
@@ -33,5 +33,5 @@ data_moran <- NodeLocalCorrelation(intnet_chicago,
                                    intensity = igraph::vertex_attr(g)$intensity)
 moran_i <- data_moran$correlation
 intnet <- data_moran$intnet
-
+}
 }

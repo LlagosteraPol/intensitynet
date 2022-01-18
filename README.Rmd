@@ -1,0 +1,99 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# intensitynet
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The IntensityNet package provides tools to analyze point patterns in space over planar network structures derived from graph-related intensity measures for undirected, directed, and mixed networks. This package is based on the research done by Eckardt, M., Mateu, J. presented in the following papers:
+<br>
+<br>
+Eckardt, M., Mateu, J. Point Patterns Occurring on Complex Structures in Space and Space-Time: An Alternative Network
+  Approach. Journal of Computational and Graphical Statistics 27. 312-322 (2017). https://doi.org/10.1080/10618600.2017.1391695
+<br>
+<br>
+Eckardt, M., Mateu, J. Second-order and local characteristics of network intensity functions. TEST 30, 318-340 (2021).
+  https://doi.org/10.1007/s11749-020-00720-4
+
+
+## Installation
+
+You can install the released version of intensitynet from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("intensitynet")
+```
+
+And the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("LlagosteraPol/IntensityNet")
+```
+## Example
+
+This is an example that shows you how to set up IntensityNet and calculate and plot the moran-i correlation:
+
+```{r example}
+library(intensitynet)
+library(spatstat)
+data(chicago)
+chicago_df <- as.data.frame(chicago[["data"]]) # Get as dataframe the data from Chicago
+
+# Get the adjacency matrix. One way is to create an igraph object from the edge coordinates.
+edges <- cbind(chicago[["domain"]][["from"]], chicago[["domain"]][["to"]])
+chicago_net <- igraph::graph_from_edgelist(edges)
+
+# And then use the igraph function 'as_adjacency_matrix'
+chicago_adj_mtx <- as.matrix(igraph::as_adjacency_matrix(chicago_net))
+chicago_node_coords <- data.frame(xcoord = chicago[["domain"]][["vertices"]][["x"]], 
+                                  ycoord = chicago[["domain"]][["vertices"]][["y"]])
+
+# Create a dataframe with the coordinates of the events 'assault'
+chicago_assault <- chicago_df[chicago_df$marks == 'assault',]
+assault_coordinates <- data.frame(xcoord = chicago_assault[,1],
+                                  ycoord = chicago_assault[,2])
+                                   
+# Create the intensitynet object, in this case will be undirected 
+intnet_chicago <- intensitynet(chicago_adj_mtx, 
+                               node_coords = chicago_node_coords, 
+                               event_coords = assault_coordinates)
+
+intnet_chicago <- CalculateEventIntensities(intnet_chicago)
+
+data_moran <- NodeLocalCorrelation(intnet_chicago, dep_type = 'moran', intensity = igraph::vertex_attr(intnet_chicago$graph)$intensity)
+moran_i <- data_moran$correlation
+intnet_chicago <- data_moran$intnet
+
+PlotHeatmap(intnet_chicago, heattype = 'moran')
+
+```
+
+What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+
+```{r cars}
+summary(cars)
+```
+
+You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
+
+You can also embed plots, for example:
+
+```{r pressure, echo = FALSE}
+plot(pressure)
+```
+
+In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!

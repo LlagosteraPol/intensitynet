@@ -20,7 +20,7 @@ citEntry(
   number   = "2",
   pages    = "312-322",
   doi      = "10.1080/10618600.2017.1391695",
-  textVersion = paste("Eckardt, Matthias & Mateu, Jorge. (2017). Point Patterns Occurring on Complex Structures in Space and Space-Time: An Alternative Network Approach. Journal of Computational and Graphical Statistics. 0-0. 10.1080/10618600.2017.1391695.")
+  textVersion = paste("Eckardt, M., Mateu, J. Point Patterns Occurring on Complex Structures in Space and Space-Time: An Alternative Network Approach. Journal of Computational and Graphical Statistics 27. 312-322 (2017). https://doi.org/10.1080/10618600.2017.1391695")
 )
 
 
@@ -34,5 +34,5 @@ citEntry(
   volume   = "30",
   pages    = "318-340",
   doi      = "10.1007/s11749-020-00720-4",
-  textVersion = paste("Eckardt, M., Mateu, J. Second-order and local characteristics of network intensity functions. TEST 30, 318-340 (2021). https://doi.org/10.1007/s11749-020-00720-4")
+  textVersion = paste("Eckardt, M., Mateu, J. Second-order and local characteristics of network intensity functions. TEST 30, 318-34 (2021). https://doi.org/10.1007/s11749-020-00720-4")
 )

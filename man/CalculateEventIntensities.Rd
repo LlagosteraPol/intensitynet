@@ -17,8 +17,8 @@ attributes of its nodes and edges
 Calculates edgewise and mean nodewise intensities for the given intensitynet object
 }
 \examples{
-
+\dontrun{
 # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 intnet_chicago <- CalculateEventIntensities(intnet_chicago)
-
+}
 }

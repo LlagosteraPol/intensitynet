@@ -129,10 +129,10 @@ ShortestPathIntensity <- function(obj,  node_id1, node_id2, weighted = FALSE){
 #' attributes of its nodes and edges
 #' 
 #' @examples 
-#' 
+#' \dontrun{
 #' # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 #' intnet_chicago <- CalculateEventIntensities(intnet_chicago)
-#' 
+#' }
 #' @export
 CalculateEventIntensities <- function(obj){
   UseMethod("CalculateEventIntensities")
@@ -348,11 +348,11 @@ AllEdgeIntensities.intensitynet <- function(obj, z = 5){
 #' 
 #' @return intensity of the path
 #' @examples
-#' 
+#' \dontrun{
 #' # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 #' short_path <- ShortestPathIntensity(intnet_chicago, node_id1 = 'V1', node_id2 = 'V300')
 #' PathIntensity(intnet_chicago, short_dist$path)
-#' 
+#' }
 #' @export
 PathIntensity.intensitynet <- function(obj, path_nodes){
   edge_counts <- list()
@@ -388,9 +388,10 @@ PathIntensity.intensitynet <- function(obj, path_nodes){
 #' @return intensity of the shortest path and the path vertices
 #' 
 #' @examples
+#' \dontrun{
 #' # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 #' ShortestPathIntensity(intnet_chicago, node_id1 = 'V1', node_id2 = 'V300')
-#' 
+#' }
 #' @export
 ShortestPathIntensity.intensitynet <- function(obj,  node_id1, node_id2, weighted = FALSE){
   g <- obj$graph
@@ -419,11 +420,12 @@ ShortestPathIntensity.intensitynet <- function(obj,  node_id1, node_id2, weighte
 #' @return A vector containing the dependence statistics (ascending from order 0). 
 #' 
 #' @examples 
-#' 
+#' \dontrun{
 #' # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 #' g <- intnet_chicago$graph
 #' gen_corr <- NodeGeneralCorrelation(intnet_chicago, dep_type = 'correlation', lag_max = 2, 
 #'                                    intensity = igraph::vertex_attr(g)$intensity)
+#' }
 #' @export
 NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensity){
   g <- obj$graph
@@ -447,7 +449,7 @@ NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensit
 #' added into the vertices attributes
 #' 
 #' @examples 
-#' 
+#' \dontrun{
 #' # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 #' g <- intnet_chicago$graph
 #' data_moran <- NodeLocalCorrelation(intnet_chicago, 
@@ -455,7 +457,7 @@ NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensit
 #'                                    intensity = igraph::vertex_attr(g)$intensity)
 #' moran_i <- data_moran$correlation
 #' intnet <- data_moran$intnet
-#' 
+#' }
 #' @export
 NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity){
   g <- obj$graph
@@ -524,10 +526,10 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' @param ... extra arguments for the class ggplot
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 #' PlotHeatmap(intnet_chicago, heattype='moran')
-#' 
+#' }
 #' @export
 PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, ...){
   g <- obj$graph
@@ -691,10 +693,10 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
 #' @param ... Extra arguments for plotting
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 #' PlotNeighborhood(intnet_chicago, node_id = 'V300')
-#' 
+#' }
 #' @export
 PlotNeighborhood.intensitynet <- function(obj, node_id, ...){
   g <- obj$graph
@@ -781,11 +783,12 @@ SetNetworkAttribute.intensitynet <- function(obj, where, name, value){
 #' @return intensitynet object delimited by the window (sub-part of the original)
 #' 
 #' @examples
+#' \dontrun{
 #' # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 #' sub_intnet_chicago <- ApplyWindow(intnet_chicago, 
 #'                                   x_coords = c(300, 900), 
 #'                                   y_coords = c(500, 1000))
-#' 
+#' }
 #' @export
 ApplyWindow.intensitynet <- function(obj, x_coords, y_coords){
   g <- obj$graph

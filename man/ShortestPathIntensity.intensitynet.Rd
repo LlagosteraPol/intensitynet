@@ -22,7 +22,8 @@ intensity of the shortest path and the path vertices
 Calculates the shortest path between two vertices and calculates its intensity
 }
 \examples{
+\dontrun{
 # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 ShortestPathIntensity(intnet_chicago, node_id1 = 'V1', node_id2 = 'V300')
-
+}
 }

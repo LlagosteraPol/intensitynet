@@ -17,8 +17,8 @@
 Plot the net and the events in the neighborhood area of the given node
 }
 \examples{
-
+\dontrun{
 # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 PlotNeighborhood(intnet_chicago, node_id = 'V300')
-
+}
 }
