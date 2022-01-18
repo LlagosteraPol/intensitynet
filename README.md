@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# intensitynet
+# IntensityNet
 
 <!-- badges: start -->
 
@@ -15,10 +15,10 @@ presented in the following papers: <br> <br> Eckardt, M., Mateu, J.
 Point Patterns Occurring on Complex Structures in Space and Space-Time:
 An Alternative Network Approach. Journal of Computational and Graphical
 Statistics 27. 312-322 (2017).
-<https://doi.org/10.1080/10618600.2017.1391695> <br> <br> Eckardt, M.,
-Mateu, J. Second-order and local characteristics of network intensity
-functions. TEST 30, 318-340 (2021).
-<https://doi.org/10.1007/s11749-020-00720-4>
+<a href="https://doi.org/10.1080/10618600.2017.1391695" target="_blank">10.1080/10618600.2017.1391695</a>
+<br> <br> Eckardt, M., Mateu, J. Second-order and local characteristics
+of network intensity functions. TEST 30, 318-340 (2021).
+<a href="https://doi.org/10.1007/s11749-020-00720-4" target="_blank">10.1007/s11749-020-00720-4</a>
 
 ## Installation
 
@@ -39,7 +39,7 @@ devtools::install_github("LlagosteraPol/IntensityNet")
 ## Example
 
 This is an example that shows you how to set up IntensityNet and
-calculate and plot the moran-i correlation:
+calculate and plot the Geary-c correlation:
 
 ``` r
 library(intensitynet)
@@ -78,11 +78,17 @@ intnet_chicago <- intensitynet(chicago_adj_mtx,
                                node_coords = chicago_node_coords, 
                                event_coords = assault_coordinates)
 
-#intnet_chicago <- CalculateEventIntensities(intnet_chicago)
+intnet_chicago <- CalculateEventIntensities(intnet_chicago)
+#> Calculating edge intensities...
+#> ================================================================================
+#> Calculating node intensities...
+#> ================================================================================
 
-#data_geary <- NodeLocalCorrelation(intnet_chicago, dep_type = 'geary', intensity = igraph::vertex_attr(intnet_chicago$graph)$intensity)
-#geary_c <- data_geary$correlation
-#intnet_chicago <- data_geary$intnet
+data_geary <- NodeLocalCorrelation(intnet_chicago, dep_type = 'geary', intensity = igraph::vertex_attr(intnet_chicago$graph)$intensity)
+geary_c <- data_geary$correlation
+intnet_chicago <- data_geary$intnet
 
-#PlotHeatmap(intnet_chicago, heattype='geary')
+PlotHeatmap(intnet_chicago, heattype='geary')
 ```
+
+<img src="man/figures/README-example-1.png" width="100%" />
