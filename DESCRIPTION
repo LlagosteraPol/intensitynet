@@ -1,5 +1,5 @@
 Package: intensitynet
-Version: 1.0
+Version: 1.0.0
 Date: 2021-01-12
 Title: Intensity-based Analysis of Spatial Point Patterns Occurring on Complex Networks Structures
 Authors@R: c(person("Pol", "Llagostera", email = "pol.llagostera@udl.cat", role = c("aut", "cre")),
