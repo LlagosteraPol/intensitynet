@@ -21,6 +21,6 @@ Calculates the intensity of the given path
 \dontrun{
 # intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
 short_path <- ShortestPathIntensity(intnet_chicago, node_id1 = 'V1', node_id2 = 'V300')
-PathIntensity(intnet_chicago, short_dist$path)
+PathIntensity(intnet_chicago, short_path$path)
 }
 }
