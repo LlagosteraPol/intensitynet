@@ -26,6 +26,17 @@
 
 \item{...}{extra arguments for the plot}
 }
+\value{
+No return value, same as graphics::plot.
+}
 \description{
 Plot intensitynet object
+}
+\examples{
+
+data("mix_intnet_chicago")
+plot(mix_intnet_chicago) # basic plot
+plot(mix_intnet_chicago, enable_grid = TRUE) # with grid
+plot(mix_intnet_chicago, xy_axes = FALSE) # without axes
+
 }

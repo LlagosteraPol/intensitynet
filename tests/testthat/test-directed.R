@@ -1,4 +1,4 @@
-load("../Dir_Intnet_Chicago_Data.RData")
+data("dir_intnet_chicago")
 
 
 test_that("Calculate edge and nodemeans intensities from a directed network", {

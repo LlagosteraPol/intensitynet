@@ -13,7 +13,7 @@ function EdgeIntensity for all edges.}
 \item{z}{Maximum distance between the event and the edge to consider the event part of the edge.}
 }
 \value{
-intensitynet object where the graph contains all the edge intensities as an attribute
+intensitynet class object where the graph contains all the edge intensities as an attribute
 }
 \description{
 Calculate all the edge intensities of the graph. It's more accurate than using iteratively the 

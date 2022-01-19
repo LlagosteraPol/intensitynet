@@ -1,4 +1,4 @@
-load("../Mix_Intnet_Chicago_Data.RData")
+data("mix_intnet_chicago")
 
 
 

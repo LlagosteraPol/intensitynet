@@ -1,4 +1,4 @@
-load("../Und_Intnet_Chicago_Data.RData")
+data("und_intnet_chicago")
 
 
 test_that('NodeLocalCorrelation function, bad argument handling', {

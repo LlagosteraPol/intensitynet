@@ -1,4 +1,4 @@
-load("../Und_Intnet_Chicago_Data.RData")
+data("und_intnet_chicago")
 
 
 test_that("Calculate edge and nodemeans intensities from an undirected network", {

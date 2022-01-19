@@ -17,7 +17,7 @@ If the edge already contains an intensity, give it directly.}
 \item{z}{Maximum distance between the event and the edge to consider the event part of the edge.}
 }
 \value{
-edge_intensity - Intensity of the edge
+Intensity of the edge
 }
 \description{
 If not calculated, calculates the intesnity of the edge with nodes; node_id1, node_id2. 

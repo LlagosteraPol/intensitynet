@@ -18,20 +18,20 @@ default = 'moran'.}
 \item{intensity}{vector containing the intensity values that which are used to calculate the correlation.}
 }
 \value{
-An intnet object which contains an igraph network with the selected correlation 
+intensitynet class object which contains an igraph network with the selected correlation 
 added into the vertices attributes
 }
 \description{
 Gives node local moran-i or geary-c correlations
 }
 \examples{
-\dontrun{
-# intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
-g <- intnet_chicago$graph
-data_moran <- NodeLocalCorrelation(intnet_chicago, 
+
+data("und_intnet_chicago")
+g <- und_intnet_chicago$graph
+data_moran <- NodeLocalCorrelation(und_intnet_chicago, 
                                    dep_type = 'moran', 
                                    intensity = igraph::vertex_attr(g)$intensity)
 moran_i <- data_moran$correlation
 intnet <- data_moran$intnet
-}
+
 }

@@ -13,12 +13,15 @@ PlotNeighborhood(obj, node_id, ...)
 
 \item{...}{Extra arguments for plotting}
 }
+\value{
+No return value, just plots the neighborhood and the events.
+}
 \description{
 Plot the net and the events in the neighborhood area of the given node
 }
 \examples{
-\dontrun{
-# intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
-PlotNeighborhood(intnet_chicago, node_id = 'V300')
-}
+
+data("und_intnet_chicago")
+PlotNeighborhood(und_intnet_chicago, node_id = 'V300')
+
 }

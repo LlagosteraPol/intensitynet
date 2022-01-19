@@ -28,12 +28,15 @@ the intensity (undirected) or intensity_in (directed) values from the network no
 
 \item{...}{extra arguments for the class ggplot}
 }
+\value{
+The plot of the heatmap with class c("gg", "ggplot")
+}
 \description{
 Plot the network and if specified, the correlation heatmap. Which could be:
 }
 \examples{
-\dontrun{
-# intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
-PlotHeatmap(intnet_chicago, heattype='moran')
-}
+
+data("und_intnet_chicago")
+PlotHeatmap(und_intnet_chicago, heattype='moran')
+
 }

@@ -100,6 +100,7 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
 #' @param obj intensitynetMix object
 #' 
 #' @return intensitynetMix object with a graph containing all the intensities as attributes of its nodes and edges
+#' 
 #' @export
 CalculateEventIntensities.intensitynetMix = function(obj){
   g <- obj$graph
@@ -183,6 +184,16 @@ CalculateEventIntensities.intensitynetMix = function(obj){
 #' @param xy_axes show the x and y axes
 #' @param enable_grid draw a background grid
 #' @param ... extra arguments for the plot
+#' 
+#' @return No return value, same as graphics::plot.
+#' 
+#' @examples
+#' 
+#' data("mix_intnet_chicago")
+#' plot(mix_intnet_chicago) # basic plot
+#' plot(mix_intnet_chicago, enable_grid = TRUE) # with grid
+#' plot(mix_intnet_chicago, xy_axes = FALSE) # without axes
+#' 
 #' @export
 plot.intensitynetMix <- function(x, vertex_labels='none', edge_labels='none', xy_axes=TRUE, enable_grid=FALSE, ...){
   g <- x$graph

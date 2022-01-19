@@ -20,10 +20,10 @@ intensitynet object delimited by the window (sub-part of the original)
 Get the intensitynet object delimited by the given window
 }
 \examples{
-\dontrun{
-# intnet_chicago -> is an intensitynet object, check example from 'intensitynet' function
-sub_intnet_chicago <- ApplyWindow(intnet_chicago, 
+
+data("und_intnet_chicago")
+sub_intnet_chicago <- ApplyWindow(und_intnet_chicago, 
                                   x_coords = c(300, 900), 
                                   y_coords = c(500, 1000))
-}
+
 }

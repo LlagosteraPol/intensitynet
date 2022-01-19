@@ -71,6 +71,7 @@ MeanNodeIntensity.intensitynetDir= function(obj, node_id){
 #' @param obj intensitynetDir object
 #' 
 #' @return intensitynetDir object with a graph containing all the intensities as attributes of its nodes and edges
+#' 
 #' @export
 CalculateEventIntensities.intensitynetDir = function(obj){
   g <- obj$graph
@@ -137,6 +138,16 @@ CalculateEventIntensities.intensitynetDir = function(obj){
 #' @param xy_axes show the x and y axes
 #' @param enable_grid draw a background grid
 #' @param ... extra arguments for the plot
+#' 
+#' @return No return value, same as graphics::plot.
+#' 
+#' @examples
+#' 
+#' data("dir_intnet_chicago")
+#' plot(dir_intnet_chicago) # basic plot
+#' plot(dir_intnet_chicago, enable_grid = TRUE) # with grid
+#' plot(dir_intnet_chicago, xy_axes = FALSE) # without axes
+#' 
 #' @export
 plot.intensitynetDir <- function(x, vertex_labels='none', edge_labels='none', 
                                  xy_axes=TRUE, enable_grid=FALSE, ...){
