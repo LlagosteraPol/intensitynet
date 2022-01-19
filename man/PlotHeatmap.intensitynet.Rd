@@ -19,7 +19,7 @@
 correlation. The correlations will use the indicated intensity type.
 The function also allow to only plot the intensity heatmap 'v_intensity' for vertices or 'e_intensity' for edges.}
 
-\item{intensity_type}{name of the intenisty used to plot the heatmap. For undirected networks: 'intensity'. 
+\item{intensity_type}{name of the intensity used to plot the heatmap. For undirected networks: 'intensity'. 
 For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
 'intensity_und' or 'intensity_all'. If the intensity parameter is NULL, the function will use, if exist, 
 the intensity (undirected) or intensity_in (directed) values from the network nodes.}

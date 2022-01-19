@@ -14,7 +14,8 @@
 #' distances = <matrix>
 #' 
 #' @examples
-#'
+#' 
+#' \dontrun{
 #' library(spatstat)
 #' data(chicago)
 #' chicago_df <- as.data.frame(chicago[["data"]]) # Get as dataframe the data from Chicago
@@ -37,7 +38,7 @@
 #' intnet_chicago <- intensitynet(chicago_adj_mtx, 
 #'                                node_coords = chicago_node_coords, 
 #'                                event_coords = assault_coordinates)
-#' 
+#' }
 #' @export
 intensitynet <- function(adjacency_mtx, node_coords, event_coords, graph_type = 'undirected'){
   
@@ -112,7 +113,7 @@ NodeGeneralCorrelation <- function(obj, dep_type, lag_max, intensity){
 #' 
 #' @name NodeLocalCorrelation
 #' 
-#' @source *Luc Anselin. A Local Indicator of Multivariate SpatialAssociation: Extending Geary's c, Geographical Analysis 2018; doi: https://doi.org/10.1111/gean.12164
+#' @source *"A Local Indicator of Multivariate SpatialAssociation: Extending Geary's c, Geographical Analysis" Luc Anselin (2018) <doi:10.1111/gean.12164>
 #'
 #' @param obj intensitynet object
 #' @param dep_type 'moran', 'getis' or 'geary'. Type of local correlation to be computed (Moran-i, Getis-Gstar, Geary-c*),
@@ -146,7 +147,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' @param heattype 'moran': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
 #' correlation. The correlations will use the indicated intensity type.
 #' The function also allow to only plot the intensity heatmap 'v_intensity' for vertices or 'e_intensity' for edges.
-#' @param intensity_type name of the intenisty used to plot the heatmap. For undirected networks: 'intensity'. 
+#' @param intensity_type name of the intensity used to plot the heatmap. For undirected networks: 'intensity'. 
 #' For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
 #' 'intensity_und' or 'intensity_all'. If the intensity parameter is NULL, the function will use, if exist, 
 #' the intensity (undirected) or intensity_in (directed) values from the network nodes.
@@ -304,7 +305,7 @@ LaplacianGearyRepresentation <- function(obj,  intensity_type = 'none'){
 }
 
 
-#' If not calculated, calculates the intesnity of the edge with nodes; node_id1, node_id2. 
+#' If not calculated, calculates the intensity of the edge with nodes; node_id1, node_id2. 
 #' If the edge already contains an intensity, give it directly.
 #'
 #' @name EdgeIntensity.intensitynet
@@ -659,7 +660,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' @param heattype 'moran': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
 #' correlation. The correlations will use the indicated intensity type.
 #' The function also allow to only plot the intensity heatmap 'v_intensity' for vertices or 'e_intensity' for edges.
-#' @param intensity_type name of the intenisty used to plot the heatmap. For undirected networks: 'intensity'. 
+#' @param intensity_type name of the intensity used to plot the heatmap. For undirected networks: 'intensity'. 
 #' For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
 #' 'intensity_und' or 'intensity_all'. If the intensity parameter is NULL, the function will use, if exist, 
 #' the intensity (undirected) or intensity_in (directed) values from the network nodes.

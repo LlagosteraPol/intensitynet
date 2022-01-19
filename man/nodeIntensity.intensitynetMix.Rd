@@ -3,7 +3,7 @@
 \name{nodeIntensity.intensitynetMix}
 \alias{nodeIntensity.intensitynetMix}
 \alias{MeanNodeIntensity.intensitynetMix}
-\title{Given a node, calculates its mean intensites depending on the edges associated with the node, those intensities are: 
+\title{Given a node, calculates its mean intensities depending on the edges associated with the node, those intensities are: 
 in, out (for directed edges), undirected and total intensity.}
 \usage{
 \method{MeanNodeIntensity}{intensitynetMix}(obj, node_id)
@@ -17,6 +17,6 @@ in, out (for directed edges), undirected and total intensity.}
 mean intensities of the given node for undirected edges, in and out directed and total intensity.
 }
 \description{
-Given a node, calculates its mean intensites depending on the edges associated with the node, those intensities are: 
+Given a node, calculates its mean intensities depending on the edges associated with the node, those intensities are: 
 in, out (for directed edges), undirected and total intensity.
 }

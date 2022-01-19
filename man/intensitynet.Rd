@@ -31,6 +31,7 @@ coordinates of the nodes and the coordinates of the events.
 }
 \examples{
 
+\dontrun{
 library(spatstat)
 data(chicago)
 chicago_df <- as.data.frame(chicago[["data"]]) # Get as dataframe the data from Chicago
@@ -53,5 +54,5 @@ assault_coordinates <- data.frame(xcoord = chicago_assault[,1],
 intnet_chicago <- intensitynet(chicago_adj_mtx, 
                                node_coords = chicago_node_coords, 
                                event_coords = assault_coordinates)
-
+}
 }

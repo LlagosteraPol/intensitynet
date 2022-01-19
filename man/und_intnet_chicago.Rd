@@ -3,7 +3,7 @@
 \docType{data}
 \name{und_intnet_chicago}
 \alias{und_intnet_chicago}
-\title{This data is an intenistynet object containing an undirected network. 
+\title{This data is an intensitynet object containing an undirected network. 
 The base data used is from Chicago, extracted from the spatstat package.}
 \format{
 An object of class \code{intensitynet} (inherits from \code{intensitynetUnd}) of length 4.
@@ -15,7 +15,7 @@ An object of class \code{intensitynet} (inherits from \code{intensitynetUnd}) of
 und_intnet_chicago
 }
 \description{
-This data is an intenistynet object containing an undirected network. 
+This data is an intensitynet object containing an undirected network. 
 The base data used is from Chicago, extracted from the spatstat package.
 }
 \keyword{datasets}

@@ -3,7 +3,7 @@
 \docType{data}
 \name{dir_intnet_chicago}
 \alias{dir_intnet_chicago}
-\title{This data is an intenistynet object containing a directed network. 
+\title{This data is an intensitynet object containing a directed network. 
 The base data used is from Chicago, extracted from the spatstat package.}
 \format{
 An object of class \code{intensitynet} (inherits from \code{intensitynetDir}) of length 4.
@@ -15,7 +15,7 @@ An object of class \code{intensitynet} (inherits from \code{intensitynetDir}) of
 dir_intnet_chicago
 }
 \description{
-This data is an intenistynet object containing a directed network. 
+This data is an intensitynet object containing a directed network. 
 The base data used is from Chicago, extracted from the spatstat package.
 }
 \keyword{datasets}

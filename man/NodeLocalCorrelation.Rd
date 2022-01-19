@@ -4,7 +4,7 @@
 \alias{NodeLocalCorrelation}
 \title{Gives node local moran-i or geary-c correlations}
 \source{
-*Luc Anselin. A Local Indicator of Multivariate SpatialAssociation: Extending Geary's c, Geographical Analysis 2018; doi: https://doi.org/10.1111/gean.12164
+*"A Local Indicator of Multivariate SpatialAssociation: Extending Geary's c, Geographical Analysis" Luc Anselin (2018) <doi:10.1111/gean.12164>
 }
 \usage{
 NodeLocalCorrelation(obj, dep_type = "moran", intensity)
