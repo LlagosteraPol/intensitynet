@@ -14,8 +14,7 @@
 #' distances = <matrix>
 #' 
 #' @examples
-#' 
-#' \dontrun{
+#'
 #' library(spatstat)
 #' data(chicago)
 #' chicago_df <- as.data.frame(chicago[["data"]]) # Get as dataframe the data from Chicago
@@ -38,7 +37,7 @@
 #' intnet_chicago <- intensitynet(chicago_adj_mtx, 
 #'                                node_coords = chicago_node_coords, 
 #'                                event_coords = assault_coordinates)
-#' }
+#' 
 #' @export
 intensitynet <- function(adjacency_mtx, node_coords, event_coords, graph_type = 'undirected'){
   
@@ -124,7 +123,7 @@ NodeGeneralCorrelation <- function(obj, dep_type, lag_max, intensity){
 #' added into the vertices attributes
 #' 
 #' @examples 
-#' 
+#' \dontrun{
 #' data("und_intnet_chicago")
 #' g <- und_intnet_chicago$graph
 #' data_moran <- NodeLocalCorrelation(und_intnet_chicago, 
@@ -132,7 +131,7 @@ NodeGeneralCorrelation <- function(obj, dep_type, lag_max, intensity){
 #'                                    intensity = igraph::vertex_attr(g)$intensity)
 #' moran_i <- data_moran$correlation
 #' intnet <- data_moran$intnet
-#' 
+#' }
 #' @export
 NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
   UseMethod("NodeLocalCorrelation")
