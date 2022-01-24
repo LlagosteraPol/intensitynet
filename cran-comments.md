@@ -3,6 +3,10 @@
 * ubuntu 16.04 (on travis-ci), R 3.6.3
 * win-builder (devel)
 
+## 3rd Resubmission
+I have:
+
+* Added \dontrun{} to the examples with more than 10s of elapsed time.
 
 ## 2nd Resubmission
 In this version I have:
