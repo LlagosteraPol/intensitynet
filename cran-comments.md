@@ -3,7 +3,16 @@
 * ubuntu 16.04 (on travis-ci), R 3.6.3
 * win-builder (devel)
 
-## Resubmission
+
+## 2nd Resubmission
+In this version I have:
+
+* Removed next line marks '\ n' from description in DESCRIPTION file
+
+* Changed all print()/cat() by message()
+
+
+## 1st Resubmission
 This is a resubmission. In this version I have:
 
 * Shortened the length of the title to less than 65 characters.

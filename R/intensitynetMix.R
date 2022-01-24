@@ -119,7 +119,7 @@ CalculateEventIntensities.intensitynetMix = function(obj){
   g <- tmp_obj$graph
   
   pb = utils::txtProgressBar(min = 0, max = igraph::gorder(g), initial = 0) 
-  cat("Calculating node intensities...\n")
+  message("Calculating node intensities...")
   
   # check if the intensities was previously calculated, if not, calculate them
   for(node_id in igraph::V(g)){

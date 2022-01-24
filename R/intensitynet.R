@@ -322,7 +322,7 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2, z = 5){
   }
   
   if(z <= 0){
-    print("Warning: 'z' cannot be equal or less than 0, using default.")
+    message("Warning: 'z' cannot be equal or less than 0, using default.")
     z <- 5
   }
   
@@ -392,7 +392,7 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2, z = 5){
 #' 
 AllEdgeIntensities.intensitynet <- function(obj, z = 5){
   if(z <= 0){
-    print("Warning: 'z' cannot be equal or less than 0, using default.")
+    message("Warning: 'z' cannot be equal or less than 0, using default.")
     z <- 5
   }
   g <- obj$graph
@@ -417,7 +417,7 @@ AllEdgeIntensities.intensitynet <- function(obj, z = 5){
   
   #start_time <- Sys.time() # debug only
   pb = utils::txtProgressBar(min = 0, max = nrow(event_coords), initial = 0) 
-  cat("Calculating edge intensities...\n")
+  message("Calculating edge intensities...")
   
   e_count <- 0
   for(row in 1:nrow(event_coords)){
@@ -459,13 +459,13 @@ AllEdgeIntensities.intensitynet <- function(obj, z = 5){
     # If the intensity of all edges is already calculated return the object
     if(row == 1){
       if(e_count == length(igraph::E(g))){
-        print("Intensities were already calculated.")
+        message("Intensities were already calculated.")
         return(obj)
       } 
     }
   }
   close(pb)
-  #cat(paste0("Time: ", Sys.time() - start_time, "\n")) # debug only
+  #message(paste0("Time: ", Sys.time() - start_time)) # debug only
   
   for (edge_row in 1:nrow(edge_events)) {
     # Distance between the node and its neighbor
@@ -785,7 +785,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
                           value = sig_dstr)
     
   }else if(heattype == 'getis'){ # Local Getis-G*
-    print("Needs implementation")
+    message("Needs implementation")
     # TODO: Implement Getis G.
     
     # locgg <- spdep::localG(x = intensity, listw = b_listw)

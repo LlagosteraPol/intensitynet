@@ -584,7 +584,7 @@ PointToSegment <- function(obj) {
   
   dx <- ep[1] - xx
   dy <- ep[2] - yy
-  #cat(paste0("PointToSegment time: ", Sys.time() - start_time, "\n")) # debug only
+  #message(paste0("PointToSegment time: ", Sys.time() - start_time)) # debug only
   return(sqrt(dx * dx + dy * dy))
 }
 
