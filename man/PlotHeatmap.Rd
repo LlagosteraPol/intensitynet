@@ -36,7 +36,9 @@ Plot the network and if specified, the correlation heatmap. Which could be:
 }
 \examples{
 
+\dontrun{
 data("und_intnet_chicago")
 PlotHeatmap(und_intnet_chicago, heattype='moran')
+}
 
 }

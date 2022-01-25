@@ -157,9 +157,11 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' data("und_intnet_chicago")
 #' PlotHeatmap(und_intnet_chicago, heattype='moran')
-#'
+#' }
+#' 
 #' @export
 PlotHeatmap <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, ...){
   UseMethod("PlotHeatmap")
@@ -670,8 +672,10 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' data("und_intnet_chicago")
 #' PlotHeatmap(und_intnet_chicago, heattype='moran')
+#' }
 #' 
 #' @export
 PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, ...){
