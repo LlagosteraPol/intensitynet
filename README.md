@@ -42,7 +42,7 @@ This is an example that shows you how to set up IntensityNet and
 calculate and plot the Geary-c correlation:
 
 ``` r
-library(intensitynet)
+library(IntensityNet)
 library(spatstat)
 #> Loading required package: spatstat.data
 #> Loading required package: spatstat.geom

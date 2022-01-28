@@ -54,6 +54,7 @@ This is an example that shows you how to set up IntensityNet and calculate and p
 library(IntensityNet)
 library(spatstat)
 data(chicago)
+
 chicago_df <- as.data.frame(chicago[["data"]]) # Get as dataframe the data from Chicago
 
 # Get the adjacency matrix. One way is to create an igraph object from the edge coordinates.
