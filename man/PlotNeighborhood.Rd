@@ -7,7 +7,7 @@
 PlotNeighborhood(obj, node_id, ...)
 }
 \arguments{
-\item{obj}{Intensitynet object}
+\item{obj}{intensitynet object}
 
 \item{node_id}{Id of the node which the plot will be focused}
 

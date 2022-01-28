@@ -57,6 +57,8 @@ library(spatstat)
 #> spatstat 2.3-0       (nickname: 'That's not important right now') 
 #> For an introduction to spatstat, type 'beginner'
 data(chicago)
+
+
 chicago_df <- as.data.frame(chicago[["data"]]) # Get as dataframe the data from Chicago
 
 # Get the adjacency matrix. One way is to create an igraph object from the edge coordinates.
