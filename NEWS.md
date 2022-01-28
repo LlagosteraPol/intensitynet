@@ -1,3 +1,3 @@
-# intensitynet 1.0.0
+# IntensityNet 1.0.1
 
-* Added a `NEWS.md` file to track changes to the package.
+* Modified slightly the package name for better reading (intensitynet -> IntensityNet)

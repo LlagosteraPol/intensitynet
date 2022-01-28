@@ -172,7 +172,7 @@ PlotHeatmap <- function(obj, heattype = 'none', intensity_type = 'none', net_ver
 #' 
 #' @name PlotNeighborhood
 #' 
-#' @param obj Intensitynet object
+#' @param obj intensitynet object
 #' @param node_id Id of the node which the plot will be focused
 #' @param ... Extra arguments for plotting
 #' 

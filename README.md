@@ -26,7 +26,7 @@ You can install the released version of intensitynet from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("intensitynet")
+install.packages("IntensityNet")
 ```
 
 And the development version from [GitHub](https://github.com/) with:
