@@ -1,3 +1,9 @@
-# IntensityNet 1.0.1
+# intensitynet 1.0.1
 
-* Modified slightly the package name for better reading (intensitynet -> IntensityNet)
+* Modified DESCRIPTION name references 'IntensityNet' to 'intensitynet' to match the package name.
+
+* Added option to select event the error distance. Now the user can determine the maximum distance from an event to an edge to be considered part of that edge.
+
+* Added an option to the plots ('plot' and 'PlotHeatmap' functions) to also plot the events. The events will be displayed as orange squares.
+
+* Fixed bug when using the 'plot()' function with intensitynet objects which showed properly the axis in a .pdf but not in a dynamic plot. 

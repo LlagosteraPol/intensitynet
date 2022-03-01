@@ -1,14 +1,14 @@
-
-
 #' Constructor of the class intensitynet. In order to create an intensitynet object, it is needed; an adjacency matrix, the
 #' coordinates of the nodes and the coordinates of the events.
 #'
 #' @name intensitynet
 #'
 #' @param adjacency_mtx Network adjacency matrix
-#' @param node_coords Nodes latitude and longitude matrix
-#' @param event_coords Events latitude and longitude matrix
+#' @param node_coords Nodes latitude and longitude matrix (coordinates)
+#' @param event_coords Events latitude and longitude matrix (coordinates)
 #' @param graph_type Network type: 'undirected' (default), 'directed' or 'mixed' 
+#' @param event_correction Value that determines how far can be an event to be considered part of a segment (default 5). 
+#' This value highly depends on the given coordinate system
 #'
 #' @return intensitynet class object containing: graph = <igraph>, events = <matrix>, graph_type = c('directed', 'undirected', 'mixed'), 
 #' distances = <matrix>
@@ -39,7 +39,7 @@
 #'                                event_coords = assault_coordinates)
 #' 
 #' @export
-intensitynet <- function(adjacency_mtx, node_coords, event_coords, graph_type = 'undirected'){
+intensitynet <- function(adjacency_mtx, node_coords, event_coords, graph_type = 'undirected', event_correction = 5){
   
   if (is.data.frame(adjacency_mtx)) {
     adjacency_mtx <- as.matrix(adjacency_mtx)
@@ -68,7 +68,8 @@ intensitynet <- function(adjacency_mtx, node_coords, event_coords, graph_type = 
   class(net_setup) <- "netTools"
   g <- InitGraph(net_setup)
   
-  intnet <- list(graph = g, events = event_coords, graph_type = graph_type, distances_mtx = dist_mtx)
+  intnet <- list(graph = g, events = event_coords, graph_type = graph_type, 
+                 distances_mtx = dist_mtx, event_correction = event_correction)
   attr(intnet, "class") <- "intensitynet"
   # Select the proper class
   switch(graph_type, 
@@ -151,6 +152,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' 'intensity_und' or 'intensity_all'. If the intensity parameter is NULL, the function will use, if exist, 
 #' the intensity (undirected) or intensity_in (directed) values from the network nodes.
 #' @param net_vertices chosen vertices to plot the heatmap (or it related edges in case to plot the edge heatmap)
+#' @param show_events option to show the events as red dots, FALSE by default
 #' @param ... extra arguments for the class ggplot
 #' 
 #' @return The plot of the heatmap with class c("gg", "ggplot")
@@ -163,7 +165,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' }
 #' 
 #' @export
-PlotHeatmap <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, ...){
+PlotHeatmap <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, ...){
   UseMethod("PlotHeatmap")
 }
 
@@ -298,11 +300,6 @@ AllEdgeIntensities <- function(obj, z){
 
 SetNetworkAttribute <- function(obj, where, name, value){
   UseMethod("SetNetworkAttribute")
-}
-
-
-LaplacianGearyRepresentation <- function(obj,  intensity_type = 'none'){
-  UseMethod("LaplacianGearyRepresentation")
 }
 
 
@@ -508,7 +505,10 @@ PathIntensity.intensitynet <- function(obj, path_nodes){
       next
     }
     
-    path_intensity <- path_intensity + Reduce('+', EdgeIntensity(obj, prev, node_id))
+    path_intensity <- path_intensity + Reduce('+', EdgeIntensity(obj = obj, 
+                                                                 node_id1 = prev, 
+                                                                 node_id2 = node_id,
+                                                                 z = obj$event_correction))
     
     prev <- node_id
   }
@@ -665,7 +665,8 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
 #' 'intensity_und' or 'intensity_all'. If the intensity parameter is NULL, the function will use, if exist, 
 #' the intensity (undirected) or intensity_in (directed) values from the network nodes.
-#' @param net_vertices chosen vertices to plot the heatmap (or it related edges in case to plot the edge heatmap)
+#' @param net_vertices chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)
+#' @param show_events option to show the events as red dots, FALSE by default
 #' @param ... extra arguments for the class ggplot
 #' 
 #' @return The plot of the heatmap with class c("gg", "ggplot")
@@ -678,7 +679,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' }
 #' 
 #' @export
-PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, ...){
+PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, ...){
   g <- obj$graph
   adj_mtx <- igraph::as_adj(graph = g)
   adj_listw <- spdep::mat2listw(adj_mtx)
@@ -824,7 +825,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
                           ycoord = node_coords$ycoord, 
                           value = NA)
   }
-  geoplot_obj <- list(graph = g, data_df = data_df, net_vertices = net_vertices, mode = heattype)
+  geoplot_obj <- list(intnet = obj, data_df = data_df, net_vertices = net_vertices, mode = heattype, show_events = show_events)
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedGgplot2(geoplot_obj, ...)
@@ -835,7 +836,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
 #' 
 #' @name PlotNeighborhood.intensitynet
 #' 
-#' @param obj Intensitynet object
+#' @param obj intensitynet object
 #' @param node_id Id of the node which the plot will be focused
 #' @param ... Extra arguments for plotting
 #' 
@@ -915,7 +916,8 @@ SetNetworkAttribute.intensitynet <- function(obj, where, name, value){
   intnet <- list(graph = g, 
                  events = obj$events, 
                  graph_type = obj$graph_type, 
-                 distances_mtx = obj$distances_mtx)
+                 distances_mtx = obj$distances_mtx,
+                 event_correction = obj$event_correction)
   attr(intnet, 'class') <- class(obj)
   intnet
 }

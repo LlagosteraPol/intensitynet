@@ -43,9 +43,10 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
       rownames(und_mat) <- node_id
       
       for (neighbor_id in und_neighbors){
-        und_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, 
-                                                                                   igraph::V(g)[node_id]$name, 
-                                                                                   igraph::V(g)[neighbor_id]$name)
+        und_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj = obj, 
+                                                                                   node_id1 = igraph::V(g)[node_id]$name, 
+                                                                                   node_id2 = igraph::V(g)[neighbor_id]$name,
+                                                                                   z = obj$event_correction)
       }
       und_intensity <- Reduce('+', und_mat) / length(und_neighbors)
     }else{
@@ -58,9 +59,10 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
       rownames(in_mat) <- node_id
       
       for (neighbor_id in in_neighbors){
-        in_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, 
-                                                                                  igraph::V(g)[node_id]$name, 
-                                                                                  igraph::V(g)[neighbor_id]$name)
+        in_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj = obj, 
+                                                                                  node_id1 = igraph::V(g)[node_id]$name, 
+                                                                                  node_id2 = igraph::V(g)[neighbor_id]$name,
+                                                                                  z = obj$event_correction)
       }
       in_intensity <- Reduce('+', in_mat) / length(in_neighbors)
     }else{
@@ -73,9 +75,10 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
       rownames(out_mat) <- node_id
       
       for (neighbor_id in out_neighbors){
-        out_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj, 
-                                                                                   igraph::V(g)[node_id]$name, 
-                                                                                   igraph::V(g)[neighbor_id]$name)
+        out_mat[as.character(node_id), as.character(neighbor_id)] <- EdgeIntensity(obj = obj, 
+                                                                                   node_id1 = igraph::V(g)[node_id]$name, 
+                                                                                   node_id2 = igraph::V(g)[neighbor_id]$name,
+                                                                                   z = obj$event_correction)
       }
       out_intensity <- Reduce('+', out_mat) / length(out_neighbors)
     }else{
@@ -183,6 +186,7 @@ CalculateEventIntensities.intensitynetMix = function(obj){
 #' @param edge_labels list -> labels for the edges
 #' @param xy_axes show the x and y axes
 #' @param enable_grid draw a background grid
+#' @param show_events option to show the events as orange squares, FALSE by default
 #' @param ... extra arguments for the plot
 #' 
 #' @return No return value, same as graphics::plot.
@@ -195,7 +199,8 @@ CalculateEventIntensities.intensitynetMix = function(obj){
 #' plot(mix_intnet_chicago, xy_axes = FALSE) # without axes
 #' 
 #' @export
-plot.intensitynetMix <- function(x, vertex_labels='none', edge_labels='none', xy_axes=TRUE, enable_grid=FALSE, ...){
+plot.intensitynetMix <- function(x, vertex_labels='none', edge_labels='none', 
+                                 xy_axes=TRUE, enable_grid=FALSE, show_events = FALSE, ...){
   g <- x$graph
   
   v_label <- switch(vertex_labels, 
@@ -211,13 +216,13 @@ plot.intensitynetMix <- function(x, vertex_labels='none', edge_labels='none', xy
                     intensity = {round(igraph::edge_attr(g)$intensity, 4)},
                     '')
   
-  geoplot_obj <- list(graph=g, distances_mtx = x$distances_mtx)
+  geoplot_obj <- list(intnet = x, 
+                      vertex_labels = v_label, 
+                      edge_labels = e_label, 
+                      xy_axes = xy_axes, 
+                      enable_grid = enable_grid, 
+                      show_events = show_events)
   class(geoplot_obj) <- "netTools"
   
-  GeoreferencedPlot(geoplot_obj, 
-                    vertex_labels = v_label, 
-                    edge_labels = e_label, 
-                    xy_axes = xy_axes, 
-                    enable_grid = enable_grid, 
-                    ...)
+  GeoreferencedPlot(geoplot_obj, ...)
 }

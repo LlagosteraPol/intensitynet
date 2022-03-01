@@ -13,12 +13,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-# IntensityNet
+# intensitynet
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The IntensityNet package provides tools to analyze point patterns in
+The intensitynet package provides tools to analyze point patterns in
 space over planar network structures derived from graph-related
 intensity measures for undirected, directed, and mixed networks. This
 package is based on the research done by Eckardt, M., Mateu, J.
@@ -37,21 +37,21 @@ of network intensity functions. TEST 30, 318-340 (2021).
 You can install the released version of intensitynet from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("IntensityNet")
+install.packages("intensitynet")
 ```
 
 And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("LlagosteraPol/IntensityNet")
+devtools::install_github("LlagosteraPol/intensitynet")
 ```
 ## Example
 
-This is an example that shows you how to set up IntensityNet and calculate and plot the Geary-c correlation:
+This is an example that shows you how to set up intensitynet and calculate and plot the Geary-c correlation:
 
 ```{r example}
-library(IntensityNet)
+library(intensitynet)
 library(spatstat)
 data(chicago)
 

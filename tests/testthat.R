@@ -1,4 +1,4 @@
 library(testthat)
-library(IntensityNet)
+library(intensitynet)
 
-test_check("IntensityNet")
+test_check("intensitynet")

@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# IntensityNet
+# intensitynet
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-The IntensityNet package provides tools to analyze point patterns in
+The intensitynet package provides tools to analyze point patterns in
 space over planar network structures derived from graph-related
 intensity measures for undirected, directed, and mixed networks. This
 package is based on the research done by Eckardt, M., Mateu, J.
@@ -26,7 +26,7 @@ You can install the released version of intensitynet from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("IntensityNet")
+install.packages("intensitynet")
 ```
 
 And the development version from [GitHub](https://github.com/) with:
