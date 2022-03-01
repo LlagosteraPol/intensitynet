@@ -33,16 +33,16 @@ And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("LlagosteraPol/IntensityNet")
+devtools::install_github("LlagosteraPol/intensitynet")
 ```
 
 ## Example
 
-This is an example that shows you how to set up IntensityNet and
+This is an example that shows you how to set up intensitynet and
 calculate and plot the Geary-c correlation:
 
 ``` r
-library(IntensityNet)
+library(intensitynet)
 library(spatstat)
 #> Loading required package: spatstat.data
 #> Loading required package: spatstat.geom
