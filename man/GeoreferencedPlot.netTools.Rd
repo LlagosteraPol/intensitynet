@@ -4,25 +4,12 @@
 \alias{GeoreferencedPlot.netTools}
 \title{Plot the given network using its node coordinates}
 \usage{
-\method{GeoreferencedPlot}{netTools}(
-  obj,
-  vertex_labels = "",
-  edge_labels = "",
-  xy_axes = TRUE,
-  enable_grid = FALSE,
-  ...
-)
+\method{GeoreferencedPlot}{netTools}(obj, ...)
 }
 \arguments{
-\item{obj}{netTools object -> list(graph: igraph, distances_mtx: distances matrix))}
-
-\item{vertex_labels}{list -> labels for the vertices}
-
-\item{edge_labels}{list -> labels for the edges}
-
-\item{xy_axes}{show the x and y axes}
-
-\item{enable_grid}{draw a background grid}
+\item{obj}{netTools object -> list(intnet: intensitynet object, vertex_labels: list of labels for the vertices,
+edge_labels: list of labels for the edges, xy_axes: boolean to show or not the x and y axes, 
+enable_grid: boolean to draw or not a background grid, show_events: boolean to show or not the events as orange squares)}
 
 \item{...}{extra arguments for the plot}
 }

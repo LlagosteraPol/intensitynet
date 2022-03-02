@@ -9,17 +9,21 @@ intensitynet(
   adjacency_mtx,
   node_coords,
   event_coords,
-  graph_type = "undirected"
+  graph_type = "undirected",
+  event_correction = 5
 )
 }
 \arguments{
 \item{adjacency_mtx}{Network adjacency matrix}
 
-\item{node_coords}{Nodes latitude and longitude matrix}
+\item{node_coords}{Nodes latitude and longitude matrix (coordinates)}
 
-\item{event_coords}{Events latitude and longitude matrix}
+\item{event_coords}{Events latitude and longitude matrix (coordinates)}
 
 \item{graph_type}{Network type: 'undirected' (default), 'directed' or 'mixed'}
+
+\item{event_correction}{Value that determines how far can be an event to be considered part of a segment (default 5). 
+This value highly depends on the given coordinate system}
 }
 \value{
 intensitynet class object containing: graph = <igraph>, events = <matrix>, graph_type = c('directed', 'undirected', 'mixed'), 

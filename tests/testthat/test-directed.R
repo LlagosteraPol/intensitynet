@@ -81,7 +81,7 @@ test_that('Node local getis g', {
 test_that('Path Intensity', {
   intnet <- dir_intnet_chicago
   
-  short_dist <- ShortestPathIntensity(intnet, node_id1 = 'V1', node_id2 = 'V150')
+  short_dist <- ShortestPathIntensity(intnet, node_id1 = 'V1', node_id2 = 'V300')
   int_path <- short_dist$intensity
   
   expect_gte(int_path, 0)

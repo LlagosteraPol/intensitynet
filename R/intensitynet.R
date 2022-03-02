@@ -320,8 +320,8 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2, z = 5){
     stop("The two vertices cannot be the same.")
   }
   
-  if(z <= 0){
-    message("Warning: 'z' cannot be equal or less than 0, using default.")
+  if(z < 0){
+    message("Warning: 'z' cannot be less than 0, using default.")
     z <- 5
   }
   

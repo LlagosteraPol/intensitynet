@@ -86,7 +86,11 @@ CalculateEventIntensities.intensitynetUnd = function(obj){
   #g <- g %>% igraph::set_vertex_attr(name = "intensity", value = as.matrix(counts))
   g <- igraph::set_vertex_attr(g, name = "intensity", value = as.matrix(counts))
   
-  intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances_mtx = obj$distances_mtx)
+  intnet <- list(graph = g, 
+                 events = obj$events, 
+                 graph_type = obj$graph_type, 
+                 distances_mtx = obj$distances_mtx,
+                 event_correction = obj$event_correction)
   attr(intnet, 'class') <- c("intensitynet", "intensitynetUnd")
   return(intnet)
 }

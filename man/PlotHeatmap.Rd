@@ -9,6 +9,7 @@ PlotHeatmap(
   heattype = "none",
   intensity_type = "none",
   net_vertices = NULL,
+  show_events = FALSE,
   ...
 )
 }
@@ -25,6 +26,8 @@ For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'i
 the intensity (undirected) or intensity_in (directed) values from the network nodes.}
 
 \item{net_vertices}{chosen vertices to plot the heatmap (or it related edges in case to plot the edge heatmap)}
+
+\item{show_events}{option to show the events as red dots, FALSE by default}
 
 \item{...}{extra arguments for the class ggplot}
 }

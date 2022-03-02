@@ -124,7 +124,11 @@ CalculateEventIntensities.intensitynetDir = function(obj){
   g <- igraph::set_vertex_attr(g, name = "intensity_all", value = as.matrix(in_counts))
   g <- igraph::set_vertex_attr(g, name = "intensity_out", value = as.matrix(out_counts))
   
-  intnet <- list(graph = g, events = obj$events, graph_type = obj$graph_type, distances_mtx = obj$distances_mtx)
+  intnet <- list(graph = g, 
+                 events = obj$events, 
+                 graph_type = obj$graph_type, 
+                 distances_mtx = obj$distances_mtx,
+                 event_correction = obj$event_correction)
   attr(intnet, 'class') <- c("intensitynet", "intensitynetDir")
   return(intnet)
 }

@@ -7,9 +7,10 @@
 \method{GeoreferencedGgplot2}{netTools}(obj, ...)
 }
 \arguments{
-\item{obj}{netTools object -> list(graph: igraph, data_df: dataframe(intensity: intensity of the nodes, 
-xcoord: x coordinates of the nodes, ycoord: y coordinates of the nodes, heattype: data which the heatmap will refer), 
-mode: ('moran', 'getis' or 'intensity'))}
+\item{obj}{netTools object -> list(intnet: intensitynet object, 
+data_df: dataframe(intensity: intensity of the nodes, xcoord: x coordinates of the nodes, 
+ycoord: y coordinates of the nodes, heattype: data which the heatmap will refer,
+mode: ('moran', 'getis' or 'intensity'), show_events: boolean to show or not the events as orange squares)}
 
 \item{...}{extra arguments for the ggplot}
 }

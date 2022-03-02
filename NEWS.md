@@ -1,4 +1,4 @@
-# intensitynet 1.0.1
+# intensitynet 1.1
 
 * Modified DESCRIPTION name references 'IntensityNet' to 'intensitynet' to match the package name.
 

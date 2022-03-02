@@ -10,6 +10,7 @@
   edge_labels = "none",
   xy_axes = TRUE,
   enable_grid = FALSE,
+  show_events = FALSE,
   ...
 )
 }
@@ -23,6 +24,8 @@
 \item{xy_axes}{show the x and y axes}
 
 \item{enable_grid}{draw a background grid}
+
+\item{show_events}{option to show the events as orange squares, FALSE by default}
 
 \item{...}{extra arguments for the plot}
 }
