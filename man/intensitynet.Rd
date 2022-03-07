@@ -8,7 +8,7 @@ coordinates of the nodes and the coordinates of the events.}
 intensitynet(
   adjacency_mtx,
   node_coords,
-  event_coords,
+  event_data,
   graph_type = "undirected",
   event_correction = 5
 )
@@ -18,7 +18,7 @@ intensitynet(
 
 \item{node_coords}{Nodes latitude and longitude matrix (coordinates)}
 
-\item{event_coords}{Events latitude and longitude matrix (coordinates)}
+\item{event_data}{DataFrame with event latitude and longitude coordinates (mandatory columns) and optional attributes related to the events}
 
 \item{graph_type}{Network type: 'undirected' (default), 'directed' or 'mixed'}
 
@@ -47,15 +47,10 @@ chicago_net <- igraph::graph_from_edgelist(edges)
 chicago_adj_mtx <- as.matrix(igraph::as_adjacency_matrix(chicago_net))
 chicago_node_coords <- data.frame(xcoord = chicago[["domain"]][["vertices"]][["x"]], 
                                  ycoord = chicago[["domain"]][["vertices"]][["y"]])
-
-# Create a dataframe with the coordinates of the events 'assault'
-chicago_assault <- chicago_df[chicago_df$marks == 'assault',]
-assault_coordinates <- data.frame(xcoord = chicago_assault[,1],
-                                  ycoord = chicago_assault[,2])
                                   
 # Create the intensitynet object, in this case will be undirected 
 intnet_chicago <- intensitynet(chicago_adj_mtx, 
                                node_coords = chicago_node_coords, 
-                               event_coords = assault_coordinates)
+                               event_data = chicago_df)
 
 }

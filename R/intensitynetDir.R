@@ -17,6 +17,7 @@ MeanNodeIntensity.intensitynetDir= function(obj, node_id){
     if(!is.na(igraph::vertex_attr(g, "intensity_in", index = node_id))[1] &
        !is.na(igraph::vertex_attr(g, "intensity_out", index = node_id))[1]) {
       
+      message("Warning: Node intensities were already calculated in a previous instance, returning the same intensity.")
       return( list(in_int  = igraph::vertex_attr(g, 'intensity_in', index=node_id),
                    out_int = igraph::vertex_attr(g, 'intensity_out', index=node_id)))
     }
@@ -35,8 +36,7 @@ MeanNodeIntensity.intensitynetDir= function(obj, node_id){
         in_mat[as.character(node_id), 
                as.character(neighbor_id)] <- EdgeIntensity(obj = obj, 
                                                            node_id1 = igraph::V(g)[node_id]$name, 
-                                                           node_id2 = igraph::V(g)[neighbor_id]$name,
-                                                           z = obj$event_correction)
+                                                           node_id2 = igraph::V(g)[neighbor_id]$name)
       }
       in_intensity <- Reduce('+', in_mat) / length(in_neighbors)
     }else{
@@ -52,8 +52,7 @@ MeanNodeIntensity.intensitynetDir= function(obj, node_id){
         out_mat[as.character(node_id), 
                 as.character(neighbor_id)] <- EdgeIntensity(obj = obj, 
                                                             node_id1 = igraph::V(g)[node_id]$name, 
-                                                            node_id2 = igraph::V(g)[neighbor_id]$name,
-                                                            z = obj$event_correction)
+                                                            node_id2 = igraph::V(g)[neighbor_id]$name)
       }
       
       out_intensity <- Reduce('+', out_mat) / length(out_neighbors)
@@ -66,16 +65,17 @@ MeanNodeIntensity.intensitynetDir= function(obj, node_id){
 }
 
 
-#' Calculates edgewise and mean nodewise intensities for Directed networks
+#' Calculates edgewise and mean nodewise intensities for Directed networks and, for each edge, the proportions of
+#' all event covariates.
 #' 
-#' @name CalculateEventIntensities.intensitynetDir
+#' @name RelateEventsToNetwork.intensitynetDir
 #' 
 #' @param obj intensitynetDir object
 #' 
-#' @return intensitynetDir object with a graph containing all the intensities as attributes of its nodes and edges
+#' @return proper intensitynetDir object with a graph containing the nodewise intensity in the node 
+#' attributes and the edgewise intensities and event covariate proportions as edge attributes.
 #' 
-#' @export
-CalculateEventIntensities.intensitynetDir = function(obj){
+RelateEventsToNetwork.intensitynetDir = function(obj){
   g <- obj$graph
   intensities <- obj$intensities
   in_counts <- c()
@@ -86,12 +86,13 @@ CalculateEventIntensities.intensitynetDir = function(obj){
     return(obj)
   }
   
-  tmp_obj <- AllEdgeIntensities.intensitynet(obj)
+  tmp_obj <- EdgeIntensitiesAndProportions.intensitynet(obj)
   g <- tmp_obj$graph
   
   pb = utils::txtProgressBar(min = 0, max = igraph::gorder(g), initial = 0) 
   message("Calculating node intensities...")
   # check if the intensities was previously calculated, if not, calculate them
+  v_count <- 0
   for(node_id in igraph::V(g)){
     utils::setTxtProgressBar(pb,node_id)
     
@@ -113,15 +114,21 @@ CalculateEventIntensities.intensitynetDir = function(obj){
       if(is.na(igraph::vertex_attr(g, 'intensity_out', node_id))[1]) out_counts[[node_id]] <- 0
       
     }else{
+      v_count <- v_count + 1
       in_counts[[node_id]]  <- igraph::vertex_attr(g, 'intensity_in', node_id)
       out_counts[[node_id]] <- igraph::vertex_attr(g, 'intensity_out', node_id)
     }
   }
   close(pb)
+  # If the intensity of all edges is already calculated return the object
+  if(v_count == length(igraph::V(g))){
+    message("Warning: Intensities were already calculated in a previous instance, returning the same object.")
+    return(obj)
+  } 
   
   # g <- g %>% igraph::set_vertex_attr(name = "intensity_in", value = as.matrix(in_counts)) %>% 
   #            igraph::set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts))
-  g <- igraph::set_vertex_attr(g, name = "intensity_all", value = as.matrix(in_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_in", value = as.matrix(in_counts))
   g <- igraph::set_vertex_attr(g, name = "intensity_out", value = as.matrix(out_counts))
   
   intnet <- list(graph = g, 

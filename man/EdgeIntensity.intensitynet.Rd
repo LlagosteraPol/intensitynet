@@ -5,7 +5,7 @@
 \title{If not calculated, calculates the intensity of the edge with nodes; node_id1, node_id2. 
 If the edge already contains an intensity, give it directly.}
 \usage{
-\method{EdgeIntensity}{intensitynet}(obj, node_id1, node_id2, z = 5)
+\method{EdgeIntensity}{intensitynet}(obj, node_id1, node_id2)
 }
 \arguments{
 \item{obj}{intensitynet object}

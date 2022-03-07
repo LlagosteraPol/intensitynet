@@ -3,16 +3,16 @@
 \name{PointToSegment.netTools}
 \alias{PointToSegment.netTools}
 \alias{PointToSegment}
-\title{Return the shortest distance between an event and the segment formed by two nodes.}
+\title{Return the shortest distance between an event and a set of segments.}
 \usage{
 PointToSegment(obj)
 }
 \arguments{
-\item{obj}{netTools object -> list(p1:c(coordx, coordy), p2:c(coordx, coordy), e:c(coordx, coordy))}
+\item{obj}{netTools object -> list(p1:matrix(coordx, coordy), p2:matrix(coordx, coordy), e:matrix(coordx, coordy))}
 }
 \value{
-distance to the segment
+distance vector to each segment
 }
 \description{
-Return the shortest distance between an event and the segment formed by two nodes.
+Return the shortest distance between an event and a set of segments.
 }

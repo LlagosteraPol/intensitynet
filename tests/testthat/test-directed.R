@@ -11,18 +11,15 @@ test_that("Calculate edge and nodemeans intensities from a directed network", {
   chicago_adj_mtx <- as.matrix(igraph::as_adjacency_matrix(chicago_net))
   chicago_node_coords <- data.frame(xcoord = chicago[["domain"]][["vertices"]][["x"]], 
                                     ycoord = chicago[["domain"]][["vertices"]][["y"]])
-  chicago_assault <- chicago_df[chicago_df$marks == 'assault',]
-  assault_coordinates <- data.frame(xcoord = chicago_assault[,1],
-                                    ycoord = chicago_assault[,2])
   
   # Generate undirected intensitynet object
   intnet_chicago <- intensitynet(chicago_adj_mtx, 
                                  node_coords = chicago_node_coords, 
-                                 event_coords = assault_coordinates,
+                                 event_data = chicago_df,
                                  graph_type='directed')
   
   
-  intnet_chicago <- CalculateEventIntensities(intnet_chicago)
+  intnet_chicago <- RelateEventsToNetwork(intnet_chicago)
   
   
   expect_s3_class(intnet_chicago, c("intensitynet", "intensitynetDir"), exact = TRUE)

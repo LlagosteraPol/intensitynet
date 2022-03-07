@@ -6,7 +6,7 @@
 \title{This data is an intensitynet object containing an undirected network. 
 The base data used is from Chicago, extracted from the spatstat package.}
 \format{
-An object of class \code{intensitynet} (inherits from \code{intensitynetUnd}) of length 4.
+An object of class \code{intensitynet} (inherits from \code{intensitynetUnd}) of length 5.
 }
 \source{
 \url{https://rdrr.io/cran/spatstat.data/man/chicago.html}

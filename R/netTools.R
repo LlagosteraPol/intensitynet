@@ -39,6 +39,9 @@ PointToLine <- function(obj){
   UseMethod("PointToLine")
 }
 
+PointToSegment_deprecated <- function(obj){
+  UseMethod("PointToSegment_deprecated")
+}
 
 PointToSegment <- function(obj){
   UseMethod("PointToSegment")
@@ -576,14 +579,13 @@ PointToLine.netTools <- function(obj){
 
 #' Return the shortest distance between an event and the segment formed by two nodes.
 #'
-#' @name PointToSegment.netTools  
+#' @name PointToSegment_deprecated.netTools  
 #'
 #' @param obj netTools object -> list(p1:c(coordx, coordy), p2:c(coordx, coordy), e:c(coordx, coordy))
 #' 
 #' @return distance to the segment
 #' 
-PointToSegment <- function(obj) {
-  #start_time <- Sys.time() # debug only
+PointToSegment_deprecated <- function(obj) {
   p1 <- obj$p1
   p2 <- obj$p2
   ep <- obj$ep
@@ -614,7 +616,54 @@ PointToSegment <- function(obj) {
   
   dx <- ep[1] - xx
   dy <- ep[2] - yy
-  #message(paste0("PointToSegment time: ", Sys.time() - start_time)) # debug only
+  return(sqrt(dx * dx + dy * dy))
+}
+
+
+#' Return the shortest distance between an event and a set of segments.
+#'
+#' @name PointToSegment.netTools  
+#'
+#' @param obj netTools object -> list(p1:matrix(coordx, coordy), p2:matrix(coordx, coordy), e:matrix(coordx, coordy))
+#' 
+#' @return distance vector to each segment
+#' 
+PointToSegment <- function(obj) {
+  p1 <- obj$p1
+  p2 <- obj$p2
+  ep <- obj$ep
+  
+  if(!is.matrix(p1)){
+    if(is.data.frame(p1)) p1 <- data.matrix(p1)
+    else p1 <- matrix(p1, ncol = 2) 
+  } 
+  if(!is.matrix(p2)){
+    if(is.data.frame(p2)) p2 <- data.matrix(p2)
+    else p2 <- matrix(p2, ncol = 2) 
+  } 
+  if(!is.matrix(ep)){
+    if(is.data.frame(ep)) ep <- data.matrix(ep)
+    else ep <- matrix(ep, ncol = 2) 
+  } 
+  
+  A <- ep[,1] - p1[,1]
+  B <- ep[,2] - p1[,2]
+  C <- p2[,1] - p1[,1]
+  D <- p2[,2] - p1[,2]
+  
+  dot <- A * C + B * D
+  len_sq <- C * C + D * D
+  
+  param <- ifelse(len_sq != 0, dot / len_sq, -1)
+  
+  
+  xx <- ifelse(param < 0, p1[,1], ifelse(param > 1, p2[,1], p1[,1] + param * C))
+  yy <- ifelse(param < 0, p1[,2], ifelse(param > 1, p2[,2], p1[,2] + param * D))
+  
+  
+  dx <- ep[,1] - xx
+  dy <- ep[,2] - yy
+  
   return(sqrt(dx * dx + dy * dy))
 }
 
