@@ -75,6 +75,7 @@ MeanNodeIntensity.intensitynetDir= function(obj, node_id){
 #' @return proper intensitynetDir object with a graph containing the nodewise intensity in the node 
 #' attributes and the edgewise intensities and event covariate proportions as edge attributes.
 #' 
+#' @export
 RelateEventsToNetwork.intensitynetDir = function(obj){
   g <- obj$graph
   intensities <- obj$intensities

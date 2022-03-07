@@ -49,6 +49,7 @@ MeanNodeIntensity.intensitynetUnd = function(obj, node_id){
 #' @return proper intensitynetUnd object with a graph containing the nodewise intensity in the node 
 #' attributes and the edgewise intensities and event covariate proportions as edge attributes.
 #' 
+#' @export
 RelateEventsToNetwork.intensitynetUnd = function(obj){
   g <- obj$graph
   counts <- c()
