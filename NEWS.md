@@ -1,6 +1,6 @@
 # intensitynet 1.2
 
-* Added new functionality. Now the package can work with marked events (numerical, categorical or both). Each edge in the graph provided by the intensitynet object contains all the information of its associated events.  
+* Added new functionality. Now the package can work with covariates (numerical, categorical or both). Each edge in the graph provided by the intensitynet object contains all the information of its associated events.  
 
 * Changed internal function name 'AllEdgeIntensities()' to 'EdgeIntensitiesAndProportions()'  In order to adapt its significate to the new functionalities.
 
