@@ -313,7 +313,6 @@ SetNetworkAttribute <- function(obj, where, name, value){
 #' @param obj intensitynet object
 #' @param node_id1 First node ID of the edge
 #' @param node_id2 Second node ID of the edge
-#' @param z Maximum distance between the event and the edge to consider the event part of the edge.
 #' 
 #' @return Intensity of the edge
 #' 
