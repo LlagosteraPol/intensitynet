@@ -117,6 +117,7 @@ RelateEventsToNetwork.intensitynetUnd = function(obj){
 #' @param xy_axes show the x and y axes
 #' @param enable_grid draw a background grid
 #' @param show_events option to show the events as orange squares, FALSE by default
+#' @param path vector with the nodes of the path to be highlighted. Default NULL
 #' @param ... extra arguments for the plot
 #' 
 #' @return No return value, same as graphics::plot.
@@ -130,7 +131,7 @@ RelateEventsToNetwork.intensitynetUnd = function(obj){
 #' 
 #' @export
 plot.intensitynetUnd <- function(x, vertex_labels = 'none', edge_labels = 'none', 
-                                 xy_axes = TRUE, enable_grid = FALSE, show_events = FALSE, ...){
+                                 xy_axes = TRUE, enable_grid = FALSE, show_events = FALSE, path = NULL, ...){
   g <- x$graph
   
   v_label <- switch(vertex_labels, 
@@ -148,7 +149,8 @@ plot.intensitynetUnd <- function(x, vertex_labels = 'none', edge_labels = 'none'
                       edge_labels = e_label, 
                       xy_axes = xy_axes, 
                       enable_grid = enable_grid, 
-                      show_events = show_events)
+                      show_events = show_events,
+                      path = path)
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedPlot(geoplot_obj, ...)

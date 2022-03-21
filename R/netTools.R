@@ -181,12 +181,14 @@ SetNodeIntensity.netTools <- function(obj){
 #'
 #' @param obj netTools object -> list(intnet: intensitynet object, vertex_labels: list of labels for the vertices,
 #' edge_labels: list of labels for the edges, xy_axes: boolean to show or not the x and y axes, 
-#' enable_grid: boolean to draw or not a background grid, show_events: boolean to show or not the events as orange squares)
+#' enable_grid: boolean to draw or not a background grid, show_events: boolean to show or not the events as orange squares,
+#' path: vector with the nodes of the path to be highlighted. Default NULL)
 #' @param ... extra arguments for the plot
 #' 
 GeoreferencedPlot.netTools <- function(obj, ...){
   g <- obj$intnet$graph
   distances_mtx <- obj$intnet$distances_mtx
+  path <- obj$path
   
   arguments <- list(...)
   
@@ -206,17 +208,32 @@ GeoreferencedPlot.netTools <- function(obj, ...){
     n_lines <- 6
     margin <- (x_dist + y_dist)/2 * 0.05
     
+    
+    igraph::E(g)$color <- 'grey'
+    
+    
+    if(!is.null(path)){
+      igraph::V(g)$color <- 'grey'
+      
+      edge_ends <- rbind(matrix(path, ncol = 2, byrow = TRUE), 
+                         matrix(path[2:(length(path)-1)], ncol = 2, byrow = TRUE))
+      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
+      
+      igraph::E(g)[highlighted_edges]$color <- 'green'
+      igraph::V(g)[path]$color <- 'darkgreen'
+    }else{igraph::V(g)$color <- 'black'}
+    
     igraph::plot.igraph(g,
                         layout = node_coords,
                         rescale = FALSE,
                         xlim = x_range,
                         ylim = y_range,
-                        vertex.color = 'blue',
                         vertex.label = obj$vertex_labels, 
                         vertex.label.cex = if(exists('vertex.label.cex', where=arguments)) arguments[['vertex.label.cex']] else 0.3,  
-                        vertex.size = if(exists('vertex.size', where=arguments)) arguments[['vertex.size']] else 0.8 * max(x_range, y_range),
+                        vertex.size = if(exists('vertex.size', where=arguments)) arguments[['vertex.size']] else 0.9 * max(x_range, y_range),
                         edge.label = obj$edge_labels, 
                         edge.label.cex = if(exists('edge.label.cex', where=arguments)) arguments[['edge.label.cex']] else 0.3,
+                        edge.width = if(exists('edge.label.width', where=arguments)) arguments[['edge.label.width']] else 2,
                         edge.arrow.size = if(exists('edge.arrow.size', where=arguments)) arguments[['edge.arrow.size']] else 0.1,
                         ...)
     
@@ -290,10 +307,18 @@ GeoreferencedPlot.netTools <- function(obj, ...){
 #' 
 #' @name GeoreferencedGgplot2.netTools
 #' 
-#' @param obj netTools object -> list(intnet: intensitynet object, 
-#' data_df: dataframe(intensity: intensity of the nodes, xcoord: x coordinates of the nodes, 
-#' ycoord: y coordinates of the nodes, heattype: data which the heatmap will refer,
-#' mode: ('moran', 'getis' or 'intensity'), show_events: boolean to show or not the events as orange squares)
+#' @param obj netTools object -> list(
+#'   intnet: intensitynet object, 
+#'   data_df: dataframe(
+#'     xcoord: x coordinates of the nodes, 
+#'     ycoord: y coordinates of the nodes,
+#'     value: vector values to plot
+#'    ), 
+#'   net_vertices: chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap),
+#'   heattype: data which the heatmap will refer,
+#'   mode: ('moran', 'getis', 'v_intensity', 'e_intensity' or mark), 
+#'   show_events: boolean to show or not the events as orange squares 
+#'   )
 #' @param ... extra arguments for the ggplot
 #' 
 GeoreferencedGgplot2.netTools <- function(obj, ...){
@@ -322,7 +347,7 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
     #              shape = 19,
     #              size = 1.5,
     #              aes(xcoord, ycoord, colour = value)) +
-    #   viridis::scale_color_viridis() +
+    #   viridis::scale_color_viridis(option = 'H') +
     #   ggplot2::geom_tile(ggplot2::aes( fill = as.factor(value) ), 
     #             show.legend = FALSE) + 
     #   ggplot2::labs( title = 'Moran-i Heatmap\n',
@@ -338,20 +363,20 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
     #                                    face = "bold", 
     #                                    hjust = 0.5) )
     hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) +
-      ggplot2::geom_point(ggplot2::aes_string( colour = 'as.factor(value)' ),
-                          shape = 19,
-                          size = 1.5) +
       ggplot2::geom_tile(ggplot2::aes_string( fill = 'as.factor(value)' ),
                          show.legend = FALSE) +
       ggplot2::labs( title = 'Moran-i Heatmap\n' ) +
-      ggplot2::scale_color_manual(values = c("black", "gray", "skyblue", "yellow", "darkorange", "red4"),
+      ggplot2::scale_color_manual(values = c("gray", "green", "skyblue", "yellow", "darkorange", "red4"),
                                   name = "", breaks=c(1,2,3,4,5,6),
                                   labels = c("Not contemplated","insignificant","low-low","low-high","high-low","high-high") ) +
       ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
                                                 xend = 'xcoord2', yend = 'ycoord2'),
                             data = edges_df,
-                            size = 0.5,
+                            size = 0.8,
                             colour = "grey") +
+      ggplot2::geom_point(ggplot2::aes_string( colour = 'as.factor(value)' ),
+                          shape = 19,
+                          size = 1.7) +
       ggplot2::scale_y_continuous(name = "y-coordinate") +
       ggplot2::scale_x_continuous(name = "x-coordinate") +
       ggplot2::theme_bw() +
@@ -360,9 +385,6 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
                                                          hjust = 0.5) )
   }else if(mode == 'geary'){
     hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string('xcoord', 'ycoord'), ...) +
-      ggplot2::geom_point( ggplot2::aes_string( colour = 'as.factor(value)' ),
-                           shape = 19,
-                           size = 1.5 ) +
       ggplot2::geom_tile( ggplot2::aes_string( fill = 'as.factor(value)' ),
                           show.legend = FALSE ) +
       ggplot2::labs(title = 'Geary-c Heatmap\n') +
@@ -373,8 +395,11 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
       ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
                                                 xend = 'xcoord2', yend = 'ycoord2'),
                             data = edges_df,
-                            size = 0.5,
+                            size = 0.8,
                             colour = "grey") +
+      ggplot2::geom_point( ggplot2::aes_string( colour = 'as.factor(value)' ),
+                           shape = 19,
+                           size = 1.7 ) +
       ggplot2::scale_y_continuous( name = "y-coordinate" ) +
       ggplot2::scale_x_continuous( name = "x-coordinate" ) +
       ggplot2::theme_bw() +
@@ -389,7 +414,7 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
     #                       shape = 19,
     #                       size = 1.5,
     #                       ggplot2::aes(xcoord, ycoord, colour = value)) +
-    #   viridis::scale_color_viridis() +
+    #   viridis::scale_color_viridis(option = 'H') +
     #   ggplot2::labs(title = 'Geary-c Heatmap\n',
     #                 color = 'Correlation') +
     #   ggplot2::geom_segment(ggplot2::aes(x = xcoord1, y = ycoord1, xend = xcoord2, yend = ycoord2),
@@ -408,21 +433,21 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
     
   }else if( mode == 'v_intensity' ){
     hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string('xcoord', 'ycoord'), ...) +
-      ggplot2::geom_point(shape = 19,
-                          size = 1.5,
-                          colour="gray") +
-      ggplot2::geom_point(data = highlighted_df,
-                          shape = 19,
-                          size = 1.5,
-                          ggplot2::aes_string(x = 'xcoord', y = 'ycoord', colour = 'value')) +
-      viridis::scale_color_viridis() +
+      viridis::scale_color_viridis(option = 'H') +
       ggplot2::labs(title = 'Vertex Intensity Heatmap\n',
                     color = 'Norm. intensity') +
       ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
                                                 xend = 'xcoord2', yend = 'ycoord2'),
                             data = edges_df,
-                            size = 0.5,
+                            size = 0.8,
                             colour="grey") +
+      ggplot2::geom_point(shape = 19,
+                          size = 1.7,
+                          colour="gray") +
+      ggplot2::geom_point(data = highlighted_df,
+                          shape = 19,
+                          size = 1.7,
+                          ggplot2::aes_string(x = 'xcoord', y = 'ycoord', colour = 'value')) +
       ggplot2::scale_y_continuous(name = "y-coordinate") +
       ggplot2::scale_x_continuous(name = "x-coordinate") +
       ggplot2::theme_bw() +
@@ -436,17 +461,17 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
       norm_int <- (edge_int - min(edge_int)) / (max(edge_int) - min(edge_int))
       
       hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) +
-        ggplot2::geom_point(shape = 19,
-                            size = 1.5,
-                            colour="gray") +
-        viridis::scale_color_viridis() +
+        viridis::scale_color_viridis(option = 'H') +
         ggplot2::labs(title = 'Edge Intensity Heatmap\n',
                       color = 'Norm. intensity') +
         ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
                                                   xend = 'xcoord2', yend = 'ycoord2',
                                                   colour = 'norm_int'),
                               data = edges_df,
-                              size = 0.5) +
+                              size = 0.8) +
+        ggplot2::geom_point(shape = 19,
+                            size = 1.7,
+                            colour="gray") +
         ggplot2::scale_y_continuous(name = "y-coordinate") +
         ggplot2::scale_x_continuous(name = "x-coordinate") +
         ggplot2::theme_bw() +
@@ -455,34 +480,34 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
                                                            face = "bold",
                                                            hjust = 0.5) )
     }else{
-      sub_g <- igraph::induced_subgraph(graph = g, vids = obj$net_vertices)
-      sub_edges <- igraph::ends(sub_g, es = igraph::E(sub_g))
+      edge_ends <- rbind(matrix(obj$net_vertices, ncol = 2, byrow = TRUE), 
+                         matrix(obj$net_vertices[2:(length(obj$net_vertices)-1)], ncol = 2, byrow = TRUE))
+      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
       
-      highlighted_edges <- igraph::get.edge.ids(g, c(t(sub_edges)))
       edge_int <- igraph::edge_attr(g, 'intensity', highlighted_edges)
       norm_int <- (edge_int - min(edge_int)) / (max(edge_int) - min(edge_int))
       
       #convert to a four column edge data frame with source and destination coordinates
-      sub_edges_df <- data.frame(node_coords[sub_edges[,1],], node_coords[sub_edges[,2],])
+      sub_edges_df <- data.frame(node_coords[edge_ends[,1],], node_coords[edge_ends[,2],])
       colnames(sub_edges_df) <- c("xcoord1","ycoord1","xcoord2","ycoord2")
       
       hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) +
-        ggplot2::geom_point(shape = 19,
-                            size = 1.5,
-                            colour="gray") +
-        viridis::scale_color_viridis() +
+        viridis::scale_color_viridis(option = 'H') +
         ggplot2::labs(title = 'Edge Intensity Heatmap\n',
                       color = 'Norm. intensity') +
         ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
                                                   xend = 'xcoord2', yend = 'ycoord2'),
                               data = edges_df,
-                              size = 0.5,
+                              size = 0.8,
                               colour = 'grey') +
         ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
                                                   xend = 'xcoord2', yend = 'ycoord2', 
                                                   colour = 'norm_int'),
                               data = sub_edges_df,
-                              size = 0.5) +
+                              size = 0.8) +
+        ggplot2::geom_point(shape = 19,
+                            size = 1.7,
+                            colour="gray") +
         ggplot2::scale_y_continuous(name = "y-coordinate") +
         ggplot2::scale_x_continuous(name = "x-coordinate") +
         ggplot2::theme_bw() +
@@ -491,58 +516,112 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
                                                            face = "bold",
                                                            hjust = 0.5) )
     }
-  }else if(mode == 'intensity'){
-    sub_g <- igraph::induced_subgraph(graph = g, vids = obj$net_vertices)
-    sub_edges <- igraph::ends(sub_g, es = igraph::E(sub_g))
-    
-    highlighted_edges <- igraph::get.edge.ids(g, c(t(sub_edges)))
-    edge_int <- igraph::edge_attr(g, 'intensity', highlighted_edges)
-    norm_e_int <- (edge_int - min(edge_int)) / (max(edge_int) - min(edge_int))
-    
-    #convert to a four column edge data frame with source and destination coordinates
-    sub_edges_df <- data.frame(node_coords[sub_edges[,1],], node_coords[sub_edges[,2],])
-    colnames(sub_edges_df) <- c("xcoord1","ycoord1","xcoord2","ycoord2")
-    
-    hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) +
-      ggplot2::geom_point(shape = 19,
-                          size = 1.5,
-                          colour="gray") +
-      ggplot2::geom_point(data = highlighted_df,
-                          shape = 19,
-                          size = 1.5,
-                          ggplot2::aes_string(x = 'xcoord', y = 'ycoord', colour = 'value')) +
-      viridis::scale_color_viridis() +
-      ggplot2::labs(title = 'Intensity Heatmap\n',
-                    color = 'Norm. intensity') +
-      ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
-                                                xend = 'xcoord2', yend = 'ycoord2'),
-                            data = edges_df,
-                            size = 0.5,
-                            colour = 'grey') +
-      ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
-                                                xend = 'xcoord2', yend = 'ycoord2', 
-                                                colour = 'norm_e_int'),
-                            data = sub_edges_df,
-                            size = 0.5) +
-      ggplot2::scale_y_continuous(name = "y-coordinate") +
-      ggplot2::scale_x_continuous(name = "x-coordinate") +
-      ggplot2::theme_bw() +
-      ggplot2::theme(legend.title = ggplot2::element_text(face = "bold"),
-                     plot.title = ggplot2::element_text( size = 14,
-                                                         face = "bold",
-                                                         hjust = 0.5) )
+  }else if(mode == 'none'){
+    if(length(obj$net_vertices) == length(igraph::V(g))){
+      hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) + 
+        ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
+                                                  xend = 'xcoord2', yend = 'ycoord2'), 
+                              data = edges_df, 
+                              size = 0.8, 
+                              colour = "grey") +
+        ggplot2::geom_point(shape = 19, 
+                            size = 1.7) +
+        ggplot2::scale_y_continuous(name = "y-coordinate") + 
+        ggplot2::scale_x_continuous(name = "x-coordinate") + 
+        ggplot2::theme_bw()
+    }else{
+      edge_ends <- rbind(matrix(obj$net_vertices, ncol = 2, byrow = TRUE), 
+                         matrix(obj$net_vertices[2:(length(obj$net_vertices)-1)], ncol = 2, byrow = TRUE))
+      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
+      
+      #convert to a four column edge data frame with source and destination coordinates
+      sub_edges_df <- data.frame(node_coords[edge_ends[,1],], node_coords[edge_ends[,2],])
+      colnames(sub_edges_df) <- c("xcoord1","ycoord1","xcoord2","ycoord2")
+      
+      hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) + 
+        ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
+                                                  xend = 'xcoord2', yend = 'ycoord2'),
+                              data = edges_df,
+                              size = 0.8,
+                              colour = 'grey') +
+        ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
+                                                  xend = 'xcoord2', yend = 'ycoord2'),
+                              data = sub_edges_df,
+                              size = 0.8,
+                              colour = 'green') +
+        ggplot2::geom_point(shape = 19, 
+                            size = 1.7,
+                            colour="gray") +
+        ggplot2::geom_point(data = highlighted_df,
+                            shape = 19,
+                            size = 1.7,
+                            colour = 'darkgreen',
+                            ggplot2::aes_string(x = 'xcoord', y = 'ycoord')) +
+        ggplot2::scale_y_continuous(name = "y-coordinate") + 
+        ggplot2::scale_x_continuous(name = "x-coordinate") + 
+        ggplot2::theme_bw()
+    }
   }else{
-    hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) + 
-      ggplot2::geom_point(shape = 19, 
-                          size = 1.5) +
-      ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
-                                                xend = 'xcoord2', yend = 'ycoord2'), 
-                            data = edges_df, 
-                            size = 0.5, 
-                            colour = "grey") +
-      ggplot2::scale_y_continuous(name = "y-coordinate") + 
-      ggplot2::scale_x_continuous(name = "x-coordinate") + 
-      ggplot2::theme_bw()
+    # Plot marks
+    if(length(obj$net_vertices) == length(igraph::V(g))){
+      proportion <- igraph::edge_attr(g)[mode][[1]]
+      
+      hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) +
+        viridis::scale_color_viridis(option = 'H') +
+        ggplot2::labs(title = paste0(mode, ' events\n'),
+                      color = 'Proportion') +
+        ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
+                                                  xend = 'xcoord2', yend = 'ycoord2',
+                                                  colour = 'proportion'),
+                              data = edges_df,
+                              size = 0.8) +
+        ggplot2::geom_point(shape = 19,
+                            size = 1.7,
+                            colour="gray") +
+        ggplot2::scale_y_continuous(name = "y-coordinate") +
+        ggplot2::scale_x_continuous(name = "x-coordinate") +
+        ggplot2::theme_bw() +
+        ggplot2::theme(legend.title = ggplot2::element_text(face = "bold"),
+                       plot.title = ggplot2::element_text( size = 14,
+                                                           face = "bold",
+                                                           hjust = 0.5) )
+    }else{
+      edge_ends <- rbind(matrix(obj$net_vertices, ncol = 2, byrow = TRUE), 
+                         matrix(obj$net_vertices[2:(length(obj$net_vertices)-1)], ncol = 2, byrow = TRUE))
+      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
+      
+      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
+      proportion <- igraph::edge_attr(g, mode, highlighted_edges)
+      
+      #convert to a four column edge data frame with source and destination coordinates
+      sub_edges_df <- data.frame(node_coords[edge_ends[,1],], node_coords[edge_ends[,2],])
+      colnames(sub_edges_df) <- c("xcoord1","ycoord1","xcoord2","ycoord2")
+      
+      hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) +
+        viridis::scale_color_viridis(option = 'H') +
+        ggplot2::labs(title = paste0(mode, ' events\n'),
+                      color = 'Proportion') +
+        ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
+                                                  xend = 'xcoord2', yend = 'ycoord2'),
+                              data = edges_df,
+                              size = 0.8,
+                              colour = 'grey') +
+        ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
+                                                  xend = 'xcoord2', yend = 'ycoord2', 
+                                                  colour = 'proportion'),
+                              data = sub_edges_df,
+                              size = 0.8) +
+        ggplot2::geom_point(shape = 19,
+                            size = 1.7,
+                            colour="gray") +
+        ggplot2::scale_y_continuous(name = "y-coordinate") +
+        ggplot2::scale_x_continuous(name = "x-coordinate") +
+        ggplot2::theme_bw() +
+        ggplot2::theme(legend.title = ggplot2::element_text(face = "bold"),
+                       plot.title = ggplot2::element_text( size = 14,
+                                                           face = "bold",
+                                                           hjust = 0.5) )
+    }
   }
   
   if(obj$show_events){
