@@ -44,5 +44,6 @@ data("mix_intnet_chicago")
 plot(mix_intnet_chicago) # basic plot
 plot(mix_intnet_chicago, enable_grid = TRUE) # with grid
 plot(mix_intnet_chicago, xy_axes = FALSE) # without axes
+plot(mix_intnet_chicago, path = c("V1","V2","V24","V25","V26","V48")) # highlight a path
 
 }
