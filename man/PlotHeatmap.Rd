@@ -2,11 +2,11 @@
 % Please edit documentation in R/intensitynet.R
 \name{PlotHeatmap}
 \alias{PlotHeatmap}
-\title{Plot the network and if specified, the correlation heatmap. Which could be:}
+\title{Plot the network correlations or intensities.}
 \usage{
 PlotHeatmap(
   obj,
-  heattype = "none",
+  heat_type = "none",
   intensity_type = "none",
   net_vertices = NULL,
   show_events = FALSE,
@@ -16,18 +16,24 @@ PlotHeatmap(
 \arguments{
 \item{obj}{intensitynet object}
 
-\item{heattype}{'moran': Local Moran-i correlation (with 999 permutations), 'geary': Local Geary-c* 
-correlation. The correlations will use the indicated intensity type.
-The function also allow to only plot the intensity heatmap 'v_intensity' for vertices or 'e_intensity' for edges.}
+\item{heat_type}{a string with the desired heatmap to be plotted, the options are; 
+'moran': Local Moran-i correlation (with 999 permutations), 
+'geary': Local Geary-c correlation. The correlations will use the indicated intensity type,
+'v_intensity': vertice mean intensity,
+'e_intensity': edge intensity,
+'none': plain map.}
 
-\item{intensity_type}{name of the intensity used to plot the heatmap. For undirected networks: 'intensity'. 
+\item{intensity_type}{name of the vertex intensity used to plot the heatmap for moran, geary and v_intensity options (of the heat_type argument).
+The options are; 
+For undirected networks: 'intensity'. 
 For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
-'intensity_und' or 'intensity_all'. If the intensity parameter is NULL, the function will use, if exist, 
-the intensity (undirected) or intensity_in (directed) values from the network nodes.}
+'intensity_und' or 'intensity_all'. If the intensity parameter is 'none', the function will use, if exist, 
+the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heat_type is 'e_intensity', this
+parameter will be skiped and plot the edge intensities instead.}
 
-\item{net_vertices}{chosen vertices to plot the heatmap (or it related edges in case to plot the edge heatmap)}
+\item{net_vertices}{chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)}
 
-\item{show_events}{option to show the events as red dots, FALSE by default}
+\item{show_events}{option to show the events as orange squares, FALSE by default}
 
 \item{...}{extra arguments for the class ggplot}
 }
@@ -35,13 +41,13 @@ the intensity (undirected) or intensity_in (directed) values from the network no
 The plot of the heatmap with class c("gg", "ggplot")
 }
 \description{
-Plot the network and if specified, the correlation heatmap. Which could be:
+Plot the network correlations or intensities.
 }
 \examples{
 
 \dontrun{
 data("und_intnet_chicago")
-PlotHeatmap(und_intnet_chicago, heattype='moran')
+PlotHeatmap(und_intnet_chicago, heat_type='moran')
 }
 
 }

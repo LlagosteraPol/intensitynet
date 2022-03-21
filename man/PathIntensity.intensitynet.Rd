@@ -2,7 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{PathIntensity.intensitynet}
 \alias{PathIntensity.intensitynet}
-\title{Calculates the intensity of the given path}
+\title{Calculates the mean intensity of the given path}
 \usage{
 \method{PathIntensity}{intensitynet}(obj, path_nodes)
 }
@@ -15,12 +15,11 @@
 intensity of the path
 }
 \description{
-Calculates the intensity of the given path
+Calculates the mean intensity of the given path
 }
 \examples{
 
 data("und_intnet_chicago")
-short_path <- ShortestPathIntensity(und_intnet_chicago, node_id1 = 'V1', node_id2 = 'V300')
-PathIntensity(und_intnet_chicago, short_path$path)
+PathIntensity(und_intnet_chicago, c('V115', 'V123', 'V125', 'V134'))
 
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{NodeLocalCorrelation.intensitynet}
 \alias{NodeLocalCorrelation.intensitynet}
-\title{Gives node local moran-i or geary-c correlations}
+\title{Gives the node local Moran-I, Getis-Gstar or Geary-c correlations}
 \source{
 *Luc Anselin. A Local Indicator of Multivariate SpatialAssociation: Extending Geary's c, Geographical Analysis 2018; doi: https://doi.org/10.1111/gean.12164
 }
@@ -12,17 +12,17 @@
 \arguments{
 \item{obj}{intensitynet object}
 
-\item{dep_type}{'moran', 'getis' or 'geary'. Type of local correlation to be computed (Moran-i, Getis-Gstar, Geary-c*),
+\item{dep_type}{'moran', 'getis' or 'geary'. Type of local correlation to be computed (Moran-i, Getis-Gstar, Geary-c),
 default = 'moran'.}
 
-\item{intensity}{vector containing the intensity values that which are used to calculate the correlation.}
+\item{intensity}{vector containing the values to calculate the specified correlation for each node in the network.}
 }
 \value{
-intensitynet class object which contains an igraph network with the selected correlation 
-added into the vertices attributes
+a vector containing two values. The first value is a vector with the specified local correlations for each node. 
+The second values is the  given intensitynet class object but with the correlations added to the node attributes of its network.
 }
 \description{
-Gives node local moran-i or geary-c correlations
+Gives the node local Moran-I, Getis-Gstar or Geary-c correlations
 }
 \examples{
 \dontrun{

@@ -215,11 +215,11 @@ GeoreferencedPlot.netTools <- function(obj, ...){
     if(!is.null(path)){
       igraph::V(g)$color <- 'grey'
       
-      edge_ends <- rbind(matrix(path, ncol = 2, byrow = TRUE), 
-                         matrix(path[2:(length(path)-1)], ncol = 2, byrow = TRUE))
-      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
       
-      igraph::E(g)[highlighted_edges]$color <- 'green'
+      highlighted_edges <- rep(path, times = c(1, rep(2, (length(path)-2) ), 1 ) )
+      edge_ends <- matrix(highlighted_edges, ncol = 2, byrow = TRUE)
+      
+      igraph::E(g)[igraph::get.edge.ids(g, highlighted_edges)]$color <- 'green'
       igraph::V(g)[path]$color <- 'darkgreen'
     }else{igraph::V(g)$color <- 'black'}
     
@@ -315,7 +315,7 @@ GeoreferencedPlot.netTools <- function(obj, ...){
 #'     value: vector values to plot
 #'    ), 
 #'   net_vertices: chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap),
-#'   heattype: data which the heatmap will refer,
+#'   heat_type: data which the heatmap will refer,
 #'   mode: ('moran', 'getis', 'v_intensity', 'e_intensity' or mark), 
 #'   show_events: boolean to show or not the events as orange squares 
 #'   )
@@ -337,7 +337,7 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
   edges_df <- data.frame(node_coords[edgelist[,1],], node_coords[edgelist[,2],])
   colnames(edges_df) <- c("xcoord1","ycoord1","xcoord2","ycoord2")
   
-  #if(is.null(data_df$intensity) || is.na(data_df$heattype)){
+  #if(is.null(data_df$intensity) || is.na(data_df$heat_type)){
   if(mode == 'moran') {
     # ggplot2::ggplot(data_df, ggplot2::aes(xcoord, ycoord), ...) + 
     #   ggplot2::ggplot2::geom_point(shape = 19,
@@ -456,6 +456,11 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
                                                          face = "bold",
                                                          hjust = 0.5) )
   }else if (mode == 'e_intensity'){
+    
+    if(length(obj$net_vertices) == 1){
+      stop("It's needed at least 2 vertices to plot the edge intensity")
+    }
+    
     if(length(obj$net_vertices) == length(igraph::V(g))){
       edge_int <- igraph::edge_attr(g, 'intensity')
       norm_int <- (edge_int - min(edge_int)) / (max(edge_int) - min(edge_int))
@@ -480,9 +485,8 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
                                                            face = "bold",
                                                            hjust = 0.5) )
     }else{
-      edge_ends <- rbind(matrix(obj$net_vertices, ncol = 2, byrow = TRUE), 
-                         matrix(obj$net_vertices[2:(length(obj$net_vertices)-1)], ncol = 2, byrow = TRUE))
-      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
+      highlighted_edges <- rep(obj$net_vertices, times = c(1, rep(2, (length(obj$net_vertices)-2) ), 1 ) )
+      edge_ends <- matrix(highlighted_edges, ncol = 2, byrow = TRUE)
       
       edge_int <- igraph::edge_attr(g, 'intensity', highlighted_edges)
       norm_int <- (edge_int - min(edge_int)) / (max(edge_int) - min(edge_int))
@@ -529,10 +533,27 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
         ggplot2::scale_y_continuous(name = "y-coordinate") + 
         ggplot2::scale_x_continuous(name = "x-coordinate") + 
         ggplot2::theme_bw()
+    }else if(length(obj$net_vertices) == 1){
+      hplot <- ggplot2::ggplot(data_df, ggplot2::aes_string(x = 'xcoord', y = 'ycoord'), ...) + 
+        ggplot2::geom_segment(ggplot2::aes_string(x = 'xcoord1', y = 'ycoord1', 
+                                                  xend = 'xcoord2', yend = 'ycoord2'), 
+                              data = edges_df, 
+                              size = 0.8, 
+                              colour = "grey") +
+        ggplot2::geom_point(shape = 19, 
+                            size = 1.7,
+                            colour = "grey") +
+        ggplot2::geom_point(data = highlighted_df,
+                            shape = 19,
+                            size = 1.7,
+                            colour = 'darkgreen') +
+        ggplot2::scale_y_continuous(name = "y-coordinate") + 
+        ggplot2::scale_x_continuous(name = "x-coordinate") + 
+        ggplot2::theme_bw()
     }else{
-      edge_ends <- rbind(matrix(obj$net_vertices, ncol = 2, byrow = TRUE), 
-                         matrix(obj$net_vertices[2:(length(obj$net_vertices)-1)], ncol = 2, byrow = TRUE))
-      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
+      
+      highlighted_edges <- rep(obj$net_vertices, times = c(1, rep(2, (length(obj$net_vertices)-2) ), 1 ) )
+      edge_ends <- matrix(highlighted_edges, ncol = 2, byrow = TRUE)
       
       #convert to a four column edge data frame with source and destination coordinates
       sub_edges_df <- data.frame(node_coords[edge_ends[,1],], node_coords[edge_ends[,2],])
@@ -562,6 +583,9 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
         ggplot2::theme_bw()
     }
   }else{
+    if(length(obj$net_vertices) == 1){
+      stop("It's needed at least 2 vertices to plot the edges mark proportion.")
+    }
     # Plot marks
     if(length(obj$net_vertices) == length(igraph::V(g))){
       proportion <- igraph::edge_attr(g)[mode][[1]]
@@ -586,12 +610,9 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
                                                            face = "bold",
                                                            hjust = 0.5) )
     }else{
-      edge_ends <- rbind(matrix(obj$net_vertices, ncol = 2, byrow = TRUE), 
-                         matrix(obj$net_vertices[2:(length(obj$net_vertices)-1)], ncol = 2, byrow = TRUE))
-      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
-      
-      highlighted_edges <- igraph::get.edge.ids(g, c(t(edge_ends)))
-      proportion <- igraph::edge_attr(g, mode, highlighted_edges)
+      highlighted_edges <- rep(obj$net_vertices, times = c(1, rep(2, (length(obj$net_vertices)-2) ), 1 ) )
+      edge_ends <- matrix(highlighted_edges, ncol = 2, byrow = TRUE)
+      proportion <- igraph::edge_attr(g, mode, igraph::E(g, P = highlighted_edges))
       
       #convert to a four column edge data frame with source and destination coordinates
       sub_edges_df <- data.frame(node_coords[edge_ends[,1],], node_coords[edge_ends[,2],])

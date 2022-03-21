@@ -9,7 +9,8 @@
 \arguments{
 \item{obj}{netTools object -> list(intnet: intensitynet object, vertex_labels: list of labels for the vertices,
 edge_labels: list of labels for the edges, xy_axes: boolean to show or not the x and y axes, 
-enable_grid: boolean to draw or not a background grid, show_events: boolean to show or not the events as orange squares)}
+enable_grid: boolean to draw or not a background grid, show_events: boolean to show or not the events as orange squares,
+path: vector with the nodes of the path to be highlighted. Default NULL)}
 
 \item{...}{extra arguments for the plot}
 }

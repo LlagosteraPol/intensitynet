@@ -2,8 +2,9 @@
 % Please edit documentation in R/intensitynet.R
 \name{NodeGeneralCorrelation.intensitynet}
 \alias{NodeGeneralCorrelation.intensitynet}
-\title{Gives general node correlation of the network (choosing from normal correlation, covariance, 
-moran-i or geary)}
+\title{It allows to compute different dependence statistics on the network
+for the given vector and for neighborhoods of distinct order. Such statistics are; correlation,
+covariance, Moran’s I and Geary’s C.}
 \usage{
 \method{NodeGeneralCorrelation}{intensitynet}(obj, dep_type, lag_max, intensity)
 }
@@ -15,14 +16,15 @@ dependence statistic to be computed.}
 
 \item{lag_max}{Maximum geodesic lag at which to compute dependence}
 
-\item{intensity}{vector containing the intensity values that the heatmaps}
+\item{intensity}{Vector containing the values to calculate the specified dependency in the network. Usually the node mean intensities.}
 }
 \value{
 A vector containing the dependence statistics (ascending from order 0).
 }
 \description{
-Gives general node correlation of the network (choosing from normal correlation, covariance, 
-moran-i or geary)
+It allows to compute different dependence statistics on the network
+for the given vector and for neighborhoods of distinct order. Such statistics are; correlation,
+covariance, Moran’s I and Geary’s C.
 }
 \examples{
 

@@ -1,12 +1,27 @@
+# intensitynet 1.3
+
+* Added option to function 'PlotHeatmap' plot a heatmap based on marks.
+
+* Now, function 'PlotHeatmap' can plot a path by giving its vertices using the argument 'net_vertices' and no 'heat_type' argument is given.
+
+* Added option to function 'plot' to plot a path by giving its vertices using the new argument 'path'.
+
+* Changed function name 'ShortestPathIntensity' to 'PathIntensity'.
+
+* Added option to 'PathIntensity' to calculate the shortest path based on the given weight type with the new argument 'weight'.
+
+* Changed heatmap colors and increased edge and vertex size to visualize better the plots.
+
+
 # intensitynet 1.2
 
-* Added new functionality. Now the package can work with covariates (numerical, categorical or both). Each edge in the graph provided by the intensitynet object contains all the information of its associated events.  
+* Added new functionality. Now the package can work with covariates (numerical, categorical, or both). Each edge in the graph provided by the intensitynet object contains all the information of its associated events.  
 
 * Changed internal function name 'AllEdgeIntensities()' to 'EdgeIntensitiesAndProportions()'  In order to adapt its significate to the new functionalities.
 
-* Changed funcion name 'CalculateEventIntensities()' to 'RelateEventsToNetwork()'. In order to adapt its significate to the new functionalities.
+* Changed function name 'CalculateEventIntensities()' to 'RelateEventsToNetwork()'. In order to adapt its significate to the new functionalities.
 
-* Greatly reduced the computational time to calculate event-related intensities with the function 'RelateEventsToNetwork()'
+* Greatly reduced the computational time to calculate event-related intensities with the function 'RelateEventsToNetwork()'.
 
 
 

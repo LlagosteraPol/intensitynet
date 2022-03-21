@@ -11,6 +11,7 @@
   xy_axes = TRUE,
   enable_grid = FALSE,
   show_events = FALSE,
+  path = NULL,
   ...
 )
 }
@@ -26,6 +27,8 @@
 \item{enable_grid}{draw a background grid}
 
 \item{show_events}{option to show the events as orange squares, FALSE by default}
+
+\item{path}{vector with the nodes of the path to be highlighted. Default NULL}
 
 \item{...}{extra arguments for the plot}
 }

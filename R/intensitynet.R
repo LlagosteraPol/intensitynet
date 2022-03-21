@@ -146,18 +146,18 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' @name PlotHeatmap
 #'
 #' @param obj intensitynet object
-#' @param heattype a string with the desired heatmap to be plotted, the options are; 
+#' @param heat_type a string with the desired heatmap to be plotted, the options are; 
 #' 'moran': Local Moran-i correlation (with 999 permutations), 
 #' 'geary': Local Geary-c correlation. The correlations will use the indicated intensity type,
 #' 'v_intensity': vertice mean intensity,
 #' 'e_intensity': edge intensity,
 #' 'none': plain map.
-#' @param intensity_type name of the vertex intensity used to plot the heatmap for moran, geary and v_intensity options (of the heattype argument).
+#' @param intensity_type name of the vertex intensity used to plot the heatmap for moran, geary and v_intensity options (of the heat_type argument).
 #' The options are; 
 #' For undirected networks: 'intensity'. 
 #' For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
 #' 'intensity_und' or 'intensity_all'. If the intensity parameter is 'none', the function will use, if exist, 
-#' the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heattype is 'e_intensity', this
+#' the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heat_type is 'e_intensity', this
 #' parameter will be skiped and plot the edge intensities instead.
 #' @param net_vertices chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)
 #' @param show_events option to show the events as orange squares, FALSE by default
@@ -169,11 +169,11 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' 
 #' \dontrun{
 #' data("und_intnet_chicago")
-#' PlotHeatmap(und_intnet_chicago, heattype='moran')
+#' PlotHeatmap(und_intnet_chicago, heat_type='moran')
 #' }
 #' 
 #' @export
-PlotHeatmap <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, ...){
+PlotHeatmap <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, ...){
   UseMethod("PlotHeatmap")
 }
 
@@ -593,10 +593,8 @@ ShortestPath.intensitynet <- function(obj,  node_id1, node_id2, weight = NA, mod
   }else{
     weight_vector <- igraph::edge_attr(g)[[weight]]
     path_data <- igraph::shortest_paths(graph = g, from = node_id1, to = node_id2, mode = mode, weights = weight_vector, output = 'both')
-    total_weight <- sum(igraph::edge_attr(graph = g, weight, index = igraph::E(g, path = unlist(path_data$vpath))))
+    total_weight <- sum(igraph::edge_attr(graph = g, weight, index = path_data$vpath[[1]]))
   }
-  
-  #return(list(total_weight = total_weight, path = igraph::as_ids(path_data$vpath[[1]])))
   return(list(total_weight = total_weight, path = path_data$vpath[[1]]))
 }
 
@@ -711,18 +709,18 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' @name PlotHeatmap.intensitynet
 #'
 #' @param obj intensitynet object
-#' @param heattype a string with the desired heatmap to be plotted, the options are; 
+#' @param heat_type a string with the desired heatmap to be plotted, the options are; 
 #' 'moran': Local Moran-i correlation (with 999 permutations), 
 #' 'geary': Local Geary-c correlation. The correlations will use the indicated intensity type,
 #' 'v_intensity': vertice mean intensity,
 #' 'e_intensity': edge intensity,
 #' 'none': plain map.
-#' @param intensity_type name of the vertex intensity used to plot the heatmap for moran, geary and v_intensity options (of the heattype argument).
+#' @param intensity_type name of the vertex intensity used to plot the heatmap for moran, geary and v_intensity options (of the heat_type argument).
 #' The options are; 
 #' For undirected networks: 'intensity'. 
 #' For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
 #' 'intensity_und' or 'intensity_all'. If the intensity parameter is 'none', the function will use, if exist, 
-#' the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heattype is 'e_intensity', this
+#' the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heat_type is 'e_intensity', this
 #' parameter will be skiped and plot the edge intensities instead.
 #' @param net_vertices chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)
 #' @param show_events option to show the events as orange squares, FALSE by default
@@ -734,32 +732,34 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' 
 #' \dontrun{
 #' data("und_intnet_chicago")
-#' PlotHeatmap(und_intnet_chicago, heattype='moran')
+#' PlotHeatmap(und_intnet_chicago, heat_type='moran')
 #' }
 #' 
 #' @export
-PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, ...){
+PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, ...){
   g <- obj$graph
   adj_mtx <- igraph::as_adj(graph = g)
   adj_listw <- spdep::mat2listw(adj_mtx)
   nb <- adj_listw$neighbours
   w_listw <- spdep::nb2listw(nb, style = "W",  zero.policy=TRUE)
   
-  if(heattype != 'none' && heattype != 'moran' && heattype != 'geary' && 
-     heattype != 'v_intensity' && heattype != 'e_intensity'){
+  if(heat_type != 'none' && heat_type != 'moran' && heat_type != 'geary' && 
+     heat_type != 'v_intensity' && heat_type != 'e_intensity'){
     
-    if( !(heattype %in% igraph::edge_attr_names(g) ))
+    if( !(heat_type %in% igraph::edge_attr_names(g) ))
     {
-      warning('Parameter "heattype" should be; for correlations: "moran" or "geary", 
+      warning('Parameter "heat_type" should be; for correlations: "moran" or "geary", 
                                                for intensities: "v_intensity" or "e_intensity", 
                                                for marks: the name of the mark. 
                                                Using default ("none").')
-      heattype <- 'none'
+      heat_type <- 'none'
     }
   }
   
   if (is.null(net_vertices)){
     net_vertices <- igraph::V(g)
+  } else{
+    net_vertices <- igraph::V(g)[net_vertices] # Convert to class 'igraph.v'
   }
   
   # If the intensity is not provided, try to take it from the given network
@@ -782,7 +782,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
                             ycoord = igraph::vertex_attr(graph = g, name = 'ycoord'))
   rownames(node_coords) <- igraph::vertex_attr(graph = g, name = 'name')
   
-  if(heattype == 'moran'){ # Local Moran-i
+  if(heat_type == 'moran'){ # Local Moran-i
     locmoran <- spdep::localmoran_perm(x = intensity, 
                                        listw = w_listw, 
                                        zero.policy = TRUE, 
@@ -814,7 +814,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
                           ycoord = node_coords$ycoord, 
                           value = sig_dstr)
     
-  }else if(heattype == 'geary'){  # Local Geary-c
+  }else if(heat_type == 'geary'){  # Local Geary-c
     nb_b <- spdep::listw2mat(w_listw)
     
     b <- methods::as(nb_b, "CsparseMatrix")
@@ -855,7 +855,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
                           ycoord = node_coords$ycoord, 
                           value = sig_dstr)
     
-  }else if(heattype == 'getis'){ # Local Getis-G*
+  }else if(heat_type == 'getis'){ # Local Getis-G*
     message("Needs implementation")
     # TODO: Implement Getis G.
     
@@ -870,7 +870,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
     
     
     
-  }else if(heattype == 'v_intensity' || heattype == 'e_intensity'){
+  }else if(heat_type == 'v_intensity' || heat_type == 'e_intensity'){
     norm_int <- (intensity - min(intensity)) / (max(intensity) - min(intensity))
     data_df <- data.frame(xcoord = node_coords$xcoord, 
                           ycoord = node_coords$ycoord, 
@@ -881,7 +881,7 @@ PlotHeatmap.intensitynet <- function(obj, heattype = 'none', intensity_type = 'n
                           ycoord = node_coords$ycoord, 
                           value = NA)
   }
-  geoplot_obj <- list(intnet = obj, data_df = data_df, net_vertices = net_vertices, mode = heattype, show_events = show_events)
+  geoplot_obj <- list(intnet = obj, data_df = data_df, net_vertices = net_vertices, mode = heat_type, show_events = show_events)
   class(geoplot_obj) <- "netTools"
   
   return( GeoreferencedGgplot2(geoplot_obj, ...) )

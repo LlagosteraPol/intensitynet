@@ -169,6 +169,10 @@ plot.intensitynetDir <- function(x, vertex_labels='none', edge_labels='none',
                                  xy_axes=TRUE, enable_grid=FALSE, show_events = FALSE, path = NULL, ...){
   g <- x$graph
   
+  if(!is.null(path) && length(path) == 1){
+    stop("A path must contain more than one vertex")
+  }
+  
   v_label <- switch(vertex_labels, 
                     none = {''}, 
                     intensity_in = {round(igraph::vertex_attr(g)$intensity_in, 4)},

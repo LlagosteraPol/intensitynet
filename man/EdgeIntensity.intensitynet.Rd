@@ -13,8 +13,6 @@ If the edge already contains an intensity, give it directly.}
 \item{node_id1}{First node ID of the edge}
 
 \item{node_id2}{Second node ID of the edge}
-
-\item{z}{Maximum distance between the event and the edge to consider the event part of the edge.}
 }
 \value{
 Intensity of the edge
