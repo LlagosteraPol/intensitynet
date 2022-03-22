@@ -6,9 +6,9 @@
 
 * Added option to function 'plot' to plot a path by giving its vertices using the new argument 'path'.
 
-* Changed function name 'ShortestPathIntensity' to 'PathIntensity'.
+* Changed function name 'ShortestPathIntensity' to 'ShortestPath'.
 
-* Added option to 'PathIntensity' to calculate the shortest path based on the given weight type with the new argument 'weight'.
+* Added option to 'ShortestPath' to calculate the shortest path based on the given weight type with the new argument 'weight'.
 
 * Changed heatmap colors and increased edge and vertex size to visualize better the plots.
 
