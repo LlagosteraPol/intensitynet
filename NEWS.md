@@ -2,13 +2,17 @@
 
 * Added option to function 'PlotHeatmap' plot a heatmap based on marks.
 
-* Now, function 'PlotHeatmap' can plot a path by giving its vertices using the argument 'net_vertices' and no 'heat_type' argument is given.
+* Added a new argument 'net_edges' to the function 'PlotHeatmap'. Now the user can specify wich nodes and edges want to plot.
 
 * Added option to function 'plot' to plot a path by giving its vertices using the new argument 'path'.
 
 * Changed function name 'ShortestPathIntensity' to 'ShortestPath'.
 
 * Added option to 'ShortestPath' to calculate the shortest path based on the given weight type with the new argument 'weight'.
+
+* Changed function name 'PathIntensity' to 'PathTotalWeight'
+
+* Now the function 'PathTotalWeight' gives the total specified weight for the given path (or the number of edges if no weight is specified).
 
 * Changed heatmap colors and increased edge and vertex size to visualize better the plots.
 

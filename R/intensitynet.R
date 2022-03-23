@@ -231,23 +231,25 @@ ShortestNodeDistance <- function(obj, node_id1, node_id2){
 
 # -------- Intensity functions ----------
 
-#' Calculates the intensity of the given path
+#' Calculates the total weight of the given path
 #'
-#' @name PathIntensity
+#' @name PathTotalWeight
 #'
 #' @param obj intensitynet object
 #' @param path_nodes vector containing the node ID's of the path
+#' @param weight an string specfiying the type of weight to be computed. If no weight type is provided,
+#' the function will calculate the toatl amount of edges. Default NA.
 #' 
-#' @return intensity of the path
+#' @return total weight of the path
 #' 
 #' @examples
 #' 
 #' data("und_intnet_chicago")
-#' PathIntensity(und_intnet_chicago, c('V115', 'V123', 'V125', 'V134'))
+#' PathTotalWeight(und_intnet_chicago, c('V115', 'V123', 'V125', 'V134'), weight = 'intensity')
 #' 
 #' @export
-PathIntensity <- function(obj, path_nodes){
-  UseMethod("PathIntensity")
+PathTotalWeight <- function(obj, path_nodes, weight = NA){
+  UseMethod("PathTotalWeight")
 }
 
 
@@ -448,7 +450,7 @@ EdgeIntensitiesAndProportions.intensitynet <- function(obj){
   }
   
   pb = utils::txtProgressBar(min = 0, max = nrow(event_data), initial = 0) 
-  message(paste0("Reminder: Event distance error is ", obj$event_correction,))
+  message(paste0("Reminder: Event distance error is ", obj$event_correction))
   message("Calculating edge intensities...")
   
   e_count <- 0
@@ -520,42 +522,40 @@ EdgeIntensitiesAndProportions.intensitynet <- function(obj){
 }
 
 
-#' Calculates the mean intensity of the given path
+#' Calculates the total weight of the given path
 #'
-#' @name PathIntensity.intensitynet
+#' @name PathTotalWeight.intensitynet
 #'
 #' @param obj intensitynet object
 #' @param path_nodes vector containing the node ID's of the path
+#' @param weight an string specfiying the type of weight to be computed. If no weight type is provided,
+#' the function will calculate the toatl amount of edges. Default NA.
 #' 
-#' @return intensity of the path
+#' @return total weight of the path
 #' 
 #' @examples
 #' 
 #' data("und_intnet_chicago")
-#' PathIntensity(und_intnet_chicago, c('V115', 'V123', 'V125', 'V134'))
+#' PathTotalWeight(und_intnet_chicago, c('V115', 'V123', 'V125', 'V134'), weight = 'intensity')
 #' 
 #' @export
-PathIntensity.intensitynet <- function(obj, path_nodes){
-  edge_counts <- list()
-  path_intensity <- 0
+PathTotalWeight.intensitynet <- function(obj, path_nodes, weight = NA){
+  g <- obj$graph
   
-  prev <- NULL
-  for(node_id in path_nodes){
-    if(is.null(prev)){
-      prev <- node_id
-      next
-    }
-    
-    path_intensity <- path_intensity + Reduce('+', EdgeIntensity(obj = obj, 
-                                                                 node_id1 = prev, 
-                                                                 node_id2 = node_id))
-    
-    prev <- node_id
+  if(!is.na(weight) && !(weight %in% igraph::edge_attr_names(g))){
+    warning("The given weight doens't exist in the edge attributes, using default instead (NA)")
+    weight = NA
   }
-  # Divide the intensity of the edges by their number (In a path -> N edges = N vertices - 1)
-  path_intensity <- path_intensity / (length(path_nodes) - 1)
   
-  path_intensity
+  path_edges <- igraph::E(g, path = c(1,2,5,7))
+  
+  if (is.na(weight)){
+    total_weight <- length(path_edges)
+  }else{
+    total_weight <- sum(igraph::edge_attr(g, name = weight, index = path_edges))
+  }
+  
+  total_weight
 }
 
 
