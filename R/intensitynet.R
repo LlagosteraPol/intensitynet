@@ -448,6 +448,7 @@ EdgeIntensitiesAndProportions.intensitynet <- function(obj){
   }
   
   pb = utils::txtProgressBar(min = 0, max = nrow(event_data), initial = 0) 
+  message(paste0("Reminder: Event distance error is ", obj$event_correction,))
   message("Calculating edge intensities...")
   
   e_count <- 0
