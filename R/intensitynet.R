@@ -151,6 +151,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' 'geary': Local Geary-c correlation. The correlations will use the indicated intensity type,
 #' 'v_intensity': vertice mean intensity,
 #' 'e_intensity': edge intensity,
+#' mark name: name of the mark (string) to plot its edge proportion,
 #' 'none': plain map.
 #' @param intensity_type name of the vertex intensity used to plot the heatmap for moran, geary and v_intensity options (of the heat_type argument).
 #' The options are; 
@@ -160,6 +161,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heat_type is 'e_intensity', this
 #' parameter will be skiped and plot the edge intensities instead.
 #' @param net_vertices chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)
+#' @param net_edges chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8))
 #' @param show_events option to show the events as orange squares, FALSE by default
 #' @param ... extra arguments for the class ggplot
 #' 
@@ -714,6 +716,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' 'geary': Local Geary-c correlation. The correlations will use the indicated intensity type,
 #' 'v_intensity': vertice mean intensity,
 #' 'e_intensity': edge intensity,
+#' mark name: name of the mark (string) to plot its edge proportion,
 #' 'none': plain map.
 #' @param intensity_type name of the vertex intensity used to plot the heatmap for moran, geary and v_intensity options (of the heat_type argument).
 #' The options are; 
@@ -722,7 +725,8 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' 'intensity_und' or 'intensity_all'. If the intensity parameter is 'none', the function will use, if exist, 
 #' the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heat_type is 'e_intensity', this
 #' parameter will be skiped and plot the edge intensities instead.
-#' @param net_vertices chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)
+#' @param net_vertices chosen vertices to plot the heatmap
+#' @param net_edges chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8))
 #' @param show_events option to show the events as orange squares, FALSE by default
 #' @param ... extra arguments for the class ggplot
 #' 
@@ -736,7 +740,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' }
 #' 
 #' @export
-PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, ...){
+PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, net_edges = NULL, show_events = FALSE, ...){
   g <- obj$graph
   adj_mtx <- igraph::as_adj(graph = g)
   adj_listw <- spdep::mat2listw(adj_mtx)
@@ -756,10 +760,13 @@ PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = '
     }
   }
   
-  if (is.null(net_vertices)){
+  if (is.null(net_vertices) && is.null(net_edges)){
     net_vertices <- igraph::V(g)
-  } else{
+    net_edges <- igraph::E(g)
+  } else if (!is.null(net_vertices)){
     net_vertices <- igraph::V(g)[net_vertices] # Convert to class 'igraph.v'
+  }else{
+    net_edges <- igraph::E(g, P = net_edges) # Convert to class 'igraph.e'
   }
   
   # If the intensity is not provided, try to take it from the given network
@@ -881,7 +888,12 @@ PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = '
                           ycoord = node_coords$ycoord, 
                           value = NA)
   }
-  geoplot_obj <- list(intnet = obj, data_df = data_df, net_vertices = net_vertices, mode = heat_type, show_events = show_events)
+  geoplot_obj <- list(intnet = obj, 
+                      data_df = data_df, 
+                      net_vertices = net_vertices, 
+                      net_edges = net_edges,
+                      mode = heat_type, 
+                      show_events = show_events)
   class(geoplot_obj) <- "netTools"
   
   return( GeoreferencedGgplot2(geoplot_obj, ...) )
@@ -1044,7 +1056,8 @@ ApplyWindow.intensitynet <- function(obj, x_coords, y_coords){
   intnet <- list(graph = sub_g, 
                  events = sub_e_coords, 
                  graph_type = obj$graph_type, 
-                 distances_mtx = sub_dist_mtx)
+                 distances_mtx = sub_dist_mtx,
+                 event_correction = obj$event_correction)
   attr(intnet, 'class') <- class(obj)
   
   intnet
