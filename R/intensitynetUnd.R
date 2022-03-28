@@ -62,8 +62,8 @@ RelateEventsToNetwork.intensitynetUnd = function(obj){
   tmp_obj <- EdgeIntensitiesAndProportions.intensitynet(obj)
   g <- tmp_obj$graph
   
-  pb = utils::txtProgressBar(min = 0, max = igraph::gorder(g), initial = 0) 
-  message("Calculating node intensities...")
+  message("\nCalculating node intensities...")
+  pb = utils::txtProgressBar(min = 0, max = igraph::gorder(g), initial = 0, style = 3) 
   
   # check if the intensities was previously calculated, if not, calculate them
   v_count <- 0

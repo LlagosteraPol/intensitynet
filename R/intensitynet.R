@@ -95,6 +95,7 @@ intensitynet <- function(adjacency_mtx, node_coords, event_data, graph_type = 'u
 #' dependence statistic to be computed.
 #' @param lag_max Maximum geodesic lag at which to compute dependence
 #' @param intensity Vector containing the values to calculate the specified dependency in the network. Usually the node mean intensities.
+#' @param partial_neighborhood use partial neighborhood (TRUE) or cumulative (FALSE). TRUE by default
 #' 
 #' @return A vector containing the dependence statistics (ascending from order 0). 
 #' 
@@ -106,7 +107,7 @@ intensitynet <- function(adjacency_mtx, node_coords, event_data, graph_type = 'u
 #'                                    intensity = igraph::vertex_attr(g)$intensity)
 #' 
 #' @export
-NodeGeneralCorrelation <- function(obj, dep_type, lag_max, intensity){
+NodeGeneralCorrelation <- function(obj, dep_type, lag_max, intensity, partial_neighborhood = TRUE){
   UseMethod("NodeGeneralCorrelation")
 }
 
@@ -449,9 +450,8 @@ EdgeIntensitiesAndProportions.intensitynet <- function(obj){
     }
   }
   
-  pb = utils::txtProgressBar(min = 0, max = nrow(event_data), initial = 0) 
-  message(paste0("Reminder: Event distance error is ", obj$event_correction))
-  message("Calculating edge intensities...")
+  message(paste0("\nCalculating edge intensities with event error distance of ", obj$event_correction ,"..."))
+  pb = utils::txtProgressBar(min = 0, max = nrow(event_data), initial = 0, style=3) 
   
   e_count <- 0
   for(row in 1:nrow(event_data)){
@@ -613,6 +613,7 @@ ShortestPath.intensitynet <- function(obj,  node_id1, node_id2, weight = NA, mod
 #' dependence statistic to be computed.
 #' @param lag_max Maximum geodesic lag at which to compute dependence
 #' @param intensity Vector containing the values to calculate the specified dependency in the network. Usually the node mean intensities.
+#' @param partial_neighborhood use partial neighborhood (TRUE) or cumulative (FALSE). TRUE by default
 #' 
 #' @return A vector containing the dependence statistics (ascending from order 0). 
 #' 
@@ -624,10 +625,14 @@ ShortestPath.intensitynet <- function(obj,  node_id1, node_id2, weight = NA, mod
 #'                                    intensity = igraph::vertex_attr(g)$intensity)
 #' 
 #' @export
-NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensity){
+NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensity, partial_neighborhood = TRUE){
   g <- obj$graph
   g_sna <- intergraph::asNetwork(g)
-  sna::nacf(g_sna, intensity, type = dep_type, mode = "graph", lag.max = lag_max)
+  
+  if(obj$graph_type == 'undirected') m <- 'graph'
+  else m <- 'digraph'
+  
+  sna::nacf(g_sna, intensity, type = dep_type, mode = m, lag.max = lag_max, partial.neighborhood = partial_neighborhood)
 }
 
 
