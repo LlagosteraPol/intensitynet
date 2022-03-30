@@ -594,7 +594,11 @@ ShortestPath.intensitynet <- function(obj,  node_id1, node_id2, weight = NA, mod
     path_data <- igraph::shortest_paths(graph = g, from = node_id1, to = node_id2, mode = mode, weights = NA, output = 'both')
     total_weight <- length(path_data$vpath[[1]])
   }else{
-    weight_vector <- igraph::edge_attr(g)[[weight]]
+    
+    # Remove any decimal by multiplitying with the maximum amount of possible decimals, then add 1 to remove 0 weight edges,
+    # this is done to make sure that the shortest path igraph function take into account all decimals
+    weight_vector <- igraph::edge_attr(g)[[weight]] * 100000000 + rep(1, igraph::gsize(g))
+    
     path_data <- igraph::shortest_paths(graph = g, from = node_id1, to = node_id2, mode = mode, weights = weight_vector, output = 'both')
     total_weight <- sum(igraph::edge_attr(graph = g, weight, index = path_data$vpath[[1]]))
   }

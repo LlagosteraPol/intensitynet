@@ -21,6 +21,7 @@ PlotHeatmap(
 'geary': Local Geary-c correlation. The correlations will use the indicated intensity type,
 'v_intensity': vertice mean intensity,
 'e_intensity': edge intensity,
+mark name: name of the mark (string) to plot its edge proportion,
 'none': plain map.}
 
 \item{intensity_type}{name of the vertex intensity used to plot the heatmap for moran, geary and v_intensity options (of the heat_type argument).
@@ -36,6 +37,8 @@ parameter will be skiped and plot the edge intensities instead.}
 \item{show_events}{option to show the events as orange squares, FALSE by default}
 
 \item{...}{extra arguments for the class ggplot}
+
+\item{net_edges}{chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8))}
 }
 \value{
 The plot of the heatmap with class c("gg", "ggplot")
