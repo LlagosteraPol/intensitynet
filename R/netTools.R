@@ -179,9 +179,14 @@ SetNodeIntensity.netTools <- function(obj){
 #'
 #' @name GeoreferencedPlot.netTools 
 #'
-#' @param obj netTools object -> list(intnet: intensitynet object, vertex_labels: list of labels for the vertices,
-#' edge_labels: list of labels for the edges, xy_axes: boolean to show or not the x and y axes, 
+#' @param obj netTools object -> list(
+#' intnet: intensitynet object, 
+#' vertex_labels: list of labels for the vertices,
+#' edge_labels: list of labels for the edges, 
+#' xy_axes: boolean to show or not the x and y axes, 
 #' enable_grid: boolean to draw or not a background grid, show_events: boolean to show or not the events as orange squares,
+#' show_events option to show the events as orange squares, FALSE by default,
+#' alpha optional argument to set the transparency of the events (show_events = TRUE). The range is from 0.1 (transparent) to 1 (opaque). Default: alpha = 1,
 #' path: vector with the nodes of the path to be highlighted. Default NULL)
 #' @param ... extra arguments for the plot
 #' 
@@ -285,7 +290,7 @@ GeoreferencedPlot.netTools <- function(obj, ...){
                           rescale = FALSE,
                           xlim = c(min_x, max_x),
                           ylim = c(min_y, max_y),
-                          vertex.color = 'orange',
+                          vertex.color = adjustcolor("orange", alpha.f = obj$alpha),
                           vertex.label = '', 
                           vertex.label.cex = 0.3,  
                           vertex.size = if(exists('vertex.size', where=arguments)) arguments[['vertex.size']] else 0.8 * max(x_range, y_range), 
@@ -315,9 +320,11 @@ GeoreferencedPlot.netTools <- function(obj, ...){
 #'     value: vector values to plot
 #'    ), 
 #'   net_vertices: chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap),
+#'   net_edges chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8)),
 #'   heat_type: data which the heatmap will refer,
 #'   mode: ('moran', 'getis', 'v_intensity', 'e_intensity' or mark), 
-#'   show_events: boolean to show or not the events as orange squares 
+#'   show_events: boolean to show or not the events as orange squares,
+#'   alpha optional argument to set the transparency of the events (show_events = TRUE). The range is from 0.1 (transparent) to 1 (opaque). Default: alpha = 1
 #'   )
 #' @param ... extra arguments for the ggplot
 #' 
@@ -632,7 +639,8 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
   if(obj$show_events){
     hplot + ggplot2::geom_point(data = as.data.frame(obj$intnet$events),
                                 mapping = ggplot2::aes(x = xcoord, y = ycoord),
-                                shape = 22, fill = 'orange', color = 'orange')
+                                shape = 22, fill = 'orange', color = 'orange',
+                                alpha = obj$alpha)
   }else{
     hplot
   }

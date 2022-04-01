@@ -164,6 +164,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' @param net_vertices chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)
 #' @param net_edges chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8))
 #' @param show_events option to show the events as orange squares, FALSE by default
+#' @param alpha optional argument to set the transparency of the events (show_events = TRUE). The range is from 0.1 (transparent) to 1 (opaque). Default: alpha = 1
 #' @param ... extra arguments for the class ggplot
 #' 
 #' @return The plot of the heatmap with class c("gg", "ggplot")
@@ -176,7 +177,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' }
 #' 
 #' @export
-PlotHeatmap <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, ...){
+PlotHeatmap <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, alpha = 1, ...){
   UseMethod("PlotHeatmap")
 }
 
@@ -738,6 +739,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' @param net_vertices chosen vertices to plot the heatmap
 #' @param net_edges chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8))
 #' @param show_events option to show the events as orange squares, FALSE by default
+#' @param alpha optional argument to set the transparency of the events (show_events = TRUE). The range is from 0.1 (transparent) to 1 (opaque). Default: alpha = 1
 #' @param ... extra arguments for the class ggplot
 #' 
 #' @return The plot of the heatmap with class c("gg", "ggplot")
@@ -750,7 +752,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' }
 #' 
 #' @export
-PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, net_edges = NULL, show_events = FALSE, ...){
+PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, net_edges = NULL, show_events = FALSE, alpha = 1, ...){
   g <- obj$graph
   adj_mtx <- igraph::as_adj(graph = g)
   adj_listw <- spdep::mat2listw(adj_mtx)
@@ -775,8 +777,8 @@ PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = '
     net_edges <- igraph::E(g)
   } else if (!is.null(net_vertices)){
     net_vertices <- igraph::V(g)[net_vertices] # Convert to class 'igraph.v'
-  }else{
-    net_edges <- igraph::E(g, P = net_edges) # Convert to class 'igraph.e'
+  }else if(class(net_edges) != 'igraph.es'){
+    net_edges <- igraph::E(g, P = net_edges) # Convert to class 'igraph.es'
   }
   
   # If the intensity is not provided, try to take it from the given network
@@ -903,7 +905,8 @@ PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = '
                       net_vertices = net_vertices, 
                       net_edges = net_edges,
                       mode = heat_type, 
-                      show_events = show_events)
+                      show_events = show_events,
+                      alpha = alpha)
   class(geoplot_obj) <- "netTools"
   
   return( GeoreferencedGgplot2(geoplot_obj, ...) )

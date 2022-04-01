@@ -197,8 +197,9 @@ RelateEventsToNetwork.intensitynetMix = function(obj){
 #' @param edge_labels list -> labels for the edges
 #' @param xy_axes show the x and y axes
 #' @param enable_grid draw a background grid
-#' @param show_events option to show the events as orange squares, FALSE by default
 #' @param path vector with the nodes of the path to be highlighted. Default NULL
+#' @param show_events option to show the events as orange squares, FALSE by default
+#' @param alpha optional argument to set the transparency of the events (show_events = TRUE). The range is from 0.1 (transparent) to 1 (opaque). Default: alpha = 1
 #' @param ... extra arguments for the plot
 #' 
 #' @return No return value, same as graphics::plot.
@@ -213,7 +214,7 @@ RelateEventsToNetwork.intensitynetMix = function(obj){
 #' 
 #' @export
 plot.intensitynetMix <- function(x, vertex_labels='none', edge_labels='none', 
-                                 xy_axes=TRUE, enable_grid=FALSE, show_events = FALSE, path = NULL, ...){
+                                 xy_axes=TRUE, enable_grid=FALSE, show_events = FALSE, path = NULL, alpha = 1, ...){
   g <- x$graph
   
   if(!is.null(path) && length(path) == 1){
@@ -239,7 +240,8 @@ plot.intensitynetMix <- function(x, vertex_labels='none', edge_labels='none',
                       xy_axes = xy_axes, 
                       enable_grid = enable_grid, 
                       show_events = show_events,
-                      path = path)
+                      path = path,
+                      alpha = alpha)
   class(geoplot_obj) <- "netTools"
   
   GeoreferencedPlot(geoplot_obj, ...)
