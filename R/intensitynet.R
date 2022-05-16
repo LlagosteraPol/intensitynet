@@ -777,7 +777,7 @@ PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = '
     net_edges <- igraph::E(g)
   } else if (!is.null(net_vertices)){
     net_vertices <- igraph::V(g)[net_vertices] # Convert to class 'igraph.v'
-  }else if(class(net_edges) != 'igraph.es'){
+  }else if(!is(net_edges, 'igraph.es')){
     net_edges <- igraph::E(g, P = net_edges) # Convert to class 'igraph.es'
   }
   
