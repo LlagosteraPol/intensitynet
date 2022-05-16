@@ -150,7 +150,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' @param heat_type a string with the desired heatmap to be plotted, the options are; 
 #' 'moran': Local Moran-i correlation (with 999 permutations), 
 #' 'geary': Local Geary-c correlation. The correlations will use the indicated intensity type,
-#' 'v_intensity': vertice mean intensity,
+#' 'v_intensity': vertex mean intensity,
 #' 'e_intensity': edge intensity,
 #' mark name: name of the mark (string) to plot its edge proportion,
 #' 'none': plain map.
@@ -160,7 +160,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
 #' 'intensity_und' or 'intensity_all'. If the intensity parameter is 'none', the function will use, if exist, 
 #' the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heat_type is 'e_intensity', this
-#' parameter will be skiped and plot the edge intensities instead.
+#' parameter will be skipped and plot the edge intensities instead.
 #' @param net_vertices chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)
 #' @param net_edges chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8))
 #' @param show_events option to show the events as orange squares, FALSE by default
@@ -239,8 +239,8 @@ ShortestNodeDistance <- function(obj, node_id1, node_id2){
 #'
 #' @param obj intensitynet object
 #' @param path_nodes vector containing the node ID's of the path
-#' @param weight an string specfiying the type of weight to be computed. If no weight type is provided,
-#' the function will calculate the toatl amount of edges. Default NA.
+#' @param weight an string specifying the type of weight to be computed. If no weight type is provided,
+#' the function will calculate the total amount of edges. Default NA.
 #' 
 #' @return total weight of the path
 #' 
@@ -256,7 +256,7 @@ PathTotalWeight <- function(obj, path_nodes, weight = NA){
 
 
 #' Calculates the shortest path between two vertices (based on the minimum amount of edges) and 
-#' calculates its toatl weight
+#' calculates its total weight
 #'
 #' @name ShortestPath
 #'
@@ -371,7 +371,7 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2){
     error=function(cond) {
       neighbors_list <- igraph::neighbors(g, node_id1)
       if(! igraph::V(g)[node_id2] %in% neighbors_list){
-        message("Second vertice (node_id2) it's not a neighbor of first vertice (node_id1)")
+        message("Second vertex (node_id2) it's not a neighbor of first vertex (node_id1)")
       }else{
         message(cond)
       }
@@ -529,8 +529,8 @@ EdgeIntensitiesAndProportions.intensitynet <- function(obj){
 #'
 #' @param obj intensitynet object
 #' @param path_nodes vector containing the node ID's of the path
-#' @param weight an string specfiying the type of weight to be computed. If no weight type is provided,
-#' the function will calculate the toatl amount of edges. Default NA.
+#' @param weight an string specifying the type of weight to be computed. If no weight type is provided,
+#' the function will calculate the total amount of edges. Default NA.
 #' 
 #' @return total weight of the path
 #' 
@@ -725,7 +725,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' @param heat_type a string with the desired heatmap to be plotted, the options are; 
 #' 'moran': Local Moran-i correlation (with 999 permutations), 
 #' 'geary': Local Geary-c correlation. The correlations will use the indicated intensity type,
-#' 'v_intensity': vertice mean intensity,
+#' 'v_intensity': vertex mean intensity,
 #' 'e_intensity': edge intensity,
 #' mark name: name of the mark (string) to plot its edge proportion,
 #' 'none': plain map.
@@ -735,7 +735,7 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 #' For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
 #' 'intensity_und' or 'intensity_all'. If the intensity parameter is 'none', the function will use, if exist, 
 #' the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heat_type is 'e_intensity', this
-#' parameter will be skiped and plot the edge intensities instead.
+#' parameter will be skipped and plot the edge intensities instead.
 #' @param net_vertices chosen vertices to plot the heatmap
 #' @param net_edges chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8))
 #' @param show_events option to show the events as orange squares, FALSE by default

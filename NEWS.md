@@ -1,8 +1,8 @@
-# intensitynet 1.3
+# intensitynet 1.3.0
 
 * Added option to function 'PlotHeatmap' plot a heatmap based on marks.
 
-* Added a new argument 'net_edges' to the function 'PlotHeatmap'. Now the user can specify wich nodes and edges want to plot.
+* Added a new argument 'net_edges' to the function 'PlotHeatmap'. Now the user can specify which nodes and edges want to plot.
 
 * Added option to function 'plot' to plot a path by giving its vertices using the new argument 'path'.
 
@@ -17,19 +17,19 @@
 * Changed heatmap colors and increased edge and vertex size to visualize better the plots.
 
 
-# intensitynet 1.2
+# intensitynet 1.2.0
 
 * Added new functionality. Now the package can work with covariates (numerical, categorical, or both). Each edge in the graph provided by the intensitynet object contains all the information of its associated events.  
 
-* Changed internal function name 'AllEdgeIntensities()' to 'EdgeIntensitiesAndProportions()'  In order to adapt its significate to the new functionalities.
+* Changed internal function name 'AllEdgeIntensities()' to 'EdgeIntensitiesAndProportions()'  In order to adapt its meaning to the new functionalities.
 
-* Changed function name 'CalculateEventIntensities()' to 'RelateEventsToNetwork()'. In order to adapt its significate to the new functionalities.
+* Changed function name 'CalculateEventIntensities()' to 'RelateEventsToNetwork()'. In order to adapt its meaning to the new functionalities.
 
 * Greatly reduced the computational time to calculate event-related intensities with the function 'RelateEventsToNetwork()'.
 
 
 
-# intensitynet 1.1
+# intensitynet 1.1.0
 
 * Modified DESCRIPTION name references 'IntensityNet' to 'intensitynet' to match the package name.
 

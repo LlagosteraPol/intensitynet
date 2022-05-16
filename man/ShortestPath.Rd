@@ -3,7 +3,7 @@
 \name{ShortestPath}
 \alias{ShortestPath}
 \title{Calculates the shortest path between two vertices (based on the minimum amount of edges) and 
-calculates its toatl weight}
+calculates its total weight}
 \usage{
 ShortestPath(obj, node_id1, node_id2, weight = NA, mode = "all")
 }
@@ -27,7 +27,7 @@ total weight of the shortest path and the path vertices with class igraph.vs
 }
 \description{
 Calculates the shortest path between two vertices (based on the minimum amount of edges) and 
-calculates its toatl weight
+calculates its total weight
 }
 \examples{
 

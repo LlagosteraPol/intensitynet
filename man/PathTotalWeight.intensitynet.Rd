@@ -11,8 +11,8 @@
 
 \item{path_nodes}{vector containing the node ID's of the path}
 
-\item{weight}{an string specfiying the type of weight to be computed. If no weight type is provided,
-the function will calculate the toatl amount of edges. Default NA.}
+\item{weight}{an string specifying the type of weight to be computed. If no weight type is provided,
+the function will calculate the total amount of edges. Default NA.}
 }
 \value{
 total weight of the path

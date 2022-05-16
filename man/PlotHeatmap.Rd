@@ -21,7 +21,7 @@ PlotHeatmap(
 \item{heat_type}{a string with the desired heatmap to be plotted, the options are; 
 'moran': Local Moran-i correlation (with 999 permutations), 
 'geary': Local Geary-c correlation. The correlations will use the indicated intensity type,
-'v_intensity': vertice mean intensity,
+'v_intensity': vertex mean intensity,
 'e_intensity': edge intensity,
 mark name: name of the mark (string) to plot its edge proportion,
 'none': plain map.}
@@ -32,7 +32,7 @@ For undirected networks: 'intensity'.
 For directed networks: 'intensity_in' or 'intensity_out'. For mixed networks: 'intensity_in', 'intensity_out', 
 'intensity_und' or 'intensity_all'. If the intensity parameter is 'none', the function will use, if exist, 
 the intensity (undirected) or intensity_in (directed) values from the network nodes. If the heat_type is 'e_intensity', this
-parameter will be skiped and plot the edge intensities instead.}
+parameter will be skipped and plot the edge intensities instead.}
 
 \item{net_vertices}{chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)}
 
