@@ -290,7 +290,7 @@ GeoreferencedPlot.netTools <- function(obj, ...){
                           rescale = FALSE,
                           xlim = c(min_x, max_x),
                           ylim = c(min_y, max_y),
-                          vertex.color = adjustcolor("orange", alpha.f = obj$alpha),
+                          vertex.color = grDevices::adjustcolor("orange", alpha.f = obj$alpha),
                           vertex.label = '', 
                           vertex.label.cex = 0.3,  
                           vertex.size = if(exists('vertex.size', where=arguments)) arguments[['vertex.size']] else 0.8 * max(x_range, y_range), 
@@ -340,7 +340,7 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
   highlighted_df <- data_df[as.numeric(net_vertices),]
   
   
-  node_coords <- data.frame(xcoord = igraph::vertex_attr(g)$xcoord, ycoord = igraph::vertex_attr(g)$ycoord)
+  node_coords <- data.frame(xcoord = igraph::vertex_attr(g, 'xcoord'), ycoord = igraph::vertex_attr(g, 'ycoord'))
   rownames(node_coords) <- igraph::vertex_attr(g)$name
   #get edges, which are pairs of node IDs
   edgelist <- igraph::get.edgelist(g)
@@ -638,7 +638,7 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
   
   if(obj$show_events){
     hplot + ggplot2::geom_point(data = as.data.frame(obj$intnet$events),
-                                mapping = ggplot2::aes(x = xcoord, y = ycoord),
+                                mapping = ggplot2::aes_string(x = 'xcoord', y = 'ycoord'),
                                 shape = 22, fill = 'orange', color = 'orange',
                                 alpha = obj$alpha)
   }else{

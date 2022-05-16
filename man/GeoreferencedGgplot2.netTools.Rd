@@ -15,9 +15,11 @@ data_df: dataframe(
   value: vector values to plot
  ), 
 net_vertices: chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap),
+net_edges chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8)),
 heat_type: data which the heatmap will refer,
 mode: ('moran', 'getis', 'v_intensity', 'e_intensity' or mark), 
-show_events: boolean to show or not the events as orange squares 
+show_events: boolean to show or not the events as orange squares,
+alpha optional argument to set the transparency of the events (show_events = TRUE). The range is from 0.1 (transparent) to 1 (opaque). Default: alpha = 1
 )}
 
 \item{...}{extra arguments for the ggplot}

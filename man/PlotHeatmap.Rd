@@ -9,7 +9,9 @@ PlotHeatmap(
   heat_type = "none",
   intensity_type = "none",
   net_vertices = NULL,
+  net_edges = NULL,
   show_events = FALSE,
+  alpha = 1,
   ...
 )
 }
@@ -34,11 +36,13 @@ parameter will be skiped and plot the edge intensities instead.}
 
 \item{net_vertices}{chosen vertices to plot the heatmap (or its related edges in case to plot the edge heatmap)}
 
+\item{net_edges}{chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8))}
+
 \item{show_events}{option to show the events as orange squares, FALSE by default}
 
-\item{...}{extra arguments for the class ggplot}
+\item{alpha}{optional argument to set the transparency of the events (show_events = TRUE). The range is from 0.1 (transparent) to 1 (opaque). Default: alpha = 1}
 
-\item{net_edges}{chosen edges to plot the heatmap, can be either the edge id's or its node endpoints (e.j. c(1,2, 2,3, 7,8))}
+\item{...}{extra arguments for the class ggplot}
 }
 \value{
 The plot of the heatmap with class c("gg", "ggplot")

@@ -177,7 +177,7 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 #' }
 #' 
 #' @export
-PlotHeatmap <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, show_events = FALSE, alpha = 1, ...){
+PlotHeatmap <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, net_edges = NULL, show_events = FALSE, alpha = 1, ...){
   UseMethod("PlotHeatmap")
 }
 

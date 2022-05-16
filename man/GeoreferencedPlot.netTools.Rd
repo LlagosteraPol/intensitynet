@@ -7,9 +7,14 @@
 \method{GeoreferencedPlot}{netTools}(obj, ...)
 }
 \arguments{
-\item{obj}{netTools object -> list(intnet: intensitynet object, vertex_labels: list of labels for the vertices,
-edge_labels: list of labels for the edges, xy_axes: boolean to show or not the x and y axes, 
+\item{obj}{netTools object -> list(
+intnet: intensitynet object, 
+vertex_labels: list of labels for the vertices,
+edge_labels: list of labels for the edges, 
+xy_axes: boolean to show or not the x and y axes, 
 enable_grid: boolean to draw or not a background grid, show_events: boolean to show or not the events as orange squares,
+show_events option to show the events as orange squares, FALSE by default,
+alpha optional argument to set the transparency of the events (show_events = TRUE). The range is from 0.1 (transparent) to 1 (opaque). Default: alpha = 1,
 path: vector with the nodes of the path to be highlighted. Default NULL)}
 
 \item{...}{extra arguments for the plot}

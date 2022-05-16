@@ -11,6 +11,7 @@
   xy_axes = TRUE,
   enable_grid = FALSE,
   show_events = FALSE,
+  alpha = 1,
   path = NULL,
   ...
 )
@@ -27,6 +28,8 @@
 \item{enable_grid}{draw a background grid}
 
 \item{show_events}{option to show the events as orange squares, FALSE by default}
+
+\item{alpha}{optional argument to set the transparency of the events (show_events = TRUE). The range is from 0.1 (transparent) to 1 (opaque). Default: alpha = 1}
 
 \item{path}{vector with the nodes of the path to be highlighted. Default NULL}
 
