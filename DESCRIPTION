@@ -1,6 +1,6 @@
 Package: intensitynet
-Version: 1.3.0
-Date: 2022-05-16
+Version: 1.3.1
+Date: 2022-09-26
 Title: Intensity Analysis of Spatial Point Patterns on Complex Networks
 Authors@R: c(person("Pol", "Llagostera", email = "pol.llagostera@udl.cat", role = c("aut", "cre")),
              person("Matthias", "Eckardt", email = "m.eckardt@hu-berlin.de", role = "aut"))
@@ -13,7 +13,7 @@ Imports:
     ggplot2 (>= 3.3.2),
     igraph (>= 1.2.5),
     intergraph (>= 2.0.2),
-    Matrix (>= 1.2.18),
+    Matrix (>= 1.5.1),
     methods (>= 3.6.3),
     sna (>= 2.6),
     spatstat.geom (>= 2.3.1),

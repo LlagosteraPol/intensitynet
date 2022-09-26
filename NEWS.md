@@ -1,3 +1,7 @@
+# intensitynet 1.3.1
+* Updated to work with package Matrix >= 1.5.1
+
+
 # intensitynet 1.3.0
 
 * Added option to function 'PlotHeatmap' plot a heatmap based on marks.
