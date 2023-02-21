@@ -2,8 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{intensitynet}
 \alias{intensitynet}
-\title{Constructor of the class intensitynet. In order to create an intensitynet object, it is needed; an adjacency matrix, the
-coordinates of the nodes and the coordinates of the events.}
+\title{Constructor of the class intensitynet.}
 \usage{
 intensitynet(
   adjacency_mtx,
@@ -30,7 +29,7 @@ intensitynet class object containing: graph = <igraph>, events = <matrix>, graph
 distances = <matrix>
 }
 \description{
-Constructor of the class intensitynet. In order to create an intensitynet object, it is needed; an adjacency matrix, the
+In order to create an intensitynet object, it is needed; an adjacency matrix, the
 coordinates of the nodes and the coordinates of the events.
 }
 \examples{

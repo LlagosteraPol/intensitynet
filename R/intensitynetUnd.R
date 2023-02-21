@@ -55,8 +55,7 @@ RelateEventsToNetwork.intensitynetUnd = function(obj){
   counts <- c()
   
   if(length(obj$events) == 0){
-    warning("No events, cannot calculate any intensity.")
-    return(obj)
+    stop("Error: No events, cannot calculate any intensity.")
   }
   
   tmp_obj <- EdgeIntensitiesAndProportions.intensitynet(obj)

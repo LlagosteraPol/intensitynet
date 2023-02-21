@@ -1,4 +1,7 @@
-#' Constructor of the class intensitynet. In order to create an intensitynet object, it is needed; an adjacency matrix, the
+#' Constructor of the class intensitynet. 
+#' 
+#' @description 
+#' In order to create an intensitynet object, it is needed; an adjacency matrix, the
 #' coordinates of the nodes and the coordinates of the events.
 #'
 #' @name intensitynet
@@ -37,8 +40,7 @@
 intensitynet <- function(adjacency_mtx, node_coords, event_data, graph_type = 'undirected', event_correction = 5){
   
   if(event_correction < 0){
-    message("Warning: event correction value cannot be less than 0, using default.")
-    event_correction <- 5
+    stop("Error: Event correction value cannot be less than 0, using default.")
   }
   
   if (is.data.frame(adjacency_mtx)) {
@@ -336,17 +338,14 @@ SetNetworkAttribute <- function(obj, where, name, value){
 #' 
 EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2){
   if(node_id1 == node_id2){
-    stop("The two vertices cannot be the same.")
+    stop("Error: The two vertices cannot be the same.")
   }
   
   if(obj$event_correction < 0){
-    message("Warning: event correction value cannot be less than 0, using default.")
-    z <- 5
-  }
-  else{
-    z <- obj$event_correction
+    stop("Error: Event correction value cannot be less than 0, using default.")
   }
   
+  z <- obj$event_correction
   g <- obj$graph
   distances_mtx <- obj$distances_mtx
   event_data <- obj$events
@@ -412,13 +411,10 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2){
 #' 
 EdgeIntensitiesAndProportions.intensitynet <- function(obj){
   if(obj$event_correction < 0){
-    message("Warning: event correction value cannot be less than 0, using default.")
-    z <- 5
-  }
-  else{
-    z <- obj$event_correction
+    stop("Error: event correction value cannot be less than 0, using default.")
   }
   
+  z <- obj$event_correction
   g <- obj$graph
   distances_mtx <- obj$distances_mtx
   event_data <- obj$events
@@ -544,8 +540,7 @@ PathTotalWeight.intensitynet <- function(obj, path_nodes, weight = NA){
   g <- obj$graph
   
   if(!is.na(weight) && !(weight %in% igraph::edge_attr_names(g))){
-    warning("The given weight doens't exist in the edge attributes, using default instead (NA)")
-    weight = NA
+    stop("Error: The given weight doens't exist in the edge attributes, using default instead (NA)")
   }
   
   path_edges <- igraph::E(g, path = c(1,2,5,7))
@@ -587,8 +582,7 @@ ShortestPath.intensitynet <- function(obj,  node_id1, node_id2, weight = NA, mod
   g <- obj$graph
   
   if(!is.na(weight) && !(weight %in% igraph::edge_attr_names(g))){
-    warning("The given weight doens't exist in the edge attributes, using default instead (NA)")
-    weight = NA
+    stop("Error: The given weight doens't exist in the edge attributes, using default instead (NA)")
   }
   
   if (is.na(weight)){
@@ -764,11 +758,10 @@ PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = '
     
     if( !(heat_type %in% igraph::edge_attr_names(g) ))
     {
-      warning('Parameter "heat_type" should be; for correlations: "moran" or "geary", 
+      stop('Error: Parameter "heat_type" should be; for correlations: "moran" or "geary", 
                                                for intensities: "v_intensity" or "e_intensity", 
                                                for marks: the name of the mark. 
                                                Using default ("none").')
-      heat_type <- 'none'
     }
   }
   
@@ -784,7 +777,7 @@ PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = '
   # If the intensity is not provided, try to take it from the given network
   if( is.null(igraph::vertex_attr(graph = g, name = intensity_type)) ){
     if( intensity_type != 'none' && is.null(igraph::vertex_attr(graph = g, name = intensity_type))){
-      warning(paste0("The given intensity type '", intensity_type, "', doestn't match any of the network intensities."))
+      stop(paste0("Error: The given intensity type '", intensity_type, "', doestn't match any of the network intensities."))
     }
     if(!is.null(igraph::vertex_attr(graph = g, name = 'intensity'))){
       intensity <- igraph::vertex_attr(graph = g, name = 'intensity')
