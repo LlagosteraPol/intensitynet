@@ -1,7 +1,7 @@
 #' Constructor of the class intensitynet. 
 #' 
 #' @description 
-#' In order to create an intensitynet object, it is needed; an adjacency matrix, the
+#' This constructor creates an intensitynet object using an adjacency matrix, the
 #' coordinates of the nodes and the coordinates of the events.
 #'
 #' @name intensitynet
@@ -86,6 +86,10 @@ intensitynet <- function(adjacency_mtx, node_coords, event_data, graph_type = 'u
 
 # -------- Network functions ----------
 
+
+#' Calculate dependence statistics on the network
+#' 
+#' @description 
 #' It allows to compute different dependence statistics on the network
 #' for the given vector and for neighborhoods of distinct order. Such statistics are; correlation,
 #' covariance, Moran’s I and Geary’s C. 
@@ -114,6 +118,9 @@ NodeGeneralCorrelation <- function(obj, dep_type, lag_max, intensity, partial_ne
 }
 
 
+#' Calculates local correlations based on nodes
+#' 
+#' @description 
 #' Gives the node local Moran-I, Getis-Gstar or Geary-c correlations
 #' 
 #' @name NodeLocalCorrelation
@@ -144,6 +151,9 @@ NodeLocalCorrelation <- function(obj, dep_type = 'moran', intensity){
 }
 
 
+#' Given an intensitynet object, plot network heatmaps
+#' 
+#' @description 
 #' Plot the network correlations or intensities.
 #'
 #' @name PlotHeatmap
@@ -184,6 +194,9 @@ PlotHeatmap <- function(obj, heat_type = 'none', intensity_type = 'none', net_ve
 }
 
 
+#' Plot the neighbors of a node including the closer events
+#' 
+#' @description 
 #' Plot the net and the events in the neighborhood area of the given node
 #' 
 #' @name PlotNeighborhood
@@ -205,6 +218,9 @@ PlotNeighborhood <- function(obj, node_id, ...){
 }
 
 
+#' Retrieve an intensitynet object focused on a given area
+#' 
+#' @description 
 #' Get the intensitynet object delimited by the given window
 #' 
 #' @name ApplyWindow
@@ -236,6 +252,9 @@ ShortestNodeDistance <- function(obj, node_id1, node_id2){
 # -------- Intensity functions ----------
 
 #' Calculates the total weight of the given path
+#' 
+#' @description 
+#' Calculates the total weight of the given path
 #'
 #' @name PathTotalWeight
 #'
@@ -257,6 +276,9 @@ PathTotalWeight <- function(obj, path_nodes, weight = NA){
 }
 
 
+#' Given two nodes, calculates the shortest path and its total weight 
+#' 
+#' @description 
 #' Calculates the shortest path between two vertices (based on the minimum amount of edges) and 
 #' calculates its total weight
 #'
@@ -284,6 +306,9 @@ ShortestPath <- function(obj,  node_id1, node_id2, weight = NA, mode = 'all'){
   UseMethod("ShortestPath")
 }
 
+#' Calculates intensity statistics for the given intensitynet object
+#' 
+#' @description 
 #' Calculates edgewise and mean nodewise intensities for the given intensitynet object and, for each edge, the proportions of
 #' all event covariates.
 #' 
@@ -325,8 +350,11 @@ SetNetworkAttribute <- function(obj, where, name, value){
 }
 
 
+#' Given two nodes, calculates its edge intensity
+#' 
+#' @description
 #' If not calculated, calculates the intensity of the edge with nodes; node_id1, node_id2. 
-#' If the edge already contains an intensity, give it directly.
+#' If the edge already contains an intensity, the function gives it directly without re-calculation.
 #'
 #' @name EdgeIntensity.intensitynet
 #' 
@@ -400,6 +428,9 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2){
 }
 
 
+#' Calculate all the edge intensities of the graph. 
+#' 
+#' @description
 #' Calculate all the edge intensities of the graph. It's more fast than using iteratively the 
 #' function EdgeIntensity for all edges.
 #' 
@@ -520,6 +551,9 @@ EdgeIntensitiesAndProportions.intensitynet <- function(obj){
 
 
 #' Calculates the total weight of the given path
+#' 
+#' @description 
+#' Calculates the total weight of the given path
 #'
 #' @name PathTotalWeight.intensitynet
 #'
@@ -555,7 +589,11 @@ PathTotalWeight.intensitynet <- function(obj, path_nodes, weight = NA){
 }
 
 
-#' Calculates the shortest path between two vertices (based on the minimum amount of edges) and 
+#' Given two nodes, calculates the shortest path and its total weight 
+#' 
+#' 
+#' @description 
+#' Calculates the shortest path between two nodes (based on the minimum amount of edges) and 
 #' calculates its total weight
 #'
 #' @name ShortestPath.intensitynet
@@ -601,6 +639,9 @@ ShortestPath.intensitynet <- function(obj,  node_id1, node_id2, weight = NA, mod
 }
 
 
+#' Calculate dependence statistics on the network
+#' 
+#' @description 
 #' It allows to compute different dependence statistics on the network
 #' for the given vector and for neighborhoods of distinct order. Such statistics are; correlation,
 #' covariance, Moran’s I and Geary’s C. 
@@ -635,6 +676,9 @@ NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensit
 }
 
 
+#' Calculates local correlations based on nodes
+#' 
+#' @description 
 #' Gives the node local Moran-I, Getis-Gstar or Geary-c correlations
 #' 
 #' @name NodeLocalCorrelation.intensitynet
@@ -711,6 +755,9 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 }
 
 
+#' Given an intensitynet object, plot network heatmaps
+#' 
+#' @description 
 #' Plot the network correlations or intensities.
 #'
 #' @name PlotHeatmap.intensitynet
@@ -906,6 +953,9 @@ PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = '
 }
 
 
+#' Plot the neighbors of a node including the closer events
+#' 
+#' @description 
 #' Plot the net and the events in the neighborhood area of the given node
 #' 
 #' @name PlotNeighborhood.intensitynet
@@ -966,6 +1016,9 @@ PlotNeighborhood.intensitynet <- function(obj, node_id, ...){
 
 
 #' Set attributes to the network edges or nodes
+#' 
+#' @description 
+#' Set attributes to the network edges or nodes
 #'
 #' @name SetNetworkAttribute.intensitynet
 #'
@@ -997,6 +1050,9 @@ SetNetworkAttribute.intensitynet <- function(obj, where, name, value){
 }
 
 
+#' Retrieve an intensitynet object focused on a given area
+#' 
+#' @description 
 #' Get the intensitynet object delimited by the given window
 #' 
 #' @name ApplyWindow.intensitynet
@@ -1070,6 +1126,9 @@ ApplyWindow.intensitynet <- function(obj, x_coords, y_coords){
 }
 
 
+#' Given two nodes, gives its shortest distance based on the minimum amount of edges
+#' 
+#' @description 
 #' Calculates the shortest distance path between two nodes (based on the minimum amount of edges).
 #' The function also returns the total weight of the path, if the weight is not available, returns
 #' the number of edges.

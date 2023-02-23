@@ -29,7 +29,7 @@ intensitynet class object containing: graph = <igraph>, events = <matrix>, graph
 distances = <matrix>
 }
 \description{
-In order to create an intensitynet object, it is needed; an adjacency matrix, the
+This constructor creates an intensitynet object using an adjacency matrix, the
 coordinates of the nodes and the coordinates of the events.
 }
 \examples{

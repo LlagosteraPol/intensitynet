@@ -2,8 +2,7 @@
 % Please edit documentation in R/netTools.R
 \name{Undirected2RandomDirectedAdjMtx.netTools}
 \alias{Undirected2RandomDirectedAdjMtx.netTools}
-\title{Creates a directed adjacency matrix from an Undirected one with random directions (in-out edges) 
-but with the same connections between nodes.}
+\title{Converts a directed adjacency matrix to undirected}
 \usage{
 \method{Undirected2RandomDirectedAdjMtx}{netTools}(obj)
 }

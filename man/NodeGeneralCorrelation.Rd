@@ -2,9 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{NodeGeneralCorrelation}
 \alias{NodeGeneralCorrelation}
-\title{It allows to compute different dependence statistics on the network
-for the given vector and for neighborhoods of distinct order. Such statistics are; correlation,
-covariance, Moran’s I and Geary’s C.}
+\title{Calculate dependence statistics on the network}
 \usage{
 NodeGeneralCorrelation(
   obj,

@@ -3,7 +3,7 @@
 \name{PointToSegment_deprecated.netTools}
 \alias{PointToSegment_deprecated.netTools}
 \alias{PointToSegment_deprecated}
-\title{Return the shortest distance between an event and the segment formed by two nodes.}
+\title{Gives the shortest distance between an event and the segment formed by two nodes.}
 \usage{
 PointToSegment_deprecated(obj)
 }
@@ -14,5 +14,5 @@ PointToSegment_deprecated(obj)
 distance to the segment
 }
 \description{
-Return the shortest distance between an event and the segment formed by two nodes.
+Gives the shortest distance between an event and the segment formed by two nodes.
 }

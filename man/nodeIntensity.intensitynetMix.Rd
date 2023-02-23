@@ -3,8 +3,7 @@
 \name{nodeIntensity.intensitynetMix}
 \alias{nodeIntensity.intensitynetMix}
 \alias{MeanNodeIntensity.intensitynetMix}
-\title{Given a node, calculates its mean intensities depending on the edges associated with the node, those intensities are: 
-in, out (for directed edges), undirected and total intensity.}
+\title{Calculates the mean intensity of the given node (for mixed networks)}
 \usage{
 \method{MeanNodeIntensity}{intensitynetMix}(obj, node_id)
 }

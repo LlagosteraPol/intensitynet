@@ -2,7 +2,7 @@
 % Please edit documentation in R/netTools.R
 \name{GeoreferencedGgplot2.netTools}
 \alias{GeoreferencedGgplot2.netTools}
-\title{This function uses 'ggplot' to plot heatmaps of a network}
+\title{Plot heatmaps of a network}
 \usage{
 \method{GeoreferencedGgplot2}{netTools}(obj, ...)
 }
@@ -25,5 +25,5 @@ alpha optional argument to set the transparency of the events (show_events = TRU
 \item{...}{extra arguments for the ggplot}
 }
 \description{
-This function uses 'ggplot' to plot heatmaps of a network
+This function uses internally the package 'ggplot2' to plot heatmaps of a network
 }

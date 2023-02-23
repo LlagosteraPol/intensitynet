@@ -2,8 +2,7 @@
 % Please edit documentation in R/intensitynetMix.R
 \name{RelateEventsToNetwork.intensitynetMix}
 \alias{RelateEventsToNetwork.intensitynetMix}
-\title{Calculates edgewise and mean nodewise intensities for Mixed networks and, for each edge, the proportions of
-all event covariates.}
+\title{Calculates intensity statistics for the given intensitynet object}
 \usage{
 \method{RelateEventsToNetwork}{intensitynetMix}(obj)
 }

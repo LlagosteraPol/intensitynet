@@ -2,8 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{ShortestPath.intensitynet}
 \alias{ShortestPath.intensitynet}
-\title{Calculates the shortest path between two vertices (based on the minimum amount of edges) and 
-calculates its total weight}
+\title{Given two nodes, calculates the shortest path and its total weight}
 \usage{
 \method{ShortestPath}{intensitynet}(obj, node_id1, node_id2, weight = NA, mode = "all")
 }
@@ -26,7 +25,7 @@ directed paths are searched. This argument is ignored for undirected graphs.}
 total weight of the shortest path and the path vertices with class igraph.vs
 }
 \description{
-Calculates the shortest path between two vertices (based on the minimum amount of edges) and 
+Calculates the shortest path between two nodes (based on the minimum amount of edges) and 
 calculates its total weight
 }
 \examples{

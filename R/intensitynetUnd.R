@@ -1,3 +1,6 @@
+#' Calculates the mean intensity of the given node (for undirected networks)
+#' 
+#' @description 
 #' Calculates the mean intensity of the given node (intensity of all the edges of the node/number of edges of the node)
 #' 
 #' @name nodeIntensity.intensitynetUnd
@@ -39,7 +42,10 @@ MeanNodeIntensity.intensitynetUnd = function(obj, node_id){
 }
 
 
-#' Calculates edgewise and mean nodewise intensities for for Undirected networks and, for each edge, the proportions of
+#' Calculates intensity statistics for the given intensitynet object
+#' 
+#' @description 
+#' Calculates edgewise and mean nodewise intensities for the given intensitynet object and, for each edge, the proportions of
 #' all event covariates.
 #' 
 #' @name RelateEventsToNetwork.intensitynetUnd
@@ -106,6 +112,9 @@ RelateEventsToNetwork.intensitynetUnd = function(obj){
 }
 
 
+#' Plot intensitynet object
+#' 
+#' @description 
 #' Plot intensitynet object
 #'
 #' @name plot.intensitynetUnd

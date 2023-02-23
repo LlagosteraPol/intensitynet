@@ -2,7 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{PlotNeighborhood.intensitynet}
 \alias{PlotNeighborhood.intensitynet}
-\title{Plot the net and the events in the neighborhood area of the given node}
+\title{Plot the neighbors of a node including the closer events}
 \usage{
 \method{PlotNeighborhood}{intensitynet}(obj, node_id, ...)
 }

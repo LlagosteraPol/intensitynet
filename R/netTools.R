@@ -55,6 +55,9 @@ Undirected2RandomDirectedAdjMtx <- function(obj){
 
 
 #' Creates an igraph network with the given data
+#' 
+#' @description 
+#' Creates an igraph network with the given data
 #'
 #' @name InitGraph.netTools 
 #'
@@ -91,6 +94,9 @@ InitGraph.netTools <- function(obj){
 
 
 #' Calculates the distances between all pairs of nodes from the given network
+#' 
+#' @description 
+#' Calculates the distances between all pairs of nodes from the given network
 #'
 #' @name CalculateDistancesMtx.netTools 
 #'
@@ -114,6 +120,9 @@ CalculateDistancesMtx.netTools <- function(obj){
 
 
 #' Set igraph network node coordinates as its attributes
+#' 
+#' @description 
+#' Set igraph network node coordinates as its attributes
 #'
 #' @name InitGraph.netTools 
 #'
@@ -136,6 +145,9 @@ SetNetCoords.netTools <- function(obj){
 
 
 #' Sets the given intensities as an edge attribute to the given igraph network
+#' 
+#' @description 
+#' Sets the given intensities as an edge attribute to the given igraph network
 #'
 #' @name SetEdgeIntensity.netTools 
 #'
@@ -157,6 +169,9 @@ SetEdgeIntensity.netTools <- function(obj){
 
 
 #' Sets the given intensities as a node attribute to the given igraph network
+#' 
+#' @description 
+#' Sets the given intensities as a node attribute to the given igraph network
 #'
 #' @name SetNodeIntensity.netTools 
 #'
@@ -175,6 +190,9 @@ SetNodeIntensity.netTools <- function(obj){
 }
 
 
+#' Plot the given network using its node coordinates
+#' 
+#' @description 
 #' Plot the given network using its node coordinates
 #'
 #' @name GeoreferencedPlot.netTools 
@@ -308,7 +326,10 @@ GeoreferencedPlot.netTools <- function(obj, ...){
 }
 
 
-#' This function uses 'ggplot' to plot heatmaps of a network
+#' Plot heatmaps of a network
+#' 
+#' @description 
+#' This function uses internally the package 'ggplot2' to plot heatmaps of a network
 #' 
 #' @name GeoreferencedGgplot2.netTools
 #' 
@@ -647,7 +668,10 @@ GeoreferencedGgplot2.netTools <- function(obj, ...){
 }
 
 
-#' Return the distance between an event and the line (not segment) formed by two nodes.
+#' Gives the distance between an event and the line formed by two nodes.
+#' 
+#' @description 
+#' Gives the distance between an event and the line (not segment) formed by two nodes.
 #'
 #' @name PointToLine.netTools  
 #'
@@ -669,7 +693,10 @@ PointToLine.netTools <- function(obj){
 }
 
 
-#' Return the shortest distance between an event and the segment formed by two nodes.
+#' Gives the shortest distance between an event and the segment formed by two nodes.
+#' 
+#' @description 
+#' Gives the shortest distance between an event and the segment formed by two nodes.
 #'
 #' @name PointToSegment_deprecated.netTools  
 #'
@@ -712,7 +739,10 @@ PointToSegment_deprecated <- function(obj) {
 }
 
 
-#' Return the shortest distance between an event and a set of segments.
+#' Gives the shortest distance between an event and a set of segments.
+#' 
+#' @description 
+#' Gives the shortest distance between an event and a set of segments.
 #'
 #' @name PointToSegment.netTools  
 #'
@@ -760,6 +790,9 @@ PointToSegment <- function(obj) {
 }
 
 
+#' Converts a directed adjacency matrix to undirected
+#' 
+#' @description 
 #' Creates a directed adjacency matrix from an Undirected one with random directions (in-out edges) 
 #' but with the same connections between nodes.
 #'

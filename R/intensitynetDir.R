@@ -1,3 +1,6 @@
+#' Calculates the mean intensity of the given node (for directed networks)
+#' 
+#' @description 
 #' Given a node, calculates its mean intensities regarding in and out edges associated with the node.
 #' 
 #' @name nodeIntensity.intensitynetDir
@@ -65,6 +68,9 @@ MeanNodeIntensity.intensitynetDir= function(obj, node_id){
 }
 
 
+#' Calculates intensity statistics for the given intensitynet object
+#' 
+#' @description 
 #' Calculates edgewise and mean nodewise intensities for Directed networks and, for each edge, the proportions of
 #' all event covariates.
 #' 
@@ -142,6 +148,9 @@ RelateEventsToNetwork.intensitynetDir = function(obj){
 }
 
 
+#' Plot intensitynet object
+#' 
+#' @description 
 #' Plot intensitynet object
 #'
 #' @name plot.intensitynetDir

@@ -2,8 +2,7 @@
 % Please edit documentation in R/intensitynetUnd.R
 \name{RelateEventsToNetwork.intensitynetUnd}
 \alias{RelateEventsToNetwork.intensitynetUnd}
-\title{Calculates edgewise and mean nodewise intensities for for Undirected networks and, for each edge, the proportions of
-all event covariates.}
+\title{Calculates intensity statistics for the given intensitynet object}
 \usage{
 \method{RelateEventsToNetwork}{intensitynetUnd}(obj)
 }
@@ -15,6 +14,6 @@ proper intensitynetUnd object with a graph containing the nodewise intensity in 
 attributes and the edgewise intensities and event covariate proportions as edge attributes.
 }
 \description{
-Calculates edgewise and mean nodewise intensities for for Undirected networks and, for each edge, the proportions of
+Calculates edgewise and mean nodewise intensities for the given intensitynet object and, for each edge, the proportions of
 all event covariates.
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{RelateEventsToNetwork}
 \alias{RelateEventsToNetwork}
-\title{Calculates edgewise and mean nodewise intensities for the given intensitynet object and, for each edge, the proportions of
-all event covariates.}
+\title{Calculates intensity statistics for the given intensitynet object}
 \usage{
 RelateEventsToNetwork(obj)
 }

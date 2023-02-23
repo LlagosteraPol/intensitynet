@@ -3,7 +3,7 @@
 \name{nodeIntensity.intensitynetUnd}
 \alias{nodeIntensity.intensitynetUnd}
 \alias{MeanNodeIntensity.intensitynetUnd}
-\title{Calculates the mean intensity of the given node (intensity of all the edges of the node/number of edges of the node)}
+\title{Calculates the mean intensity of the given node (for undirected networks)}
 \usage{
 \method{MeanNodeIntensity}{intensitynetUnd}(obj, node_id)
 }

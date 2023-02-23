@@ -2,8 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{ShortestPath}
 \alias{ShortestPath}
-\title{Calculates the shortest path between two vertices (based on the minimum amount of edges) and 
-calculates its total weight}
+\title{Given two nodes, calculates the shortest path and its total weight}
 \usage{
 ShortestPath(obj, node_id1, node_id2, weight = NA, mode = "all")
 }

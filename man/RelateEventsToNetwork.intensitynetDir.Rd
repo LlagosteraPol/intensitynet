@@ -2,8 +2,7 @@
 % Please edit documentation in R/intensitynetDir.R
 \name{RelateEventsToNetwork.intensitynetDir}
 \alias{RelateEventsToNetwork.intensitynetDir}
-\title{Calculates edgewise and mean nodewise intensities for Directed networks and, for each edge, the proportions of
-all event covariates.}
+\title{Calculates intensity statistics for the given intensitynet object}
 \usage{
 \method{RelateEventsToNetwork}{intensitynetDir}(obj)
 }

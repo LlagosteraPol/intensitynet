@@ -1,3 +1,6 @@
+#' Calculates the mean intensity of the given node (for mixed networks)
+#' 
+#' @description 
 #' Given a node, calculates its mean intensities depending on the edges associated with the node, those intensities are: 
 #' in, out (for directed edges), undirected and total intensity.
 #' 
@@ -94,6 +97,9 @@ MeanNodeIntensity.intensitynetMix = function(obj, node_id){
 }
 
 
+#' Calculates intensity statistics for the given intensitynet object
+#' 
+#' @description 
 #' Calculates edgewise and mean nodewise intensities for Mixed networks and, for each edge, the proportions of
 #' all event covariates.
 #' 
@@ -187,6 +193,9 @@ RelateEventsToNetwork.intensitynetMix = function(obj){
 }
 
 
+#' Plot intensitynet object
+#' 
+#' @description 
 #' Plot intensitynet object
 #'
 #' @name plot.intensitynetMix

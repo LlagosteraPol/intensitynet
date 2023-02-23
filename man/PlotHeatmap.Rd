@@ -2,7 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{PlotHeatmap}
 \alias{PlotHeatmap}
-\title{Plot the network correlations or intensities.}
+\title{Given an intensitynet object, plot network heatmaps}
 \usage{
 PlotHeatmap(
   obj,

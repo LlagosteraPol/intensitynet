@@ -2,8 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{EdgeIntensity.intensitynet}
 \alias{EdgeIntensity.intensitynet}
-\title{If not calculated, calculates the intensity of the edge with nodes; node_id1, node_id2. 
-If the edge already contains an intensity, give it directly.}
+\title{Given two nodes, calculates its edge intensity}
 \usage{
 \method{EdgeIntensity}{intensitynet}(obj, node_id1, node_id2)
 }
@@ -19,5 +18,5 @@ Intensity of the edge
 }
 \description{
 If not calculated, calculates the intensity of the edge with nodes; node_id1, node_id2. 
-If the edge already contains an intensity, give it directly.
+If the edge already contains an intensity, the function gives it directly without re-calculation.
 }

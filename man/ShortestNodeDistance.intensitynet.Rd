@@ -2,9 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{ShortestNodeDistance.intensitynet}
 \alias{ShortestNodeDistance.intensitynet}
-\title{Calculates the shortest distance path between two nodes (based on the minimum amount of edges).
-The function also returns the total weight of the path, if the weight is not available, returns
-the number of edges.}
+\title{Given two nodes, gives its shortest distance based on the minimum amount of edges}
 \usage{
 \method{ShortestNodeDistance}{intensitynet}(obj, node_id1, node_id2)
 }

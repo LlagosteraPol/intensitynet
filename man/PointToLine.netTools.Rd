@@ -2,7 +2,7 @@
 % Please edit documentation in R/netTools.R
 \name{PointToLine.netTools}
 \alias{PointToLine.netTools}
-\title{Return the distance between an event and the line (not segment) formed by two nodes.}
+\title{Gives the distance between an event and the line formed by two nodes.}
 \usage{
 \method{PointToLine}{netTools}(obj)
 }
@@ -13,5 +13,5 @@
 the distance to the line
 }
 \description{
-Return the distance between an event and the line (not segment) formed by two nodes.
+Gives the distance between an event and the line (not segment) formed by two nodes.
 }

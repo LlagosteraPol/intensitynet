@@ -2,7 +2,7 @@
 % Please edit documentation in R/intensitynet.R
 \name{NodeLocalCorrelation}
 \alias{NodeLocalCorrelation}
-\title{Gives the node local Moran-I, Getis-Gstar or Geary-c correlations}
+\title{Calculates local correlations based on nodes}
 \source{
 *"A Local Indicator of Multivariate SpatialAssociation: Extending Geary's c, Geographical Analysis" Luc Anselin (2018) <doi:10.1111/gean.12164>
 }

@@ -3,7 +3,7 @@
 \name{PointToSegment.netTools}
 \alias{PointToSegment.netTools}
 \alias{PointToSegment}
-\title{Return the shortest distance between an event and a set of segments.}
+\title{Gives the shortest distance between an event and a set of segments.}
 \usage{
 PointToSegment(obj)
 }
@@ -14,5 +14,5 @@ PointToSegment(obj)
 distance vector to each segment
 }
 \description{
-Return the shortest distance between an event and a set of segments.
+Gives the shortest distance between an event and a set of segments.
 }
