@@ -40,7 +40,7 @@
 intensitynet <- function(adjacency_mtx, node_coords, event_data, graph_type = 'undirected', event_correction = 5){
   
   if(event_correction < 0){
-    stop("Error: Event correction value cannot be less than 0, using default.")
+    stop("Error: Event correction value cannot be less than 0.")
   }
   
   if (is.data.frame(adjacency_mtx)) {
@@ -76,9 +76,9 @@ intensitynet <- function(adjacency_mtx, node_coords, event_data, graph_type = 'u
   attr(intnet, "class") <- "intensitynet"
   # Select the proper class
   switch(graph_type, 
-         'undirected' = {attr(intnet, 'class') <- c(class(intnet), "intensitynetUnd")},
-         'directed' = {attr(intnet, 'class') <- c(class(intnet), "intensitynetDir")},
-         'mixed' = {attr(intnet, 'class') <- c(class(intnet), "intensitynetMix")})
+         'undirected' = {attr(intnet, 'class') <- c("intensitynetUnd", class(intnet))},
+         'directed' = {attr(intnet, 'class') <- c("intensitynetDir", class(intnet))},
+         'mixed' = {attr(intnet, 'class') <- c("intensitynetMix", class(intnet))})
   
   intnet # return
 }
@@ -330,6 +330,94 @@ RelateEventsToNetwork <- function(obj){
 }
 
 
+#' Gives the graph related to the intensitynet object
+#' 
+#' @description 
+#' Returns the 'igraph' class network related to the intensitynet object
+#' 
+#' @name GetGraph
+#' 
+#' @param obj 
+#' 
+#' @return igraph class object
+#' 
+#' @examples
+#' 
+#' data("und_intnet_chicago")
+#' GetGraph(und_intnet_chicago)
+#' 
+#' @export
+GetGraph <- function(obj){
+  UseMethod("GetGraph")
+}
+
+
+#' Gives the events related to the intensitynet object
+#' 
+#' @description 
+#' Returns a matrix containing the events information, i.e. coordinates and categories
+#' 
+#' @name GetEvents
+#' 
+#' @param obj 
+#' 
+#' @return matrix containing the event information
+#' 
+#' @examples
+#' 
+#' data("und_intnet_chicago")
+#' GetEvents(und_intnet_chicago)
+#' 
+#' @export
+GetEvents <- function(obj){
+  UseMethod("GetEvents")
+}
+
+
+#' Gives the type of graph related to the intensitynet object
+#' 
+#' @description 
+#' Gives the type of graph related to the intensitynet object
+#' 
+#' @name GetGraphType
+#' 
+#' @param obj 
+#' 
+#' @return graph type in characters
+#' 
+#' @examples
+#' 
+#' data("und_intnet_chicago")
+#' GetGraphType(und_intnet_chicago)
+#' 
+#' @export
+GetGraphType <- function(obj){
+  UseMethod("GetGraphType")
+}
+
+
+#' Gives the event correction value related to the intensitynet object
+#' 
+#' @description 
+#' Gives the event correction value related to the intensitynet object
+#' 
+#' @name GetGraphType
+#' 
+#' @param obj 
+#' 
+#' @return integer, event correction value
+#' 
+#' @examples
+#' 
+#' data("und_intnet_chicago")
+#' GetEventCorrection(und_intnet_chicago)
+#' 
+#' @export
+GetEventCorrection <- function(obj){
+  UseMethod("GetEventCorrection")
+}
+
+
 MeanNodeIntensity <- function(obj, node_id){
   UseMethod("MeanNodeIntensity")
 }
@@ -370,7 +458,7 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2){
   }
   
   if(obj$event_correction < 0){
-    stop("Error: Event correction value cannot be less than 0, using default.")
+    stop("Error: Event correction value cannot be less than 0.")
   }
   
   z <- obj$event_correction
@@ -442,7 +530,7 @@ EdgeIntensity.intensitynet <- function(obj,  node_id1, node_id2){
 #' 
 EdgeIntensitiesAndProportions.intensitynet <- function(obj){
   if(obj$event_correction < 0){
-    stop("Error: event correction value cannot be less than 0, using default.")
+    stop("Error: event correction value cannot be less than 0.")
   }
   
   z <- obj$event_correction
@@ -574,7 +662,7 @@ PathTotalWeight.intensitynet <- function(obj, path_nodes, weight = NA){
   g <- obj$graph
   
   if(!is.na(weight) && !(weight %in% igraph::edge_attr_names(g))){
-    stop("Error: The given weight doens't exist in the edge attributes, using default instead (NA)")
+    stop("Error: The given weight doens't exist in the edge attributes.")
   }
   
   path_edges <- igraph::E(g, path = c(1,2,5,7))
@@ -620,7 +708,7 @@ ShortestPath.intensitynet <- function(obj,  node_id1, node_id2, weight = NA, mod
   g <- obj$graph
   
   if(!is.na(weight) && !(weight %in% igraph::edge_attr_names(g))){
-    stop("Error: The given weight doens't exist in the edge attributes, using default instead (NA)")
+    stop("Error: The given weight doens't exist in the edge attributes.")
   }
   
   if (is.na(weight)){
@@ -807,8 +895,7 @@ PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = '
     {
       stop('Error: Parameter "heat_type" should be; for correlations: "moran" or "geary", 
                                                for intensities: "v_intensity" or "e_intensity", 
-                                               for marks: the name of the mark. 
-                                               Using default ("none").')
+                                               for marks: the name of the mark.')
     }
   }
   
@@ -1153,4 +1240,114 @@ ShortestNodeDistance.intensitynet <- function(obj, node_id1, node_id2){
     weight_sum <- length(weighted_path)
   }
   list(weight = weight_sum, path = weighted_path)  
+}
+
+
+#' Gives the graph related to the intensitynet object
+#' 
+#' @description 
+#' Returns the 'igraph' class network related to the intensitynet object
+#' 
+#' @name GetGraph.intensitynet
+#' 
+#' @param obj 
+#' 
+#' @return igraph class object
+#' 
+#' @examples
+#' 
+#' data("und_intnet_chicago")
+#' GetGraph(und_intnet_chicago)
+#' 
+#' @export
+GetGraph.intensitynet <- function(obj){
+  obj$graph
+}
+
+
+#' Gives the events related to the intensitynet object
+#' 
+#' @description 
+#' Returns a matrix containing the events information, i.e. coordinates and categories
+#' 
+#' @name GetEvents.intensitynet
+#' 
+#' @param obj 
+#' 
+#' @return matrix containing the event information
+#' 
+#' @examples
+#' 
+#' data("und_intnet_chicago")
+#' GetEvents(und_intnet_chicago)
+#' 
+#' @export
+GetEvents.intensitynet <- function(obj){
+  obj$events
+}
+
+
+#' Gives the type of graph related to the intensitynet object
+#' 
+#' @description 
+#' Gives the type of graph related to the intensitynet object
+#' 
+#' @name GetGraphType.intensitynet
+#' 
+#' @param obj 
+#' 
+#' @return graph type in characters
+#' 
+#' @examples
+#' 
+#' data("und_intnet_chicago")
+#' GetGraphType(und_intnet_chicago)
+#' 
+#' @export
+GetGraphType.intensitynet <- function(obj){
+  obj$graph_type
+}
+
+
+#' Gives the event correction value related to the intensitynet object
+#' 
+#' @description 
+#' Gives the event correction value related to the intensitynet object
+#' 
+#' @name GetGraphType.intensitynet
+#' 
+#' @param obj 
+#' 
+#' @return integer, event correction value
+#' 
+#' @examples
+#' 
+#' data("und_intnet_chicago")
+#' GetEventCorrection(und_intnet_chicago)
+#' 
+#' @export
+GetEventCorrection.intensitynet <- function(obj){
+  obj$event_correction
+}
+
+
+#' Is this class object intensitynet?
+#' 
+#' @description 
+#' Determine if the given object is from the class intensitynet
+#' 
+#' @name IsIntensitynet
+#' 
+#' @param obj 
+#' 
+#' @return boolean, 'TRUE' if the argument obj is a intensitynet object
+#' 
+#' @examples
+#' 
+#' data("und_intnet_chicago")
+#' IsIntensitynet(und_intnet_chicago)
+#' 
+#' @export
+IsIntensitynet <- function(obj){
+  "intensitynet" %in% class(obj)
 }
