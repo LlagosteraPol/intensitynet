@@ -2,9 +2,21 @@
 % Please edit documentation in R/intensitynet.R
 \name{PlotHeatmap}
 \alias{PlotHeatmap}
+\alias{PlotHeatmap.intensitynet}
 \title{Given an intensitynet object, plot network heatmaps}
 \usage{
 PlotHeatmap(
+  obj,
+  heat_type = "none",
+  intensity_type = "none",
+  net_vertices = NULL,
+  net_edges = NULL,
+  show_events = FALSE,
+  alpha = 1,
+  ...
+)
+
+\method{PlotHeatmap}{intensitynet}(
   obj,
   heat_type = "none",
   intensity_type = "none",

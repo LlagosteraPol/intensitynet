@@ -26,7 +26,7 @@ This value highly depends on the given coordinate system}
 }
 \value{
 intensitynet class object containing: graph = <igraph>, events = <matrix>, graph_type = c('directed', 'undirected', 'mixed'), 
-distances = <matrix>
+distances = <matrix>, event_correction = <integer>, events_related = <boolean>
 }
 \description{
 This constructor creates an intensitynet object using an adjacency matrix, the

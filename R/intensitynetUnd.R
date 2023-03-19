@@ -45,7 +45,7 @@ MeanNodeIntensity.intensitynetUnd = function(obj, node_id){
 #' Calculates intensity statistics for the given intensitynet object
 #' 
 #' @description 
-#' Calculates edgewise and mean nodewise intensities for the given intensitynet object and, for each edge, the proportions of
+#' Calculates edgewise and mean nodewise intensities for Undirected networks and, for each edge, the proportions of
 #' all event covariates.
 #' 
 #' @name RelateEventsToNetwork.intensitynetUnd
@@ -106,8 +106,9 @@ RelateEventsToNetwork.intensitynetUnd = function(obj){
                  events = obj$events, 
                  graph_type = obj$graph_type, 
                  distances_mtx = obj$distances_mtx,
-                 event_correction = obj$event_correction)
-  attr(intnet, 'class') <- c("intensitynet", "intensitynetUnd")
+                 event_correction = obj$event_correction,
+                 events_related = TRUE)
+  attr(intnet, 'class') <- c("intensitynetUnd", "intensitynet")
   return(intnet)
 }
 

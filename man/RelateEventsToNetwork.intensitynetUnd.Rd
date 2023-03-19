@@ -14,6 +14,6 @@ proper intensitynetUnd object with a graph containing the nodewise intensity in 
 attributes and the edgewise intensities and event covariate proportions as edge attributes.
 }
 \description{
-Calculates edgewise and mean nodewise intensities for the given intensitynet object and, for each edge, the proportions of
+Calculates edgewise and mean nodewise intensities for Undirected networks and, for each edge, the proportions of
 all event covariates.
 }

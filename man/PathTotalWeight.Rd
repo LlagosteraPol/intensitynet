@@ -2,9 +2,12 @@
 % Please edit documentation in R/intensitynet.R
 \name{PathTotalWeight}
 \alias{PathTotalWeight}
+\alias{PathTotalWeight.intensitynet}
 \title{Calculates the total weight of the given path}
 \usage{
 PathTotalWeight(obj, path_nodes, weight = NA)
+
+\method{PathTotalWeight}{intensitynet}(obj, path_nodes, weight = NA)
 }
 \arguments{
 \item{obj}{intensitynet object}

@@ -142,8 +142,9 @@ RelateEventsToNetwork.intensitynetDir = function(obj){
                  events = obj$events, 
                  graph_type = obj$graph_type, 
                  distances_mtx = obj$distances_mtx,
-                 event_correction = obj$event_correction)
-  attr(intnet, 'class') <- c("intensitynet", "intensitynetDir")
+                 event_correction = obj$event_correction,
+                 events_related = TRUE)
+  attr(intnet, 'class') <- c("intensitynetDir", "intensitynet")
   return(intnet)
 }
 

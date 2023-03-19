@@ -2,9 +2,18 @@
 % Please edit documentation in R/intensitynet.R
 \name{NodeGeneralCorrelation}
 \alias{NodeGeneralCorrelation}
+\alias{NodeGeneralCorrelation.intensitynet}
 \title{Calculate dependence statistics on the network}
 \usage{
 NodeGeneralCorrelation(
+  obj,
+  dep_type,
+  lag_max,
+  intensity,
+  partial_neighborhood = TRUE
+)
+
+\method{NodeGeneralCorrelation}{intensitynet}(
   obj,
   dep_type,
   lag_max,

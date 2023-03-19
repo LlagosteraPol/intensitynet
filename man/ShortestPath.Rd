@@ -2,9 +2,12 @@
 % Please edit documentation in R/intensitynet.R
 \name{ShortestPath}
 \alias{ShortestPath}
+\alias{ShortestPath.intensitynet}
 \title{Given two nodes, calculates the shortest path and its total weight}
 \usage{
 ShortestPath(obj, node_id1, node_id2, weight = NA, mode = "all")
+
+\method{ShortestPath}{intensitynet}(obj, node_id1, node_id2, weight = NA, mode = "all")
 }
 \arguments{
 \item{obj}{intensitynet object}
