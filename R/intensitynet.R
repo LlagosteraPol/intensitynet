@@ -37,11 +37,13 @@
 #'                                event_data = chicago_df)
 #' 
 #' @export
-intensitynet <- function(adjacency_mtx, node_coords, event_data, graph_type = 'undirected', event_correction = 5){
+intensitynet <- function(adjacency_mtx, node_coords, event_data, graph_type = c('undirected', 'directed', 'mixed'), event_correction = 5){
   
   if(event_correction < 0){
     stop("Error: Event correction value cannot be less than 0.")
   }
+  
+  graph_type <- match.arg(graph_type)
   
   if (is.data.frame(adjacency_mtx)) {
     adjacency_mtx <- as.matrix(adjacency_mtx)
@@ -708,11 +710,12 @@ ShortestPath.intensitynet <- function(obj,  node_id1, node_id2, weight = NA, mod
 
 #' @export
 #' @rdname NodeGeneralCorrelation
-NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensity, partial_neighborhood = TRUE){
-  if(!intensitynet::AreEventsRelated(obj)){
+NodeGeneralCorrelation.intensitynet <- function(obj, dep_type = c('correlation', 'covariance', 'moran', 'geary'), lag_max, intensity, partial_neighborhood = TRUE){
+  if(!AreEventsRelated(obj)){
     stop("Error: The events are not currently related to the network, please use 
          the function 'RelateEventsToNetwork()'.")
   }
+  dep_type <- match.arg(dep_type)
   g <- obj$graph
   g_sna <- intergraph::asNetwork(g)
   
@@ -725,11 +728,12 @@ NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensit
 
 #' @export
 #' @rdname NodeLocalCorrelation
-NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity){
-  if(!intensitynet::AreEventsRelated(obj)){
+NodeLocalCorrelation.intensitynet <- function(obj, dep_type = c('moran', 'getis', 'geary'), intensity){
+  if(!AreEventsRelated(obj)){
     stop("Error: The events are not currently related to the network, please use 
          the function 'RelateEventsToNetwork()'.")
   }
+  dep_type <- match.arg(dep_type)
   g <- obj$graph
   adj_mtx <- igraph::as_adj(graph = g)
   adj_listw <- spdep::mat2listw(adj_mtx)
@@ -782,13 +786,15 @@ NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity
 
 #' @export
 #' @rdname PlotHeatmap
-PlotHeatmap.intensitynet <- function(obj, heat_type = 'none', intensity_type = 'none', net_vertices = NULL, net_edges = NULL, show_events = FALSE, alpha = 1, ...){
+PlotHeatmap.intensitynet <- function(obj, heat_type = c('none', 'moran', 'geary', 'v_intensity', 'e_intensity'), intensity_type = c('none'), 
+                                     net_vertices = NULL, net_edges = NULL, show_events = FALSE, alpha = 1, ...){
   g <- obj$graph
   adj_mtx <- igraph::as_adj(graph = g)
   adj_listw <- spdep::mat2listw(adj_mtx)
   nb <- adj_listw$neighbours
   w_listw <- spdep::nb2listw(nb, style = "W",  zero.policy=TRUE)
   
+  heat_type <- match.arg(heat_type)
   if(heat_type != 'none' && heat_type != 'moran' && heat_type != 'geary' && 
      heat_type != 'v_intensity' && heat_type != 'e_intensity'){
     
@@ -1164,7 +1170,7 @@ summary.intensitynet <- function(obj){
   cls <- class(obj)[1]
   g <- obj$graph
   event_related <- ""
-  if(intensitynet::AreEventsRelated(obj)) event_related <- "The events are related to the network. \n"
+  if(AreEventsRelated(obj)) event_related <- "The events are related to the network. \n"
   else event_related <- "The events are not related to the networ, use the function 'RelateEventsToNetwork'. \n"
   
   cat("Intensitynet object of class", cls, "\n",
