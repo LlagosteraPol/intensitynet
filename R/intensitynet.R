@@ -709,6 +709,10 @@ ShortestPath.intensitynet <- function(obj,  node_id1, node_id2, weight = NA, mod
 #' @export
 #' @rdname NodeGeneralCorrelation
 NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensity, partial_neighborhood = TRUE){
+  if(!intensitynet::AreEventsRelated(obj)){
+    stop("Error: The events are not currently related to the network, please use 
+         the function 'RelateEventsToNetwork()'.")
+  }
   g <- obj$graph
   g_sna <- intergraph::asNetwork(g)
   
@@ -722,6 +726,10 @@ NodeGeneralCorrelation.intensitynet <- function(obj, dep_type, lag_max, intensit
 #' @export
 #' @rdname NodeLocalCorrelation
 NodeLocalCorrelation.intensitynet <- function(obj, dep_type = 'moran', intensity){
+  if(!intensitynet::AreEventsRelated(obj)){
+    stop("Error: The events are not currently related to the network, please use 
+         the function 'RelateEventsToNetwork()'.")
+  }
   g <- obj$graph
   adj_mtx <- igraph::as_adj(graph = g)
   adj_listw <- spdep::mat2listw(adj_mtx)
@@ -1153,7 +1161,19 @@ AreEventsRelated.intensitynet <- function(obj){
 #' 
 #' @export
 summary.intensitynet <- function(obj){
-  print()
+  cls <- class(obj)[1]
+  g <- obj$graph
+  event_related <- ""
+  if(intensitynet::AreEventsRelated(obj)) event_related <- "The events are related to the network. \n"
+  else event_related <- "The events are not related to the networ, use the function 'RelateEventsToNetwork'. \n"
+  
+  cat("Intensitynet object of class", cls, "\n",
+      "Network type:", obj$graph_type, "\n",
+      "Number of nodes:", igraph::gorder(g), "\n",
+      "Number of edges:", igraph::gsize(g), "\n",
+      "Number of events:", nrow(obj$events), "\n",
+      "Event correction:", obj$event_correction, "units \n",
+      event_related)
 }
 
 
