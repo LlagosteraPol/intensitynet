@@ -1,3 +1,23 @@
+# intensitynet 1.4.0
+* Moved the plot function from each sub-class (intensitynetUnd, intensitynetDir, and intensitynetMix), to the main class (intensitynet).
+
+* Added match.arg to functions: intensitynet in 'grapg_type', PlotHeatmap in 'heat_type', NodeGeneralCorrelation in 'dep_type', and NodeLocalCorrelation in 'dep_type'.
+
+* Added summary function to the intensitynet object.
+
+* Now the functions 'NodeGeneralCorrelation' and 'NodeLocalCorrelation' check if the intensitynet object has related the events to the network.
+
+* Added function 'AreEventsRelated' to know if the intensitynet object related its events through the function 'RelateEventsToNetwork'.
+
+* Fixed class order when generating an intensitynet object through the function 'RelateEventsToNetwork' for each specific class ('IntensitynetUnd', 'IntensitynetDir', and 'IntensitynetMix').
+
+* Joined documentation to reduce the redundancy in the description of some methods.
+
+* Improved manual titles.
+
+* Changed warnings from the object intensitynet to errors (stop).
+
+
 # intensitynet 1.3.1
 * Updated to work with package Matrix >= 1.5.1
 

@@ -10,7 +10,7 @@
 \usage{
 NodeLocalCorrelation(obj, dep_type = "moran", intensity)
 
-\method{NodeLocalCorrelation}{intensitynet}(obj, dep_type = "moran", intensity)
+\method{NodeLocalCorrelation}{intensitynet}(obj, dep_type = c("moran", "getis", "geary"), intensity)
 }
 \arguments{
 \item{obj}{intensitynet object}

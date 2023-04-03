@@ -15,7 +15,7 @@ NodeGeneralCorrelation(
 
 \method{NodeGeneralCorrelation}{intensitynet}(
   obj,
-  dep_type,
+  dep_type = c("correlation", "covariance", "moran", "geary"),
   lag_max,
   intensity,
   partial_neighborhood = TRUE

@@ -18,8 +18,8 @@ PlotHeatmap(
 
 \method{PlotHeatmap}{intensitynet}(
   obj,
-  heat_type = "none",
-  intensity_type = "none",
+  heat_type = c("none", "moran", "geary", "v_intensity", "e_intensity"),
+  intensity_type = c("none"),
   net_vertices = NULL,
   net_edges = NULL,
   show_events = FALSE,

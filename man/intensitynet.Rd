@@ -8,7 +8,7 @@ intensitynet(
   adjacency_mtx,
   node_coords,
   event_data,
-  graph_type = "undirected",
+  graph_type = c("undirected", "directed", "mixed"),
   event_correction = 5
 )
 }
