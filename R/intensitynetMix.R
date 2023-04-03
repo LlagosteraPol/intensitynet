@@ -178,10 +178,10 @@ RelateEventsToNetwork.intensitynetMix = function(obj){
   #            igraph::set_vertex_attr(name = "intensity_in", value = as.matrix(in_counts))   %>% 
   #            igraph::set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts)) %>% 
   #            igraph::set_vertex_attr(name = "intensity_all", value = as.matrix(all_counts))
-  g <- igraph::set_vertex_attr(g, name = "intensity_und", value = as.matrix(und_counts))
-  g <- igraph::set_vertex_attr(g, name = "intensity_in", value = as.matrix(in_counts)) 
-  g <- igraph::set_vertex_attr(g, name = "intensity_out", value = as.matrix(out_counts))
-  g <- igraph::set_vertex_attr(g, name = "intensity_all", value = as.matrix(all_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_und", value = as.numeric(und_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_in", value = as.numeric(in_counts)) 
+  g <- igraph::set_vertex_attr(g, name = "intensity_out", value = as.numeric(out_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_all", value = as.numeric(all_counts))
   
   intnet <- list(graph = g, 
                  events = obj$events, 

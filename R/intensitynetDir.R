@@ -135,8 +135,8 @@ RelateEventsToNetwork.intensitynetDir = function(obj){
   
   # g <- g %>% igraph::set_vertex_attr(name = "intensity_in", value = as.matrix(in_counts)) %>% 
   #            igraph::set_vertex_attr(name = "intensity_out", value = as.matrix(out_counts))
-  g <- igraph::set_vertex_attr(g, name = "intensity_in", value = as.matrix(in_counts))
-  g <- igraph::set_vertex_attr(g, name = "intensity_out", value = as.matrix(out_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_in", value = as.numeric(in_counts))
+  g <- igraph::set_vertex_attr(g, name = "intensity_out", value = as.numeric(out_counts))
   
   intnet <- list(graph = g, 
                  events = obj$events, 
