@@ -717,6 +717,12 @@ NodeGeneralCorrelation.intensitynet <- function(obj, dep_type = c('correlation',
   }
   dep_type <- match.arg(dep_type)
   g <- obj$graph
+  
+  # The function 'intergraph::asNetwork()' doesn't work with the 'getis' attribute since is from class 'localG'
+  for(attr_name in igraph::vertex_attr_names(g)){
+    if(attr_name == "getis") g <- igraph::delete_vertex_attr(g, 'getis')
+  }
+  
   g_sna <- intergraph::asNetwork(g)
   
   if(obj$graph_type == 'undirected') m <- 'graph'
