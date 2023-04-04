@@ -23,7 +23,7 @@ test_that("Calculate edge and nodemeans intensities from a mixed network", {
   intnet_chicago <- RelateEventsToNetwork(intnet_chicago)
   
   
-  expect_s3_class(intnet_chicago, c("intensitynet", "intensitynetMix"), exact = TRUE)
+  expect_s3_class(intnet_chicago, c("intensitynetMix", "intensitynet"), exact = TRUE)
 })
 
 

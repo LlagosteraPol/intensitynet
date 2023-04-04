@@ -22,7 +22,7 @@ test_that("Calculate edge and nodemeans intensities from a directed network", {
   intnet_chicago <- RelateEventsToNetwork(intnet_chicago)
   
   
-  expect_s3_class(intnet_chicago, c("intensitynet", "intensitynetDir"), exact = TRUE)
+  expect_s3_class(intnet_chicago, c("intensitynetDir", "intensitynet"), exact = TRUE)
 })
 
 
