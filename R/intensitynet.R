@@ -1100,7 +1100,8 @@ SetNetworkAttribute.intensitynet <- function(obj, where, name, value){
                  events = obj$events, 
                  graph_type = obj$graph_type, 
                  distances_mtx = obj$distances_mtx,
-                 event_correction = obj$event_correction)
+                 event_correction = obj$event_correction,
+                 events_related = obj$events_related)
   attr(intnet, 'class') <- class(obj)
   intnet
 }
@@ -1250,7 +1251,7 @@ summary.intensitynet <- function(obj){
   g <- obj$graph
   event_related <- ""
   if(AreEventsRelated(obj)) event_related <- "The events are related to the network. \n"
-  else event_related <- "The events are not related to the networ, use the function 'RelateEventsToNetwork'. \n"
+  else event_related <- "The events are not related to the network, use the function 'RelateEventsToNetwork'. \n"
   
   cat("Intensitynet object of class", cls, "\n",
       "Network type:", obj$graph_type, "\n",
