@@ -826,20 +826,20 @@ plot.intensitynet <- function(x, vertex_labels='none', edge_labels='none',
     stop("A path must contain more than one vertex")
   }
   
-  if(is(x, 'intensitynetUnd')){
+  if(methods::is(x, 'intensitynetUnd')){
     v_label <- switch(vertex_labels, 
                       none = {''}, 
                       intensity = {round(igraph::vertex_attr(g)$intensity, 4)},
                       '')
   }
-  else if(is(x, 'intensitynetDir')){
+  else if(methods::is(x, 'intensitynetDir')){
     v_label <- switch(vertex_labels, 
                       none = {''}, 
                       intensity_in = {round(igraph::vertex_attr(g)$intensity_in, 4)},
                       intensity_out = {round(igraph::vertex_attr(g)$intensity_out, 4)},
                       '')
   }
-  else if(is(x, 'intensitynetMix')){
+  else if(methods::is(x, 'intensitynetMix')){
     v_label <- switch(vertex_labels, 
                       none = {''}, 
                       intensity_und = {round(igraph::vertex_attr(g)$intensity_und, 4)},
@@ -1239,12 +1239,16 @@ AreEventsRelated.intensitynet <- function(obj){
 #' Summary of the intensitynet object
 #' 
 #' @description 
-#' Give information about TODO: Finish
+#' Give information about the intensytinet object specific class (intensitynetUnd, intensitynetDir,
+#'  or intensitynetMix), the network number of nodes, edges and events, the event correction value and,
+#'  if the events had been related to the intensitynet object network.
 #' 
-#' @name IsIntensitynet
+#' @name summary
 #' 
-#' @param obj Intensitynet object
+#' @param object Intensitynet object
+#' @param ... Extra parameters for the summary function
 #' 
+#' @return list containing the displayed information
 #' 
 #' @examples
 #' 
@@ -1252,20 +1256,27 @@ AreEventsRelated.intensitynet <- function(obj){
 #' summary(und_intnet_chicago)
 #' 
 #' @export
-summary.intensitynet <- function(obj){
-  cls <- class(obj)[1]
-  g <- obj$graph
+summary.intensitynet <- function(object, ...){
+  cls <- class(object)[1]
+  g <- object$graph
   event_related <- ""
-  if(AreEventsRelated(obj)) event_related <- "The events are related to the network. \n"
+  if(AreEventsRelated(object)) event_related <- "The events are related to the network. \n"
   else event_related <- "The events are not related to the network, use the function 'RelateEventsToNetwork'. \n"
   
   cat("Intensitynet object of class", cls, "\n",
-      "Network type:", obj$graph_type, "\n",
+      "Network type:", object$graph_type, "\n",
       "Number of nodes:", igraph::gorder(g), "\n",
       "Number of edges:", igraph::gsize(g), "\n",
-      "Number of events:", nrow(obj$events), "\n",
-      "Event correction:", obj$event_correction, "units \n",
-      event_related)
+      "Number of events:", nrow(object$events), "\n",
+      "Event correction:", object$event_correction, "units \n",
+      "Events related to network:", event_related)
+  
+  list(type=object$graph_type,
+       n_nodes = igraph::gorder(g),
+       n_edges = igraph::gsize(g),
+       n_events = nrow(object$events),
+       correction = object$event_correction,
+       event_related = event_related)
 }
 
 
@@ -1276,7 +1287,7 @@ summary.intensitynet <- function(obj){
 #' 
 #' @name IsIntensitynet
 #' 
-#' @param obj 
+#' @param obj The object which will be checked if it belongs to the intensitynet class
 #' 
 #' @return boolean, 'TRUE' if the argument obj is a intensitynet object
 #' 

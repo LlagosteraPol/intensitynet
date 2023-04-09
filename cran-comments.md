@@ -8,4 +8,4 @@
 
 0 errors | 0 warnings | 0 notes
 
-* Version 1.3.0 first release
+* Version 1.4.0 first release

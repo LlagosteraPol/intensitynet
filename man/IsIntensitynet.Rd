@@ -2,29 +2,20 @@
 % Please edit documentation in R/intensitynet.R
 \name{IsIntensitynet}
 \alias{IsIntensitynet}
-\alias{summary.intensitynet}
-\title{Summary of the intensitynet object}
+\title{Is this class object intensitynet?}
 \usage{
-\method{summary}{intensitynet}(obj)
-
 IsIntensitynet(obj)
 }
 \arguments{
-\item{obj}{}
+\item{obj}{The object which will be checked if it belongs to the intensitynet class}
 }
 \value{
 boolean, 'TRUE' if the argument obj is a intensitynet object
 }
 \description{
-Give information about TODO: Finish
-
 Determine if the given object is from the class intensitynet
 }
 \examples{
-
-data("und_intnet_chicago")
-summary(und_intnet_chicago)
-
 
 data("und_intnet_chicago")
 IsIntensitynet(und_intnet_chicago)
