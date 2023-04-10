@@ -1,38 +1,34 @@
 citHeader("To cite IntensityNet in publications use:")
 
-citEntry(entry    = "Manual",
+bibentry(bibtype  = "Manual",
          title    = "IntensityNet: Analysis of Spatial Point Patterns Occurring in Networks",
-         author   = personList(as.person("Pol Llagostera Blasco"), 
-                               as.person("Matthias Eckardt")),
-         year     = "2021",
-         
-         textVersion = paste("Pol Llagostera and Matthias Eckardt (2021). intensitynet: Analysis of Spatial Point Patterns Occurring in Networks.")
+         author   = c(as.person("Pol Llagostera Blasco"), 
+                      as.person("Matthias Eckardt")),
+         year     = "2021"
 )
 
-citEntry(
-  entry    = "Article",
+bibentry(
+  bibtype  = "Article",
   title    = "Point Patterns Occurring on Complex Structures in Space and Space-Time: An Alternative Network Approach",
-  author   =  personList(as.person("Matthias Eckardt"), 
-                         as.person("Jorge Mateu")),
+  author   =  c(as.person("Matthias Eckardt"), 
+                as.person("Jorge Mateu")),
   journal  = "Journal of Computational and Graphical Statistics",
   year     = "2018",
   volume   = "27",
   number   = "2",
   pages    = "312-322",
-  doi      = "10.1080/10618600.2017.1391695",
-  textVersion = paste("Eckardt, M., Mateu, J. Point Patterns Occurring on Complex Structures in Space and Space-Time: An Alternative Network Approach. Journal of Computational and Graphical Statistics 27. 312-322 (2017). https://doi.org/10.1080/10618600.2017.1391695")
+  doi      = "10.1080/10618600.2017.1391695"
 )
 
 
-citEntry(
+bibentry(
   entry    = "Article",
   title    = "Second-order and local characteristics of network intensity functions",
-  author   = personList(as.person("Matthias Eckardt"), 
-                        as.person("Jorge Mateu")),
+  author   = c(as.person("Matthias Eckardt"), 
+               as.person("Jorge Mateu")),
   journal  = "TEST",
   year     = "2021",
   volume   = "30",
   pages    = "318-340",
-  doi      = "10.1007/s11749-020-00720-4",
-  textVersion = paste("Eckardt, M., Mateu, J. Second-order and local characteristics of network intensity functions. TEST 30, 318-34 (2021). https://doi.org/10.1007/s11749-020-00720-4")
+  doi      = "10.1007/s11749-020-00720-4"
 )
