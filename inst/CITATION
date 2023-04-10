@@ -22,7 +22,7 @@ bibentry(
 
 
 bibentry(
-  entry    = "Article",
+  bibtype  = "Article",
   title    = "Second-order and local characteristics of network intensity functions",
   author   = c(as.person("Matthias Eckardt"), 
                as.person("Jorge Mateu")),
